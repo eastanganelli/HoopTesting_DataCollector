@@ -101,7 +101,7 @@ void SerialPortReader::sendMessage(const QByteArray &message) {
     this->waitForBytesWritten(-1);
 }
 
-void SerialPortReader::stationStop(const u_int ID) {
+void SerialPortReader::stationStop(const uint ID) {
     QString msg = QString::number(ID) + ",1\n";
     myData.pushMessageSendPort(msg.toUtf8());
     myData.getStation(ID)->stop();
@@ -113,7 +113,7 @@ bool SerialPortReader::openPort() {
     this->portState = false;
     SerialPortReader::read(serialName, baudRate);
     if(serialName.isEmpty()) {
-        QMessageBox msgBox(QMessageBox::Warning , "Puerto Serial", "No hay puerto guardado, por favor, vaya a Opeciones > Puerto Serial > Configuración y elija un puerto");
+        QMessageBox msgBox(QMessageBox::Warning , "Puerto Serial - No Configurado", "Configurar el puerto!");
         msgBox.exec();
         this->btnConnect->setText("Conectar");
     } else {
@@ -179,7 +179,7 @@ void SerialPortReader::serialToStation() {
     for(QByteArray& msg : msgs) {
         QList<QByteArray> substring = msg.split(',');
         if(substring.length() == 3) {
-            u_int id   = substring.at(0).toUInt();
+            uint id   = substring.at(0).toUInt();
             float bar  = substring.at(1).toFloat(),
                   temp = substring.at(2).toFloat();
             if(myData.getStation(id)->updateStatus(bar, temp)) { this->stationStop(id); }

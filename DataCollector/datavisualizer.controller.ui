@@ -1286,15 +1286,8 @@
      <addaction name="dbConfig"/>
      <addaction name="dbConnect"/>
     </widget>
-    <widget class="QMenu" name="menuParametros">
-     <property name="title">
-      <string>Parametros</string>
-     </property>
-     <addaction name="paramConfig"/>
-    </widget>
-    <addaction name="menuPuerto_Serial"/>
     <addaction name="menuBase_de_Datos"/>
-    <addaction name="menuParametros"/>
+    <addaction name="menuPuerto_Serial"/>
    </widget>
    <addaction name="menuMenu"/>
    <addaction name="menuOpciones"/>
@@ -1323,11 +1316,6 @@
   <action name="dbConnect">
    <property name="text">
     <string>Conectar</string>
-   </property>
-  </action>
-  <action name="paramConfig">
-   <property name="text">
-    <string>Configurar</string>
    </property>
   </action>
  </widget>

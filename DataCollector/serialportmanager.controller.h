@@ -33,7 +33,7 @@ public:
     SerialPortReader(const QString portName, const QString baudRate);
     SerialPortReader(QLabel* portStatus, QLabel* connectionStatus, QAction* acConnection);
     SerialPortReader(QSerialPort *serialPort, QLabel* portStatus, QLabel* connectionStatus, QAction* acConnection);
-    void stationStop(const u_int ID);
+    void stationStop(const uint ID);
     bool openPort();
     bool closePort();
     bool statusPort();

@@ -4,14 +4,14 @@
 SetStation::SetStation(QWidget *parent) : QDialog(parent) , ui(new Ui::SetStation) {
     ui->setupUi(this);
     this->setWindowFlags(Qt::Dialog | Qt::Desktop);
-    this->normsDB = QSharedPointer<Database>(Database::read());
-    this->normsDB->setDatabaseName("STEL_DB_STATIC");
+    this->normsDB = QSharedPointer<Schemas::Static>(new Schemas::Static());
     if(this->normsDB->open()) {
         this->loadStandardCombobox();
     }
     this->setConnectionSignals();
     this->ui->lblSpecimen->setText("Nro Specimen: 0");
-    #if MODE_ == Emulation
+    {
+#if MODE_ == Emulation
         this->ui->cbTemp->setCurrentText("20");
         this->ui->cbBoxTestTime->setCurrentText("90");
         this->ui->cbStandard->setCurrentIndex(0);
@@ -23,7 +23,8 @@ SetStation::SetStation(QWidget *parent) : QDialog(parent) , ui(new Ui::SetStatio
         this->ui->inputLenTotal->setValue(560);
         this->ui->inputLenFree->setValue(340);
         this->ui->inputPressure->setValue(9);
-    #endif
+#endif
+    }
 }
 
 SetStation::~SetStation() {
@@ -31,12 +32,13 @@ SetStation::~SetStation() {
     delete ui;
 }
 
-void SetStation::sharePointer(StationResponse* response, QSharedPointer<Database> dataDB, QSharedPointer<SerialPortReader> myPort, QSharedPointer<Station> selectedStation) {
+void SetStation::sharePointer(StationResponse* response, QSharedPointer<Schemas::Data> dataDB, QSharedPointer<SerialPortReader> myPort, QSharedPointer<Station> selectedStation) {
     this->dataDB          = dataDB;
     this->portWriting     = myPort;
     this->selectedStation = selectedStation;
     this->ui->gpParameters->setTitle("Estación: " + QString::number(selectedStation->getID()));
     this->response        = response;
+    if(selectedStation->getID() < 4) { this->ui->inputPressure->setMaximum(30); }
 }
 
 void SetStation::on_inputWallThickness_valueChanged(int wallthickness) {
@@ -48,12 +50,11 @@ void SetStation::on_inputWallThickness_valueChanged(int wallthickness) {
                 break;
             }
         }
-    } this->ui->txtCondPeriod->setText(conditionalPeriod);
+    }
+    this->ui->txtCondPeriod->setText(conditionalPeriod);
 }
 
-void SetStation::on_inputPressure_valueChanged(int Pressure) {
-    if(Pressure > 0 && this->ui->inputDiamReal->value() > 0) { this->ui->inputHoopStress->setValue(this->hooppressure()); }
-}
+void SetStation::on_inputPressure_valueChanged(int Pressure) { if(Pressure > 0 && this->ui->inputDiamReal->value() > 0) { this->ui->inputHoopStress->setValue(this->hooppressure()); } }
 
 unsigned int SetStation::hooppressure() { return (this->ui->inputPressure->value() * (this->ui->inputDiamReal->value() - this->ui->inputWallThickness->value()) / (20 * this->ui->inputWallThickness->value())); }
 
@@ -66,7 +67,7 @@ void SetStation::clearComboBox(QComboBox* myWidget, QString text, bool state) {
 }
 
 void SetStation::loadStandardCombobox() {
-    this->listStandards = NodeStandard::getList(*this->normsDB.get());
+    this->listStandards = NodeStandard::get(*this->normsDB.get());
     for(auto myStandard : this->listStandards) { this->ui->cbStandard->addItem(myStandard->getStandard()); }
 }
 
@@ -139,8 +140,8 @@ void SetStation::on_cbStandard_currentIndexChanged(int index) {
         this->selectedStandard = this->listStandards[index];
         const uint idStandard = this->selectedStandard->getID();
 
-        this->listCondPeriods = NodeConditionalPeriod::getList(*this->normsDB.get(), idStandard);
-        this->listMaterials = NodeMaterial::getList(*this->normsDB.get(), idStandard);
+        this->listCondPeriods = NodeConditionalPeriod::get(*this->normsDB.get(), idStandard);
+        this->listMaterials = NodeMaterial::get(*this->normsDB.get(), idStandard);
 
         QStringList materialList;
         for(auto myMaterial : this->listMaterials) { materialList << myMaterial->getMaterial(); }
@@ -155,10 +156,8 @@ void SetStation::on_cbMaterial_currentIndexChanged(int index) {
 
     if(index > -1) {
         this->selectedMaterial = this->listMaterials[index];
-        const uint idStandard  = this->selectedStandard->getID();
-        const uint idMaterial  = this->selectedMaterial->getID();
 
-        this->listSpecifications = NodeSpecification::getList(*this->normsDB.get(), idStandard, idMaterial);
+        this->listSpecifications = NodeSpecification::get(*this->normsDB.get(), this->selectedMaterial->getID());
         if(this->listSpecifications.length() > 0) {
             QStringList specificationsList;
             for(auto mySpec : this->listSpecifications) { specificationsList << mySpec->getSpecification(); }
@@ -173,11 +172,8 @@ void SetStation::on_cbSpecification_currentIndexChanged(int index) {
 
     if(index > -1) {
         this->selectedSpecification = this->listSpecifications[index];
-        const uint idStandard       = this->selectedStandard->getID();
-        const uint idMaterial       = this->selectedMaterial->getID();
-        const uint idSpecification  = this->selectedSpecification->getID();
 
-        this->listSettings = NodeSetting::getList(*this->normsDB.get(), idStandard, idMaterial, idSpecification);
+        this->listSettings = NodeSetting::get(*this->normsDB.get(), this->selectedSpecification->getID());
         if(this->listSettings.length() > 0) {
             QStringList tempList, timeList;
             for(auto mySetting : this->listSettings) {

@@ -10,7 +10,7 @@ DBConfig::DBConfig(QWidget *parent) : QDialog(parent), ui(new Ui::DBConfig) {
     }
     #if MODE_ == Emulation
         this->ui->inputHostname->setText("localhost");
-        this->ui->inputPort->setValue(33060);
+        this->ui->inputPort->setValue(3306);
         this->ui->inputUser->setText("root");
         this->ui->inputPassword->setText("root");
     #endif

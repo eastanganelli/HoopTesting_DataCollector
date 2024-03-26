@@ -15,7 +15,7 @@
         #define ConsoleDebugOff 2
 
 
-#define isRelease 0
+#define isRelease 1
 #define debugMode ParcialDebbuging
 
 #if isRelease == 1

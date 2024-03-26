@@ -23,8 +23,8 @@ class SetStation : public QDialog {
     void configureStation();
 
     Ui::SetStation *ui;
-    QSharedPointer<Database> normsDB;
-    QSharedPointer<Database> dataDB;
+    QSharedPointer<Schemas::Static> normsDB;
+    QSharedPointer<Schemas::Data>   dataDB;
     QSharedPointer<Station> selectedStation;
     uint idSample;
     StationResponse* response;
@@ -37,6 +37,7 @@ class SetStation : public QDialog {
     QList<QSharedPointer<NodeSpecification>>     listSpecifications;
     QList<QSharedPointer<NodeConditionalPeriod>> listCondPeriods;
     QList<QSharedPointer<NodeSetting>>           listSettings;
+
 private slots:
     void checkFieldsCompletetion();
     void on_inputWallThickness_valueChanged(int wallthickness);
@@ -51,6 +52,6 @@ private slots:
 public:
     explicit SetStation(QWidget *parent = nullptr);
     ~SetStation();
-    void sharePointer(StationResponse* response, QSharedPointer<Database> dataDB = nullptr, QSharedPointer<SerialPortReader> myPort = nullptr, QSharedPointer<Station> selectedStation = nullptr);
+    void sharePointer(StationResponse* response, QSharedPointer<Schemas::Data> dataDB = nullptr, QSharedPointer<SerialPortReader> myPort = nullptr, QSharedPointer<Station> selectedStation = nullptr);
 };
 #endif // SETSTATION_H

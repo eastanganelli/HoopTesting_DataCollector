@@ -17,7 +17,7 @@ public:
     void startUI(QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeLabel, QPushButton* configBtn, QPushButton *runBtn, QTabWidget* myTab, PressureTempGraph* myGraph);
     void updateUI(QString txtPre = "", QString txtTemp = "", QString txtTime = "", int key = -1, float Pressure = -1, float Temperature = -1);
     void resetUI();
-    void graphMaxYAxis(const u_int maxPressure = -1, const u_int maxTemperature = -1);
+    void graphMaxYAxis(const uint maxPressure = -1, const uint maxTemperature = -1);
     void selectGraph(uint index);
 private:
     QLabel* pressureLabel, * temperatureLabel, * timeLabel;
@@ -40,7 +40,7 @@ class Station {
     const float MaxPressure;
     uint testDuration;
     QDateTime timer, initTest, finishTest;
-    QSharedPointer<Database> dataDB;
+    QSharedPointer<Schemas::Data> dataDB;
     QSharedPointer<Data::NodeSample>   mySample;
     QSharedPointer<Data::NodeSpecimen> mySpecimen;
 public:
@@ -48,21 +48,21 @@ public:
     ~Station();
     void start(QSharedPointer<Data::NodeSample> inSample = nullptr, QSharedPointer<Data::NodeSpecimen> inSpecimen = nullptr, const uint time_ = 0);
     void start(QSharedPointer<Data::NodeSample> inSample = nullptr, QSharedPointer<Data::NodeSpecimen> inSpecimen = nullptr, const QDateTime initTime = DEFAULT_DATETIME, const QDateTime finisTime = DEFAULT_DATETIME);
-    void start(QSharedPointer<Database> dataDB, QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeLabel, QPushButton* configBtn, QPushButton *runBtn, QTabWidget* myTab, PressureTempGraph* myGraph);
+    void start(QSharedPointer<Schemas::Data> dataDB, QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeLabel, QPushButton* configBtn, QPushButton *runBtn, QTabWidget* myTab, PressureTempGraph* myGraph);
     void stop();
     bool updateStatus(const float pressureInput, const float temperatureInput);
     void setMaxTemperature(const unsigned int temperature);
     void setVisibleGraph(uint index);
-    const uint getID();
-    const uint getIDSample();
-    const uint getIDSpecimen();
+    uint getID();
+    uint getIDSample();
+    uint getIDSpecimen();
     const QDateTime getInitDateTime();
     const QDateTime getFinishDateTime();
-    const uint getTargetPressure();
-    const uint getTargetTemperature();
-    const bool isFree();
+    uint getTargetPressure();
+    uint getTargetTemperature();
+    bool isFree();
 
-    static void read(const Database& myDB, Station& myStation);
+    static void read(Schemas::Data& myDB, Station& myStation);
     static void configure(QSharedPointer<Station> selectedStation, QSharedPointer<Data::NodeSample> mySample, QSharedPointer<Data::NodeSpecimen> mySpecimen, const uint time_);
 };
 #endif // STATION_H

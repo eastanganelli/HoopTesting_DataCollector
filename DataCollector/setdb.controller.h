@@ -10,7 +10,7 @@ class DBConfig : public QDialog {
     Q_OBJECT
 
     Ui::DBConfig *ui;
-    Database      myDB;
+    Database myDB;
 private slots:
     void on_btnDBTest_clicked();
     void on_btnSave_clicked();

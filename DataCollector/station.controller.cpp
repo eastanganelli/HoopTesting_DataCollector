@@ -35,7 +35,7 @@ void Station::start(QSharedPointer<Data::NodeSample> inSample, QSharedPointer<Da
     if(!inSpecimen.isNull()) { this->mySpecimen = inSpecimen; }
 }
 
-void Station::start(QSharedPointer<Database> dataDB, QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeLabel, QPushButton* configBtn, QPushButton* runBtn, QTabWidget* myTab, PressureTempGraph* myGraph) {
+void Station::start(QSharedPointer<Schemas::Data> dataDB, QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeLabel, QPushButton* configBtn, QPushButton* runBtn, QTabWidget* myTab, PressureTempGraph* myGraph) {
     this->myUI.startUI(pressureLabel, temperatureLabel, timeLabel, configBtn, runBtn, myTab, myGraph);
     this->dataDB = dataDB;
 }
@@ -84,21 +84,21 @@ void Station::setMaxTemperature(const unsigned int temperature) { this->myUI.gra
 
 void Station::setVisibleGraph(uint index) { this->myUI.selectGraph(index); }
 
-const uint Station::getID() { return this->ID; }
+uint Station::getID() { return this->ID; }
 
-const uint Station::getIDSample() { return this->mySample->getID(); }
+uint Station::getIDSample() { return this->mySample->getID(); }
 
-const uint Station::getIDSpecimen() { return this->mySpecimen->getID(); }
+uint Station::getIDSpecimen() { return this->mySpecimen->getID(); }
 
 const QDateTime Station::getInitDateTime() { return this->initTest; }
 
 const QDateTime Station::getFinishDateTime() { return this->finishTest; }
 
-const uint Station::getTargetPressure() { return this->mySample->getTargetPressure(); }
+uint Station::getTargetPressure() { return this->mySample->getTargetPressure(); }
 
-const uint Station::getTargetTemperature() { return this->mySample->getTargetTemperature(); }
+uint Station::getTargetTemperature() { return this->mySample->getTargetTemperature(); }
 
-const bool Station::isFree() { return this->mySample.isNull() || this->mySpecimen.isNull(); }
+bool Station::isFree() { return this->mySample.isNull() || this->mySpecimen.isNull(); }
 
 void Station::save(Station& myStation) {
     QSettings mySettings(QApplication::applicationDirPath() + "/cachedStations.ini", QSettings::IniFormat);
@@ -120,7 +120,7 @@ void Station::clear(const uint idStation) {
     mySettings.endGroup();
 }
 
-void Station::read(const Database& myDB, Station& myStation) {
+void Station::read(Schemas::Data& myDB, Station& myStation) {
     QSettings mySettings(QApplication::applicationDirPath() + "/cachedStations.ini", QSettings::IniFormat);
     mySettings.beginGroup("Station_" + QString::number(myStation.getID()));
     const uint idSpecimen = mySettings.value("idSpecimen").toUInt();
@@ -193,7 +193,7 @@ void StationUI::resetUI() {
     this->myGraph->reset();
 }
 
-void StationUI::graphMaxYAxis(const u_int maxPressure, const u_int maxTemperature) {
+void StationUI::graphMaxYAxis(const uint maxPressure, const uint maxTemperature) {
     if(maxPressure != -1) { this->myGraph->maxPressure(maxPressure); }
     if(maxTemperature != -1) { this->myGraph->maxtemperature(maxTemperature); }
 }

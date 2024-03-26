@@ -8,7 +8,6 @@
 #include "setstation.controller.h"
 #include "setserial.controller.h"
 #include "setdb.controller.h"
-#include "setstandards.controller.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class DataVisualizerWindow; }
@@ -25,7 +24,7 @@ class DataVisualizerWindow : public QMainWindow {
 
     Ui::DataVisualizerWindow *ui;
     QSharedPointer<QTimer> mStatusTimer;
-    QSharedPointer<Database> myDataDB;
+    QSharedPointer<Schemas::Data> myDataDB;
     QSharedPointer<SerialPortReader> myActivePort;
     SetStation* dialogStation;
     QLabel* ConnectionDataBase,
@@ -44,7 +43,6 @@ private slots:
     void on_close_triggered();
     void on_dbConfig_triggered();
 
-    void on_paramConfig_triggered();
     void statusConnections();
     void on_dbConnect_triggered();
 

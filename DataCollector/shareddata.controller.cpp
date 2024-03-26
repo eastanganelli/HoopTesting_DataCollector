@@ -2,7 +2,7 @@
 
 SharedData::SharedData(const uint stations) {
     this->myStations = StationList();
-    for(u_int i = 0; i < stations; i++) { this->myStations.append(QSharedPointer<Station>(new Station())); }
+    for(uint i = 0; i < stations; i++) { this->myStations.append(QSharedPointer<Station>(new Station())); }
     this->cachePortSendings = QSharedPointer<QStack<QByteArray>>(new QStack<QByteArray>());
     this->statePort = false;
 }

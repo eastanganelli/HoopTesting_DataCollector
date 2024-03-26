@@ -18,7 +18,6 @@ SOURCES += \
     serialportmanager.controller.cpp \
     setdb.controller.cpp \
     setserial.controller.cpp \
-    setstandards.controller.cpp \
     setstation.controller.cpp \
     shareddata.controller.cpp \
     simplecrypt.cpp \
@@ -35,7 +34,6 @@ HEADERS += \
     serialportmanager.controller.h \
     setdb.controller.h \
     setserial.controller.h \
-    setstandards.controller.h \
     setstation.controller.h \
     shareddata.controller.h \
     simplecrypt.h \
@@ -46,7 +44,6 @@ FORMS += \
     datavisualizer.controller.ui \
     setdb.controller.ui \
     setserial.controller.ui \
-    setstandards.controller.ui \
     setstation.controller.ui
 
 # QMAKE_CXXFLAGS += -Wa,-mbig-obj, -Wno-ignored-qualifiers, -Wsign-compare, -Wignored-qualifiers

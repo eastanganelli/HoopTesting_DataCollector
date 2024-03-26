@@ -4,17 +4,23 @@
 DataVisualizerWindow::DataVisualizerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::DataVisualizerWindow) {
     ui->setupUi(this);
 
-    this->dialogStation = nullptr;
-    this->initStatusBar();
-    this->myActivePort = QSharedPointer<SerialPortReader>(new SerialPortReader(this->PortStatus, this->ConnectionPort, this->ui->serialConnect));
-    this->mStatusTimer = QSharedPointer<QTimer>(new QTimer(this));
-    this->myDataDB       = QSharedPointer<Database>(new Database("localhost", 33060, "root", "root", "STEL_DB_DATA", this->ConnectionDataBase, this->ui->dbConnect));
-    this->myDataDB->openDatabase();
-    this->myActivePort->openPort();
-    this->setStationsUI();
-    connect(this->mStatusTimer.get(), &QTimer::timeout, this, &DataVisualizerWindow::statusConnections);
-    this->mStatusTimer->start(250);
-    this->ui->tabWidget->setEnabled(false);
+    {
+        this->dialogStation = nullptr;
+        this->initStatusBar();
+        this->myActivePort = QSharedPointer<SerialPortReader>(new SerialPortReader(this->PortStatus, this->ConnectionPort, this->ui->serialConnect));
+        this->mStatusTimer = QSharedPointer<QTimer>(new QTimer(this));
+        this->myDataDB     = QSharedPointer<Schemas::Data>(new Schemas::Data(this->ConnectionDataBase, this->ui->dbConnect));
+    }
+
+    {
+
+        this->myDataDB->open();
+        this->myActivePort->openPort();
+        this->setStationsUI();
+        connect(this->mStatusTimer.get(), &QTimer::timeout, this, &DataVisualizerWindow::statusConnections);
+        this->mStatusTimer->start(250);
+        this->ui->tabWidget->setEnabled(false);
+    }
 }
 
 DataVisualizerWindow::~DataVisualizerWindow() {
@@ -118,15 +124,12 @@ void DataVisualizerWindow::on_dbConfig_triggered() {
 }
 
 void DataVisualizerWindow::on_dbConnect_triggered() {
-    if(this->myDataDB->isOpen()) { this->myDataDB->closeDatabase(); }
-    else { this->myDataDB->openDatabase(); }
-}
-
-void DataVisualizerWindow::on_paramConfig_triggered() {
-    QPointer<configDBNorms> myNormsConfiguration = QPointer<configDBNorms>(new configDBNorms);
-    myNormsConfiguration->setModal(false);
-    myNormsConfiguration->setWindowFlag(Qt::WindowStaysOnTopHint);
-    myNormsConfiguration->show();
+    if(this->myDataDB->isOpen()) {
+        this->myDataDB->close();
+    }
+    else {
+        this->myDataDB->open();
+    }
 }
 
 void DataVisualizerWindow::statusConnections() {
