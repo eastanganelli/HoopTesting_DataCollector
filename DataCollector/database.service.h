@@ -109,12 +109,6 @@ namespace Data {
         double getPressure();
         static void insert(Schemas::Data& myDB, NodeData &myData);
     };
-
-    class NodeOperator {
-    public:
-        NodeOperator();
-        ~NodeOperator();
-    };
 }
 
 namespace FrontClases {
@@ -154,6 +148,28 @@ namespace FrontClases {
         QString getType() const;
     };
 
+    class NodeEnviroment {
+        const uint id;
+        QString insertFluid, outFluid;
+    public:
+        NodeEnviroment(const uint id_, const QString insertFluid_, const QString outFluid_);
+        static QList<QSharedPointer<FrontClases::NodeEnviroment>> get(Schemas::Static& myDB, const uint idStandard);
+
+        uint getID() const;
+        QString getEnviroment() const;
+    };
+
+    class NodeTestType {
+        const uint id;
+        QString testType;
+    public:
+        NodeTestType(const uint id_, const QString testType_);
+        static QList<QSharedPointer<FrontClases::NodeTestType>> get(Schemas::Static& myDB, const uint idStandard);
+
+        uint getID() const;
+        QString getTestType() const;
+    };
+
     class NodeConditionalPeriod {
         const uint id;
         uint minWall, maxWall;
@@ -177,6 +193,17 @@ namespace FrontClases {
 
         uint getID() const;
         QString getStandard() const;
+    };
+
+    class NodeOperator {
+        const uint id;
+        QString name, familyName;
+    public:
+        NodeOperator(const uint id_, const QString name_, const QString familyName_);
+        static QList<QSharedPointer<FrontClases::NodeOperator>> get(Schemas::Static& myDB);
+
+        uint getID() const;
+        QString getFullName() const;
     };
 };
 

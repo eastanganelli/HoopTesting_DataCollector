@@ -18,6 +18,7 @@ class SetStation : public QDialog {
     static void inputPressureFixed(float pressure_, QSpinBox* input_);
     static void clearComboBox(QComboBox* myWidget, QString text, bool state);
     void loadStandardCombobox();
+    void loadOperatorCombobox();
     void setConnectionSignals();
     void checkSpecimen();
     void configureStation();
@@ -28,15 +29,21 @@ class SetStation : public QDialog {
     QSharedPointer<Station> selectedStation;
     uint idSample;
     StationResponse* response;
-    QSharedPointer<SerialPortReader> portWriting;
+    QSharedPointer<SerialPortReader>  portWriting;
     QSharedPointer<NodeStandard>      selectedStandard;
     QSharedPointer<NodeMaterial>      selectedMaterial;
     QSharedPointer<NodeSpecification> selectedSpecification;
+    QSharedPointer<NodeTestType>      selectedTestType;
+    QSharedPointer<NodeOperator>      selectedOperator;
+    QSharedPointer<NodeEnviroment>    selectedEnviroment;
     QList<QSharedPointer<NodeStandard>>          listStandards;
     QList<QSharedPointer<NodeMaterial>>          listMaterials;
     QList<QSharedPointer<NodeSpecification>>     listSpecifications;
     QList<QSharedPointer<NodeConditionalPeriod>> listCondPeriods;
     QList<QSharedPointer<NodeSetting>>           listSettings;
+    QList<QSharedPointer<NodeTestType>>         listTestTypes;
+    QList<QSharedPointer<NodeOperator>>          listOperators;
+    QList<QSharedPointer<NodeEnviroment>>        listEnviroments;
 
 private slots:
     void checkFieldsCompletetion();
@@ -46,6 +53,9 @@ private slots:
     void on_cbStandard_currentIndexChanged(int index);
     void on_cbMaterial_currentIndexChanged(int index);
     void on_cbSpecification_currentIndexChanged(int index);
+    void on_cbBoxOperator_currentIndexChanged(int index);
+    void on_cbBoxTestType_currentIndexChanged(int index);
+    void on_cbBoxEnviroment_currentIndexChanged(int index);
     void on_btnSave_clicked();
     void on_btnCancel_clicked();
 

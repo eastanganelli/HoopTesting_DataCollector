@@ -7,6 +7,7 @@ SetStation::SetStation(QWidget *parent) : QDialog(parent) , ui(new Ui::SetStatio
     this->normsDB = QSharedPointer<Schemas::Static>(new Schemas::Static());
     if(this->normsDB->open()) {
         this->loadStandardCombobox();
+        this->loadOperatorCombobox();
     }
     this->setConnectionSignals();
     this->ui->lblSpecimen->setText("Nro Specimen: 0");
@@ -69,6 +70,11 @@ void SetStation::clearComboBox(QComboBox* myWidget, QString text, bool state) {
 void SetStation::loadStandardCombobox() {
     this->listStandards = NodeStandard::get(*this->normsDB.get());
     for(auto myStandard : this->listStandards) { this->ui->cbStandard->addItem(myStandard->getStandard()); }
+}
+
+void SetStation::loadOperatorCombobox() {
+    this->listOperators = NodeOperator::get(*this->normsDB.get());
+    for(auto myOperator : this->listOperators) { this->ui->cbBoxOperator->addItem(myOperator->getFullName()); }
 }
 
 void SetStation::setConnectionSignals() {
@@ -141,7 +147,17 @@ void SetStation::on_cbStandard_currentIndexChanged(int index) {
         const uint idStandard = this->selectedStandard->getID();
 
         this->listCondPeriods = NodeConditionalPeriod::get(*this->normsDB.get(), idStandard);
-        this->listMaterials = NodeMaterial::get(*this->normsDB.get(), idStandard);
+        this->listEnviroments = NodeEnviroment::get(*this->normsDB.get(), idStandard);
+        this->listTestTypes   = NodeTestType::get(*this->normsDB.get(), idStandard);
+        this->listMaterials   = NodeMaterial::get(*this->normsDB.get(), idStandard);
+
+        QStringList testTypesList;
+        for(auto myTestType : this->listTestTypes) { testTypesList << myTestType->getTestType(); }
+        this->ui->cbBoxTestType->addItems(testTypesList);
+
+        QStringList enviromentsList;
+        for(auto myEnviroment : this->listEnviroments) { enviromentsList << myEnviroment->getEnviroment(); }
+        this->ui->cbBoxEnviroment->addItems(enviromentsList);
 
         QStringList materialList;
         for(auto myMaterial : this->listMaterials) { materialList << myMaterial->getMaterial(); }
@@ -210,3 +226,23 @@ void SetStation::on_btnCancel_clicked() {
         default: break;
     }
 }
+
+void SetStation::on_cbBoxOperator_currentIndexChanged(int index) {
+    if(index > -1) {
+        this->selectedOperator = this->listOperators[index];
+    }
+}
+
+void SetStation::on_cbBoxTestType_currentIndexChanged(int index) {
+    if(index > -1) {
+        this->selectedTestType = this->listTestTypes[index];
+    }
+}
+
+
+void SetStation::on_cbBoxEnviroment_currentIndexChanged(int index) {
+    if(index > -1) {
+        this->selectedEnviroment = this->listEnviroments[index];
+    }
+}
+

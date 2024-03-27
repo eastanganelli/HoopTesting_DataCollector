@@ -369,6 +369,66 @@ Schemas::Data::Data(QLabel *dbstatus, QAction *dbconnect) {
     this->myDB.setDatabaseName("stel_db_data");
 }
 
+FrontClases::NodeOperator::NodeOperator(const uint id_, const QString name_, const QString familyName_) : id(id_) {
+    this->name = name_;
+    this->familyName = familyName_;
+}
+
+QList<QSharedPointer<FrontClases::NodeOperator> > FrontClases::NodeOperator::get(Schemas::Static &myDB) {
+    const QString Script = "CALL selectOperators();";
+    QList<QSharedPointer<FrontClases::NodeOperator>> auxList;
+    try {
+        QSqlQuery myOperatorQuery = myDB.exec(Script);
+        while(myOperatorQuery.next()) { auxList.append(QSharedPointer<FrontClases::NodeOperator>(new FrontClases::NodeOperator(myOperatorQuery.value(0).toUInt(), myOperatorQuery.value(1).toString(), myOperatorQuery.value(2).toString()))); }
+    }
+    catch(DatabaseError::QuerySelectError* e) {
+    }
+    return auxList;
+}
+
+uint FrontClases::NodeOperator::getID() const { return this->id; }
+
+QString FrontClases::NodeOperator::getFullName() const { return this->name + " " + this->familyName; }
+
+FrontClases::NodeEnviroment::NodeEnviroment(const uint id_, const QString insertFluid_, const QString outFluid_) : id(id_) {
+    this->insertFluid = insertFluid_;
+    this->outFluid    = outFluid_;
+}
+
+QList<QSharedPointer<FrontClases::NodeEnviroment> > FrontClases::NodeEnviroment::get(Schemas::Static &myDB, const uint idStandard) {
+    const QString Script = "CALL selectEnviroment(" + QString::number(idStandard) + ");";
+    QList<QSharedPointer<FrontClases::NodeEnviroment>> auxList;
+    try {
+        QSqlQuery myStandardsQuery = myDB.exec(Script);
+        while(myStandardsQuery.next()) { auxList.append(QSharedPointer<FrontClases::NodeEnviroment>(new FrontClases::NodeEnviroment(myStandardsQuery.value(0).toUInt(), myStandardsQuery.value(1).toString(), myStandardsQuery.value(2).toString()))); }
+    }
+    catch(DatabaseError::QuerySelectError* e) {
+    }
+    return auxList;
+}
+
+uint FrontClases::NodeEnviroment::getID() const { return this->id; }
+
+QString FrontClases::NodeEnviroment::getEnviroment() const { return this->insertFluid + " en " + this->outFluid; }
+
+FrontClases::NodeTestType::NodeTestType(const uint id_, const QString testType_) : id(id_) { this->testType = testType_; }
+
+QList<QSharedPointer<FrontClases::NodeTestType> > FrontClases::NodeTestType::get(Schemas::Static &myDB, const uint idStandard) {
+    const QString Script = "CALL selectTestType(" + QString::number(idStandard) + ");";
+    QList<QSharedPointer<FrontClases::NodeTestType>> auxList;
+    try {
+        QSqlQuery myTestTypeQuery = myDB.exec(Script);
+        while(myTestTypeQuery.next()) { auxList.append(QSharedPointer<FrontClases::NodeTestType>(new FrontClases::NodeTestType(myTestTypeQuery.value(0).toUInt(), myTestTypeQuery.value(1).toString()))); }
+    }
+    catch(DatabaseError::QuerySelectError* e) {
+    }
+    return auxList;
+}
+
+uint FrontClases::NodeTestType::getID() const { return this->id; }
+
+QString FrontClases::NodeTestType::getTestType() const { return this->testType; }
+
 Schemas::Data::~Data() { this->close(); }
 
 void Schemas::Data::changingLblConnectionState(const QString state_, const QString color_) {
