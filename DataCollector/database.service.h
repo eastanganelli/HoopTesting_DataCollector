@@ -76,24 +76,28 @@ namespace Data {
 
     class NodeSpecimen {
         const uint id, idSample;
-        QString enviromental,
-                operatorName;
+        QString enviroment,
+                operatorName,
+                testName,
+                endCap;
         QDateTime start, end;
     public:
-        NodeSpecimen(const uint id, const uint idSample, const QString operatorName, const QString enviromental);
+        NodeSpecimen(const uint id, const uint idSample, const QString operatorName, const QString enviroment);
         ~NodeSpecimen();
 
         static QSharedPointer<NodeSpecimen> get(Schemas::Data& myDB, const uint idSpecimen);
-        static QSharedPointer<NodeSpecimen> add(Schemas::Data& myDB, const uint idSample, const QString idOperator, const QString enviromental);
+        static QSharedPointer<NodeSpecimen> add(Schemas::Data& myDB, const uint idSample, const QString peratorName, const QString enviroment, const QString testName, const QString endCap);
         static uint insert(Schemas::Data& myDB, const uint idSample, const uint idOperator, const QString enviromental);
         static uint count(Schemas::Data& myDB, const uint idSample);
 
         uint getID();
         uint getIDSample();
         const QString getEnviroment();
+        const QString getTestName();
+        const QString getEndCap();
+        const QString getOperatorName();
         const QDateTime getStartTime();
         const QDateTime getEndTime();
-        QString getOperator();
     };
 
     class NodeData {

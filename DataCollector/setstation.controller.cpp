@@ -95,24 +95,25 @@ void SetStation::checkSpecimen() {
 }
 
 void SetStation::configureStation() {
-    const QString standard = this->ui->cbStandard->currentText(),
-                  material = this->ui->cbMaterial->currentText(),
+    const QString standard          = this->ui->cbStandard->currentText(),
+                  material          = this->ui->cbMaterial->currentText(),
                   specification     = this->ui->cbSpecification->currentText(),
                   conditionalPeriod = this->ui->txtCondPeriod->text(),
-                  operatorName = this->ui->cbBoxOperator->currentText(),
-                  enviroment = this->ui->cbBoxEnviroment->currentText(),
-                  typeTest = this->ui->cbBoxTestType->currentText();
+                  operatorName      = this->ui->cbBoxOperator->currentText(),
+                  enviroment        = this->ui->cbBoxEnviroment->currentText(),
+                  typeTest          = this->ui->cbBoxTestType->currentText(),
+                  endCap            = this->ui->cbBoxEndCap->currentText();
     const uint time_ = this->ui->radHours->isChecked() ? this->ui->cbBoxTestTime->currentText().toUInt() * 3600 : this->ui->cbBoxTestTime->currentText().toUInt(),
-               lengthFree   = this->ui->inputLenFree->value(),
-               lengthTotal  = this->ui->inputLenTotal->value(),
-               diameterReal = this->ui->inputDiamReal->value(),
-               diameterNormal = this->ui->inputDiamNormal->value(),
-               wallthickness  = this->ui->inputWallThickness->value(),
+               lengthFree        = this->ui->inputLenFree->value(),
+               lengthTotal       = this->ui->inputLenTotal->value(),
+               diameterReal      = this->ui->inputDiamReal->value(),
+               diameterNormal    = this->ui->inputDiamNormal->value(),
+               wallthickness     = this->ui->inputWallThickness->value(),
                targetTemperature = this->ui->cbTemp->currentText().toUInt(),
                targetPressure    = this->ui->inputPressure->value();
 
     QSharedPointer<Data::NodeSample>   SampleData   = Data::NodeSample::add(*this->dataDB.get(), standard, material, specification,diameterNormal, diameterReal, wallthickness, lengthFree, lengthTotal, targetPressure, targetTemperature, conditionalPeriod);
-    QSharedPointer<Data::NodeSpecimen> SpecimenData = Data::NodeSpecimen::add(*this->dataDB.get(), SampleData->getID(), 0, enviroment);
+    QSharedPointer<Data::NodeSpecimen> SpecimenData = Data::NodeSpecimen::add(*this->dataDB.get(), SampleData->getID(), operatorName, enviroment, typeTest, endCap);
     Station::configure(this->selectedStation, SampleData, SpecimenData, time_);
 }
 
@@ -132,6 +133,9 @@ void SetStation::on_cbStandard_currentIndexChanged(int index) {
     SetStation::clearComboBox(this->ui->cbSpecification, "Especificación", false);
     SetStation::clearComboBox(this->ui->cbTemp, " ", true);
     SetStation::clearComboBox(this->ui->cbBoxTestTime, " ", true);
+    SetStation::clearComboBox(this->ui->cbBoxEndCap, " ", true);
+    SetStation::clearComboBox(this->ui->cbBoxTestType, " ", true);
+    SetStation::clearComboBox(this->ui->cbBoxEnviroment, " ", true);
 
     if(index > -1) {
         this->selectedStandard = this->listStandards[index];
@@ -144,7 +148,7 @@ void SetStation::on_cbStandard_currentIndexChanged(int index) {
         this->listMaterials   = NodeMaterial::get(*this->normsDB.get(),          idStandard);
 
         QStringList testEndCapsList;
-        for(auto myTestType : this->listTestTypes) { testEndCapsList << myTestType->getTestType(); }
+        for(auto myEndCap : this->listEndCap) { testEndCapsList << myEndCap->getEndCap(); }
         this->ui->cbBoxEndCap->addItems(testEndCapsList);
         this->ui->cbBoxEndCap->setEnabled(true);
 

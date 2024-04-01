@@ -271,7 +271,7 @@ int Data::NodeSample::getTargetPressure() { return this->targetPressure; }
 
 int Data::NodeSample::getTargetTemperature() { return this->targetTemp; }
 
-Data::NodeSpecimen::NodeSpecimen(const uint id, const uint idSample, const QString operatorName, const QString enviromental) : id(id), idSample(idSample), operatorName(operatorName) { this->enviromental = enviromental; }
+Data::NodeSpecimen::NodeSpecimen(const uint id, const uint idSample, const QString operatorName, const QString enviroment) : id(id), idSample(idSample), operatorName(operatorName) { this->enviroment = enviroment; }
 
 Data::NodeSpecimen::~NodeSpecimen() { }
 
@@ -291,8 +291,8 @@ QSharedPointer<Data::NodeSpecimen> Data::NodeSpecimen::get(Schemas::Data &myDB, 
     return QSharedPointer<Data::NodeSpecimen>(new Data::NodeSpecimen(idSpecimen, idSample, operatorName, enviromental));
 }
 
-QSharedPointer<Data::NodeSpecimen> Data::NodeSpecimen::add(Schemas::Data &myDB, const uint idSample, const QString operatorName, const QString enviromental) {
-    const QString Script = "CALL insertSpecimen(" + QString::number(idSample) + "," + operatorName + ",'" + enviromental + "');";
+QSharedPointer<Data::NodeSpecimen> Data::NodeSpecimen::add(Schemas::Data &myDB, const uint idSample, const QString operatorName, const QString enviroment, const QString testName, const QString endCap) {
+    const QString Script = "CALL insertSpecimen(" + QString::number(idSample) + ",'" + operatorName + "','" + enviroment + "','" + testName + "','" + endCap + "');";
     QSqlQuery newSpecimen = myDB.exec(Script);
     newSpecimen.next();
     {
@@ -303,7 +303,7 @@ QSharedPointer<Data::NodeSpecimen> Data::NodeSpecimen::add(Schemas::Data &myDB, 
     }
 
     const uint idSpecimen = newSpecimen.value("idSpecimen").toUInt();
-    return QSharedPointer<Data::NodeSpecimen>(new Data::NodeSpecimen(idSpecimen, idSample, operatorName, enviromental));
+    return QSharedPointer<Data::NodeSpecimen>(new Data::NodeSpecimen(idSpecimen, idSample, operatorName, enviroment));
 }
 
 uint Data::NodeSpecimen::insert(Schemas::Data &myDB, const uint idSample, const uint idOperator, const QString enviromental) {
@@ -337,17 +337,21 @@ uint Data::NodeSpecimen::count(Schemas::Data &myDB, const uint idSample) {
     return NULL;
 }
 
-uint Data::NodeSpecimen::getID() { return this->id; }
+uint Data::NodeSpecimen::getID()                    { return this->id; }
 
-uint Data::NodeSpecimen::getIDSample() { return this->idSample; }
+uint Data::NodeSpecimen::getIDSample()              { return this->idSample; }
 
-const QString Data::NodeSpecimen::getEnviroment() { return this->enviromental; }
+const QString Data::NodeSpecimen::getEnviroment()   { return this->enviroment; }
 
-const QDateTime Data::NodeSpecimen::getStartTime() { return this->start; }
+const QString Data::NodeSpecimen::getTestName()     { return this->testName; }
 
-const QDateTime Data::NodeSpecimen::getEndTime() { return this->end; }
+const QString Data::NodeSpecimen::getEndCap()       { return this->endCap; }
 
-QString Data::NodeSpecimen::getOperator() { return this->operatorName; }
+const QString Data::NodeSpecimen::getOperatorName() { return this->operatorName; }
+
+const QDateTime Data::NodeSpecimen::getStartTime()  { return this->start; }
+
+const QDateTime Data::NodeSpecimen::getEndTime()    { return this->end; }
 
 Data::NodeData::NodeData(const uint idSpecimen, const double pressure, const double temperature) : idSpecimen(idSpecimen) {
     this->pressure    = pressure;
@@ -524,7 +528,7 @@ QList<QSharedPointer<FrontClases::NodeEndCap> > FrontClases::NodeEndCap::get(Sch
     QList<QSharedPointer<FrontClases::NodeEndCap>> auxList;
     try {
         QSqlQuery myTestTypeQuery = myDB.exec(Script);
-        while(myTestTypeQuery.next()) { auxList.append(QSharedPointer<FrontClases::NodeEndCap>(new FrontClases::NodeEndCap(myTestTypeQuery.value(0).toUInt(), myTestTypeQuery.value(1).toString()))); }
+        while(myTestTypeQuery.next()) { auxList.append(QSharedPointer<FrontClases::NodeEndCap>(new FrontClases::NodeEndCap(myTestTypeQuery.value("id").toUInt(), myTestTypeQuery.value("endCap").toString()))); }
     }
     catch(DatabaseError::QuerySelectError* e) {
     }
