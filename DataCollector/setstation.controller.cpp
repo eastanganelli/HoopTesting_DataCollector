@@ -1,30 +1,28 @@
 #include "setstation.controller.h"
 #include "ui_setstation.controller.h"
+#include "defines.h"
 
 SetStation::SetStation(QWidget *parent) : QDialog(parent) , ui(new Ui::SetStation) {
     ui->setupUi(this);
     this->setWindowFlags(Qt::Dialog | Qt::Desktop);
     this->normsDB = QSharedPointer<Schemas::Static>(new Schemas::Static());
-    if(this->normsDB->open()) {
-        this->loadStandardCombobox();
-        this->loadOperatorCombobox();
-    }
+    if(this->normsDB->open()) { this->preLoadData(); }
     this->setConnectionSignals();
-    this->ui->lblSpecimen->setText("Nro Specimen: 0");
+    this->ui->lblSpecimen->setText("Prueba Nro.: 0");
     {
-#if MODE_ == Emulation
-        this->ui->cbTemp->setCurrentText("20");
-        this->ui->cbBoxTestTime->setCurrentText("90");
-        this->ui->cbStandard->setCurrentIndex(0);
-        this->ui->cbMaterial->setCurrentIndex(0);
-        this->ui->cbSpecification->setCurrentIndex(0);
-        this->ui->inputDiamNormal->setValue(50);
-        this->ui->inputDiamReal->setValue(50);
-        this->ui->inputWallThickness->setValue(5);
-        this->ui->inputLenTotal->setValue(560);
-        this->ui->inputLenFree->setValue(340);
-        this->ui->inputPressure->setValue(9);
-#endif
+        #if MODE_ == Emulation
+            this->ui->cbTemp->setCurrentText("20");
+            this->ui->cbBoxTestTime->setCurrentText("90");
+            this->ui->cbStandard->setCurrentIndex(0);
+            this->ui->cbMaterial->setCurrentIndex(0);
+            this->ui->cbSpecification->setCurrentIndex(0);
+            this->ui->inputDiamNormal->setValue(50);
+            this->ui->inputDiamReal->setValue(50);
+            this->ui->inputWallThickness->setValue(5);
+            this->ui->inputLenTotal->setValue(560);
+            this->ui->inputLenFree->setValue(340);
+            this->ui->inputPressure->setValue(9);
+        #endif
     }
 }
 
@@ -33,12 +31,10 @@ SetStation::~SetStation() {
     delete ui;
 }
 
-void SetStation::sharePointer(StationResponse* response, QSharedPointer<Schemas::Data> dataDB, QSharedPointer<SerialPortReader> myPort, QSharedPointer<Station> selectedStation) {
+void SetStation::sharePointer(QSharedPointer<Schemas::Data> dataDB, QSharedPointer<Station> selectedStation) {
     this->dataDB          = dataDB;
-    this->portWriting     = myPort;
     this->selectedStation = selectedStation;
     this->ui->gpParameters->setTitle("Estación: " + QString::number(selectedStation->getID()));
-    this->response        = response;
     if(selectedStation->getID() < 4) { this->ui->inputPressure->setMaximum(30); }
 }
 
@@ -67,12 +63,11 @@ void SetStation::clearComboBox(QComboBox* myWidget, QString text, bool state) {
     myWidget->setEnabled(state);
 }
 
-void SetStation::loadStandardCombobox() {
+void SetStation::preLoadData() {
+
     this->listStandards = NodeStandard::get(*this->normsDB.get());
     for(auto myStandard : this->listStandards) { this->ui->cbStandard->addItem(myStandard->getStandard()); }
-}
 
-void SetStation::loadOperatorCombobox() {
     this->listOperators = NodeOperator::get(*this->normsDB.get());
     for(auto myOperator : this->listOperators) { this->ui->cbBoxOperator->addItem(myOperator->getFullName()); }
 }
@@ -96,14 +91,17 @@ void SetStation::setConnectionSignals() {
 
 void SetStation::checkSpecimen() {
     this->idSample = Data::NodeSample::exists(*this->dataDB.get(), this->ui->cbStandard->currentText(), this->ui->cbMaterial->currentText(), this->ui->cbSpecification->currentText(), this->ui->inputDiamNormal->value(), this->ui->inputDiamReal->value(), this->ui->inputWallThickness->value(),  this->ui->inputLenFree->value(), this->ui->inputLenTotal->value(), this->ui->inputPressure->value(), this->ui->cbTemp->currentText().toUInt());
-    this->ui->lblSpecimen->setText("Nro Specimen: " + QString::number(Data::NodeSpecimen::count(*this->dataDB.get(), this->idSample) + 1));
+    this->ui->lblSpecimen->setText("Prueba Nro.: " + QString::number(Data::NodeSpecimen::count(*this->dataDB.get(), this->idSample) + 1));
 }
 
 void SetStation::configureStation() {
     const QString standard = this->ui->cbStandard->currentText(),
                   material = this->ui->cbMaterial->currentText(),
                   specification     = this->ui->cbSpecification->currentText(),
-                  conditionalPeriod = this->ui->txtCondPeriod->text();
+                  conditionalPeriod = this->ui->txtCondPeriod->text(),
+                  operatorName = this->ui->cbBoxOperator->currentText(),
+                  enviroment = this->ui->cbBoxEnviroment->currentText(),
+                  typeTest = this->ui->cbBoxTestType->currentText();
     const uint time_ = this->ui->radHours->isChecked() ? this->ui->cbBoxTestTime->currentText().toUInt() * 3600 : this->ui->cbBoxTestTime->currentText().toUInt(),
                lengthFree   = this->ui->inputLenFree->value(),
                lengthTotal  = this->ui->inputLenTotal->value(),
@@ -112,17 +110,10 @@ void SetStation::configureStation() {
                wallthickness  = this->ui->inputWallThickness->value(),
                targetTemperature = this->ui->cbTemp->currentText().toUInt(),
                targetPressure    = this->ui->inputPressure->value();
+
     QSharedPointer<Data::NodeSample>   SampleData   = Data::NodeSample::add(*this->dataDB.get(), standard, material, specification,diameterNormal, diameterReal, wallthickness, lengthFree, lengthTotal, targetPressure, targetTemperature, conditionalPeriod);
-    const uint idSample = SampleData->getID();
-    QSharedPointer<Data::NodeSpecimen> SpecimenData = Data::NodeSpecimen::add(*this->dataDB.get(), idSample, 0, "water");
+    QSharedPointer<Data::NodeSpecimen> SpecimenData = Data::NodeSpecimen::add(*this->dataDB.get(), SampleData->getID(), 0, enviroment);
     Station::configure(this->selectedStation, SampleData, SpecimenData, time_);
-    #if MODE_ == Emulation
-        uint condPeriod = this->ui->txtCondPeriod->text().split(" ")[0].toUInt() * 3600;
-        QString myMessage = QString::number(this->selectedStation->getID()) + "," + QString::number(targetPressure) + "," + QString::number(targetTemperature) + "," + QString::number(condPeriod) + "\n";
-    #else
-        QString myMessage = QString::number(this->selectedStation->getID()) + "," + QString::number(targetPressure) + "," + QString::number(targetTemperature) + "\n";
-    #endif
-    myData.pushMessageSendPort(myMessage.toUtf8());
 }
 
 void SetStation::checkFieldsCompletetion() {
@@ -147,17 +138,25 @@ void SetStation::on_cbStandard_currentIndexChanged(int index) {
         const uint idStandard = this->selectedStandard->getID();
 
         this->listCondPeriods = NodeConditionalPeriod::get(*this->normsDB.get(), idStandard);
-        this->listEnviroments = NodeEnviroment::get(*this->normsDB.get(), idStandard);
-        this->listTestTypes   = NodeTestType::get(*this->normsDB.get(), idStandard);
-        this->listMaterials   = NodeMaterial::get(*this->normsDB.get(), idStandard);
+        this->listEnviroments = NodeEnviroment::get(*this->normsDB.get(),        idStandard);
+        this->listEndCap      = NodeEndCap::get(*this->normsDB.get(),            idStandard);
+        this->listTestTypes   = NodeTestType::get(*this->normsDB.get(),          idStandard);
+        this->listMaterials   = NodeMaterial::get(*this->normsDB.get(),          idStandard);
+
+        QStringList testEndCapsList;
+        for(auto myTestType : this->listTestTypes) { testEndCapsList << myTestType->getTestType(); }
+        this->ui->cbBoxEndCap->addItems(testEndCapsList);
+        this->ui->cbBoxEndCap->setEnabled(true);
 
         QStringList testTypesList;
         for(auto myTestType : this->listTestTypes) { testTypesList << myTestType->getTestType(); }
         this->ui->cbBoxTestType->addItems(testTypesList);
+        this->ui->cbBoxTestType->setEnabled(true);
 
         QStringList enviromentsList;
         for(auto myEnviroment : this->listEnviroments) { enviromentsList << myEnviroment->getEnviroment(); }
         this->ui->cbBoxEnviroment->addItems(enviromentsList);
+        this->ui->cbBoxEnviroment->setEnabled(true);
 
         QStringList materialList;
         for(auto myMaterial : this->listMaterials) { materialList << myMaterial->getMaterial(); }
@@ -207,7 +206,6 @@ void SetStation::on_btnSave_clicked() {
     switch(ret) {
         case QMessageBox::Yes: {
             this->configureStation();
-            *this->response = StationResponse::Save;
             this->close();
             break;
         }
@@ -219,7 +217,6 @@ void SetStation::on_btnCancel_clicked() {
     int ret = QMessageBox::information(this, "Ajuste Estación "  + QString::number(this->selectedStation->getID()), "Está seguro que desea cancelar?", QMessageBox::Yes | QMessageBox::No);
     switch(ret) {
         case QMessageBox::Yes: {
-            *this->response = StationResponse::Cancel;
             this->close();
             break;
         }

@@ -76,15 +76,15 @@ namespace Data {
 
     class NodeSpecimen {
         const uint id, idSample;
-        QString enviromental;
+        QString enviromental,
+                operatorName;
         QDateTime start, end;
-        uint idOperator;
     public:
-        NodeSpecimen(const uint id, const uint idSample, const uint idOperator, const QString enviromental);
+        NodeSpecimen(const uint id, const uint idSample, const QString operatorName, const QString enviromental);
         ~NodeSpecimen();
 
         static QSharedPointer<NodeSpecimen> get(Schemas::Data& myDB, const uint idSpecimen);
-        static QSharedPointer<NodeSpecimen> add(Schemas::Data& myDB, const uint idSample, const uint idOperator, const QString enviromental);
+        static QSharedPointer<NodeSpecimen> add(Schemas::Data& myDB, const uint idSample, const QString idOperator, const QString enviromental);
         static uint insert(Schemas::Data& myDB, const uint idSample, const uint idOperator, const QString enviromental);
         static uint count(Schemas::Data& myDB, const uint idSample);
 
@@ -93,7 +93,7 @@ namespace Data {
         const QString getEnviroment();
         const QDateTime getStartTime();
         const QDateTime getEndTime();
-        uint getIDOperator();
+        QString getOperator();
     };
 
     class NodeData {
@@ -182,6 +182,17 @@ namespace FrontClases {
         uint getMinWall() const;
         uint getMaxWall() const;
         QString getConditionalPeriod() const;
+    };
+
+    class NodeEndCap {
+        const uint id;
+        QString endCap;
+    public:
+        NodeEndCap(const uint id_, const QString endCap_);
+        static QList<QSharedPointer<FrontClases::NodeEndCap>> get(Schemas::Static& myDB, const uint idStandard);
+
+        uint getID() const;
+        QString getEndCap() const;
     };
 
     class NodeStandard {

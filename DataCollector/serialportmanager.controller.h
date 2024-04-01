@@ -2,9 +2,12 @@
 #define SERIALPORTMANAGER_H
 #include <QtSerialPort>
 #include <QByteArray>
+#include <QSharedPointer>
 #include <QStack>
-#include "defines.h"
-#include "global.service.h"
+#include <QAction>
+#include <QLabel>
+
+#include "database.service.h"
 
 #define ms_ 10              // In miliseconds
 #define timeoutConnection 3 // In seconds

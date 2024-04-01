@@ -1,4 +1,6 @@
 #include "serialportmanager.controller.h"
+#include "defines.h"
+#include "global.service.h"
 
 SerialPortReader::SerialPortReader(const QString portName, const QString baudRate) {
     this->setDataBits(QSerialPort::Data8);

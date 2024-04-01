@@ -1,8 +1,11 @@
 #include "station.controller.h"
+#include "defines.h"
+#include "global.service.h"
 
 unsigned int Station::stations = 0;
 
 Station::Station() : ID(++Station::stations),MaxPressure(Station::autoMaxPressure()) {
+    this->status       = StationStatus::READY;
     this->mySample     = nullptr;
     this->mySpecimen   = nullptr;
     this->initTest     = QDateTime(QDate(1970, 1, 1), QTime(0,0,0,0));
@@ -16,16 +19,18 @@ Station::~Station() {
     this->mySpecimen.clear();
 }
 
-void Station::start(QSharedPointer<Data::NodeSample> inSample, QSharedPointer<Data::NodeSpecimen> inSpecimen, const uint time_) {
+void Station::init(QSharedPointer<Data::NodeSample> inSample, QSharedPointer<Data::NodeSpecimen> inSpecimen, const uint time_) {
     if(!inSample.isNull()) {
         this->mySample = inSample;
         this->myUI.graphMaxYAxis(this->mySample->getTargetPressure() + 5, this->mySample->getTargetTemperature() * 5);
         this->testDuration = time_;
     }
     if(!inSpecimen.isNull()) { this->mySpecimen = inSpecimen; }
+    this->status = StationStatus::WAITING;
+    this->myUI.waiting();
 }
 
-void Station::start(QSharedPointer<Data::NodeSample> inSample, QSharedPointer<Data::NodeSpecimen> inSpecimen, const QDateTime initTime, const QDateTime finisTime) {
+void Station::init(QSharedPointer<Data::NodeSample> inSample, QSharedPointer<Data::NodeSpecimen> inSpecimen, const QDateTime initTime, const QDateTime finisTime) {
     if(!inSample.isNull()) {
         this->mySample   = inSample;
         this->myUI.graphMaxYAxis(this->mySample->getTargetPressure() + 5, this->mySample->getTargetTemperature() * 5);
@@ -33,9 +38,22 @@ void Station::start(QSharedPointer<Data::NodeSample> inSample, QSharedPointer<Da
         this->finishTest = finisTime;
     }
     if(!inSpecimen.isNull()) { this->mySpecimen = inSpecimen; }
+    this->status = StationStatus::WAITING;
+    this->myUI.waiting();
 }
 
-void Station::start(QSharedPointer<Schemas::Data> dataDB, QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeLabel, QPushButton* configBtn, QPushButton* runBtn, QTabWidget* myTab, PressureTempGraph* myGraph) {
+void Station::start() {
+    #if MODE_ == Emulation
+        uint condPeriod = this->ui->txtCondPeriod->text().split(" ")[0].toUInt() * 3600;
+        QString myMessage = QString::number(this->ID) + "," + QString::number(this->getTargetPressure()) + "," + QString::number(this->getTargetTemperature()) + "," + QString::number(condPeriod) + "\n";
+    #else
+       QString myMessage = QString::number(this->ID) + "," + QString::number(this->getTargetPressure()) + "," + QString::number(this->getTargetTemperature()) + "\n";
+    #endif
+    myData.pushMessageSendPort(myMessage.toUtf8());
+    this->myUI.running();
+}
+
+void Station::set(QSharedPointer<Schemas::Data> dataDB, QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeLabel, QPushButton* configBtn, QPushButton* runBtn, QTabWidget* myTab, PressureTempGraph* myGraph) {
     this->myUI.startUI(pressureLabel, temperatureLabel, timeLabel, configBtn, runBtn, myTab, myGraph);
     this->dataDB = dataDB;
 }
@@ -47,33 +65,43 @@ void Station::stop() {
     this->testDuration = 0;
     this->initTest     = DEFAULT_DATETIME;
     this->finishTest   = DEFAULT_DATETIME;
+    this->status       = StationStatus::READY;
+    this->myUI.stop();
     Station::clear(this->ID);
 }
 
 bool Station::updateStatus(const float pressureInput, const float temperatureInput) {
     if(this->initTest == DEFAULT_DATETIME && this->finishTest == DEFAULT_DATETIME) {
+        this->status     = StationStatus::RUNNING;
         this->initTest   = QDateTime::currentDateTime();
         this->finishTest = QDateTime::currentDateTime().addSecs(this->testDuration);
         Station::save(*this);
     }
     QDateTime actualTime = QDateTime::currentDateTime();
-    #if CONSOLEDEBUGMODE == ConsoleDebugOn
-        qDebug() << "Init   Time:" << this->initTest.toString(datetime_format) << this->initTest.toSecsSinceEpoch();
-        qDebug() << "Actual Time:" << actualTime.toString(datetime_format) << actualTime.toSecsSinceEpoch();
-        qDebug() << "Finish Time:" << this->finishTest.toString(datetime_format) << this->finishTest.toSecsSinceEpoch();
-        qDebug() << (actualTime < this->finishTest);
-    #endif
+    {
+        #if CONSOLEDEBUGMODE == ConsoleDebugOn
+            qDebug() << "Init   Time:" << this->initTest.toString(datetime_format) << this->initTest.toSecsSinceEpoch();
+            qDebug() << "Actual Time:" << actualTime.toString(datetime_format) << actualTime.toSecsSinceEpoch();
+            qDebug() << "Finish Time:" << this->finishTest.toString(datetime_format) << this->finishTest.toSecsSinceEpoch();
+            qDebug() << (actualTime < this->finishTest);
+        #endif
+    }
+
     if(!this->mySpecimen.isNull() && (actualTime <= this->finishTest)) {
         uint key = this->initTest.msecsTo(actualTime);
         QDateTime lblText = this->timer.addMSecs(key);
-        #if CONSOLEDEBUGMODE == ConsoleDebugOn
-            qDebug() << "Key   value:" << key;
-            qDebug() << "Label Time:" << lblText.toString(datetime_format) << lblText.toSecsSinceEpoch();
-        #endif
+        {
+            #if CONSOLEDEBUGMODE == ConsoleDebugOn
+                qDebug() << "Key   value:" << key;
+                qDebug() << "Label Time:" << lblText.toString(datetime_format) << lblText.toSecsSinceEpoch();
+            #endif
+        }
+
         QString time_ = QString::number((lblText.date().day() - 1) * 24 + lblText.time().hour()) + ":" + lblText.toString("mm:ss");
         this->myUI.updateUI(QString::number(pressureInput, 'f', 2) + " bar", QString::number(temperatureInput, 'f', 2) + " C", time_, key, pressureInput, temperatureInput);
         Data::NodeData myData(this->getIDSpecimen(), pressureInput, temperatureInput);
         Data::NodeData::insert(*this->dataDB.get(), myData);
+        this->myUI.running();
         return false;
     }
     this->stop();
@@ -98,14 +126,17 @@ uint Station::getTargetPressure() { return this->mySample->getTargetPressure(); 
 
 uint Station::getTargetTemperature() { return this->mySample->getTargetTemperature(); }
 
-bool Station::isFree() { return this->mySample.isNull() || this->mySpecimen.isNull(); }
+StationStatus Station::getStatus() { return this->status; }
 
 void Station::save(Station& myStation) {
     QSettings mySettings(QApplication::applicationDirPath() + "/cachedStations.ini", QSettings::IniFormat);
-    #if CONSOLEDEBUGMODE == ConsoleDebugOn
-        qDebug() << "Station ID:" << myStation.getID() << " - Sample ID:" << myStation.getIDSample()
-                 << " - Specimen ID:" << myStation.getIDSpecimen() << " - Finish Datetime:" << myStation.getDateTime().toString(datetime_format);
-    #endif
+    {
+        #if CONSOLEDEBUGMODE == ConsoleDebugOn
+                qDebug() << "Station ID:" << myStation.getID() << " - Sample ID:" << myStation.getIDSample()
+                         << " - Specimen ID:" << myStation.getIDSpecimen() << " - Finish Datetime:" << myStation.getDateTime().toString(datetime_format);
+        #endif
+    }
+
     mySettings.beginGroup("Station_" + QString::number(myStation.getID()));
     mySettings.setValue("idSpecimen",  QString::number(myStation.getIDSpecimen()));
     mySettings.setValue("initTime",    myStation.getInitDateTime().toString(datetime_format));
@@ -126,20 +157,24 @@ void Station::read(Schemas::Data& myDB, Station& myStation) {
     const uint idSpecimen = mySettings.value("idSpecimen").toUInt();
     const QDateTime finishDate = QDateTime::fromString(mySettings.value("finishTime").toString(), QString(datetime_format)),
                     initDate   = QDateTime::fromString(mySettings.value("initTime").toString(),   QString(datetime_format));
-    #if CONSOLEDEBUGMODE == ConsoleDebugOn
-        qDebug() << "ID Specimen:"     << idSpecimen
-                 << "Finish Datetime:" << finishDate.toString(datetime_format);
-    #endif
+    {
+        #if CONSOLEDEBUGMODE == ConsoleDebugOn
+            qDebug() << "ID Specimen:"     << idSpecimen
+                     << "Finish Datetime:" << finishDate.toString(datetime_format);
+        #endif
+    }
+
     if(idSpecimen > 0) {
         QSharedPointer<Data::NodeSpecimen> mySpecimen = Data::NodeSpecimen::get(myDB, idSpecimen);
         QSharedPointer<Data::NodeSample>   mySample   = Data::NodeSample::get(myDB, mySpecimen->getIDSample());
-        myStation.start(mySample, mySpecimen, initDate, finishDate);
+        myStation.init(mySample, mySpecimen, initDate, finishDate);
+        myStation.start();
     }
     mySettings.endGroup();
 }
 
 void Station::configure(QSharedPointer<Station> selectedStation, QSharedPointer<Data::NodeSample> mySample, QSharedPointer<Data::NodeSpecimen> mySpecimen, const uint time_) {
-    selectedStation->start(mySample, mySpecimen, time_);
+    selectedStation->init(mySample, mySpecimen, time_);
     selectedStation->setMaxTemperature(mySample->getTargetTemperature());
     selectedStation->setVisibleGraph(selectedStation->getID());
 }
@@ -199,3 +234,19 @@ void StationUI::graphMaxYAxis(const uint maxPressure, const uint maxTemperature)
 }
 
 void StationUI::selectGraph(uint index) { this->myTab->setCurrentIndex(index - 1); }
+
+void StationUI::waiting() {
+    this->runBtn->setVisible(true);
+    this->runBtn->setEnabled(true);
+}
+
+void StationUI::running() {
+    this->configBtn->setEnabled(false);
+    this->runBtn->setText("Detener");
+}
+
+void StationUI::stop() {
+    this->configBtn->setEnabled(true);
+    this->runBtn->setVisible(false);
+    this->runBtn->setText("Inciar");
+}
