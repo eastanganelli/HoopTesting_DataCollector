@@ -1,4 +1,5 @@
 #include "pressuretempgraph.controller.h"
+#include <QDebug>
 
 PressureTempGraph::PressureTempGraph(QWidget* parent) : QCustomPlot(parent) {
     QSharedPointer<QCPAxisTickerTime> timeTicker(new QCPAxisTickerTime);

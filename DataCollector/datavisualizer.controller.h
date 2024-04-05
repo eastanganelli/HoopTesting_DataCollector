@@ -19,7 +19,8 @@ class DataVisualizerWindow : public QMainWindow {
     void initStatusBar();
     void btnsStates(const bool state_);
     bool btnsStates();
-    void btnStationsDialog(const unsigned int id_, QPushButton* btnState);
+    void btnStationsDialog(const uint id_);
+    void btnStationStartStop(const uint id_);
 
     Ui::DataVisualizerWindow *ui;
     QSharedPointer<QTimer> mStatusTimer;
@@ -30,6 +31,7 @@ class DataVisualizerWindow : public QMainWindow {
           * ConnectionPort,
           * PortStatus;
     bool myBtnsStates;
+
 private slots:
     void on_btnEstConfig_1_clicked();
     void on_btnEstConfig_2_clicked();

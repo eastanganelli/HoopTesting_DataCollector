@@ -19,11 +19,11 @@ DBConfig::DBConfig(QWidget *parent) : QDialog(parent), ui(new Ui::DBConfig) {
 DBConfig::~DBConfig() { delete ui; }
 
 void DBConfig::on_btnSave_clicked() {
-    QMessageBox msgBox(QMessageBox::Warning, "Configuración", "Desea guardar cambios?", QMessageBox::Yes | QMessageBox::No, NULL);
-    msgBox.setButtonText(QMessageBox::Yes, tr("Si"));
-    msgBox.setButtonText(QMessageBox::No, tr("No"));
-    int response = msgBox.exec();
-    switch(response) {
+    QMessageBox msgBox(QMessageBox::Warning, "Configuración", "Desea guardar cambios?");
+    msgBox.addButton(QMessageBox::Yes)->setText(tr("Si"));
+    msgBox.addButton(QMessageBox::No)->setText(tr("No"));
+
+    switch(msgBox.exec()) {
         case QMessageBox::Yes : {
             Database::save(this->myDB);
             this->close();

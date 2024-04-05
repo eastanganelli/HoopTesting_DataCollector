@@ -29,7 +29,8 @@
    <string>Configuración de Estación</string>
   </property>
   <property name="windowIcon">
-   <iconset theme="applications-utilities"/>
+   <iconset theme="applications-utilities" resource="Icons.qrc">
+    <normaloff>:/icon/logo</normaloff>:/icon/logo</iconset>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -547,6 +548,30 @@
            </property>
           </widget>
          </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="lblSpecimen">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Prueba Nro.: &lt;nro&gt;</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>
@@ -897,152 +922,6 @@
          <string/>
         </property>
         <layout class="QGridLayout" name="gridLayout_5">
-         <item row="4" column="0">
-          <widget class="QLabel" name="lblEndCap">
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Tapa de Extremo</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="3">
-          <widget class="QLabel" name="lblEnviroment">
-           <property name="text">
-            <string>Entorno</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="4">
-          <widget class="QComboBox" name="cbBoxEnviroment">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="editable">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="lblSpecimen">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Prueba Nro.: &lt;nro&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" rowspan="2">
-          <widget class="QLabel" name="lblTypeTest">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>39</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Tipo de Prueba</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QComboBox" name="cbBoxTestType">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>190</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-            </font>
-           </property>
-           <property name="editable">
-            <bool>true</bool>
-           </property>
-           <property name="sizeAdjustPolicy">
-            <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
-           </property>
-           <property name="frame">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="4">
-          <widget class="QComboBox" name="cbBoxOperator">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>190</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="editable">
-            <bool>true</bool>
-           </property>
-           <property name="sizeAdjustPolicy">
-            <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="3">
-          <widget class="QLabel" name="lblOperator">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Operador</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QComboBox" name="cbBoxEndCap">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-            </font>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="2" rowspan="4">
           <spacer name="horizontalSpacer_10">
            <property name="orientation">
@@ -1074,6 +953,158 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item row="0" column="3">
+          <widget class="QLabel" name="lblEnviroment">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Entorno</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="3">
+          <widget class="QLabel" name="lblEndCap">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Tapa de Extremo</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="4">
+          <widget class="QComboBox" name="cbBoxEnviroment">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>180</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="editable">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="4">
+          <widget class="QComboBox" name="cbBoxEndCap">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>180</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="lblTypeTest">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>39</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Tipo de Prueba</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="cbBoxTestType">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>190</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+           <property name="editable">
+            <bool>true</bool>
+           </property>
+           <property name="sizeAdjustPolicy">
+            <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+           </property>
+           <property name="frame">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="lblOperator">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Operador</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="cbBoxOperator">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>190</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="editable">
+            <bool>true</bool>
+           </property>
+           <property name="sizeAdjustPolicy">
+            <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -1204,6 +1235,8 @@
   <tabstop>inputHoopStress</tabstop>
   <tabstop>txtCondPeriod</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="Icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

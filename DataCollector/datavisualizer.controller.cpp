@@ -69,7 +69,7 @@ bool DataVisualizerWindow::btnsStates() {
     return false;
 }
 
-void DataVisualizerWindow::btnStationsDialog(const unsigned int id_, QPushButton* btnState) {
+void DataVisualizerWindow::btnStationsDialog(const uint id_) {
     QSharedPointer<Station> myStation = myData.getStation(id_);
     this->dialogStation = new SetStation();
     this->dialogStation->sharePointer(this->myDataDB, myStation);
@@ -79,46 +79,39 @@ void DataVisualizerWindow::btnStationsDialog(const unsigned int id_, QPushButton
     this->dialogStation = nullptr;
 }
 
-void DataVisualizerWindow::on_btnEstConfig_1_clicked() { this->btnStationsDialog(1, this->ui->btnEstConfig_1); }
-
-void DataVisualizerWindow::on_btnEstConfig_2_clicked() { this->btnStationsDialog(2, this->ui->btnEstConfig_2); }
-
-void DataVisualizerWindow::on_btnEstConfig_3_clicked() { this->btnStationsDialog(3, this->ui->btnEstConfig_3); }
-
-void DataVisualizerWindow::on_btnEstConfig_4_clicked() { this->btnStationsDialog(4, this->ui->btnEstConfig_4); }
-
-void DataVisualizerWindow::on_btnEstConfig_5_clicked() { this->btnStationsDialog(5, this->ui->btnEstConfig_5); }
-
-void DataVisualizerWindow::on_btnEstConfig_6_clicked() { this->btnStationsDialog(6, this->ui->btnEstConfig_6); }
-
-void DataVisualizerWindow::on_btnEstRun_1_clicked() {
-    QSharedPointer<Station> myAuxStation = myData.getStation(1);
+void DataVisualizerWindow::btnStationStartStop(const uint id_) {
+    QSharedPointer<Station> myAuxStation = myData.getStation(id_);
     if(myAuxStation->getStatus() == StationStatus::WAITING) {
+        Station::set(*this->myDataDB.get(), *myAuxStation.get());
         myAuxStation->start();
-    } else if(myData.getStation(1)->getStatus() == StationStatus::RUNNING) {
+    } else if(myAuxStation->getStatus() == StationStatus::RUNNING) {
         myAuxStation->stop();
     }
 }
 
-void DataVisualizerWindow::on_btnEstRun_2_clicked() {
+void DataVisualizerWindow::on_btnEstConfig_1_clicked() { this->btnStationsDialog(1); }
 
-}
+void DataVisualizerWindow::on_btnEstConfig_2_clicked() { this->btnStationsDialog(2); }
 
-void DataVisualizerWindow::on_btnEstRun_3_clicked() {
+void DataVisualizerWindow::on_btnEstConfig_3_clicked() { this->btnStationsDialog(3); }
 
-}
+void DataVisualizerWindow::on_btnEstConfig_4_clicked() { this->btnStationsDialog(4); }
 
-void DataVisualizerWindow::on_btnEstRun_4_clicked() {
+void DataVisualizerWindow::on_btnEstConfig_5_clicked() { this->btnStationsDialog(5); }
 
-}
+void DataVisualizerWindow::on_btnEstConfig_6_clicked() { this->btnStationsDialog(6); }
 
-void DataVisualizerWindow::on_btnEstRun_5_clicked() {
+void DataVisualizerWindow::on_btnEstRun_1_clicked()    { this->btnStationStartStop(1); }
 
-}
+void DataVisualizerWindow::on_btnEstRun_2_clicked()    { this->btnStationStartStop(2); }
 
-void DataVisualizerWindow::on_btnEstRun_6_clicked()  {
+void DataVisualizerWindow::on_btnEstRun_3_clicked()    { this->btnStationStartStop(3); }
 
-}
+void DataVisualizerWindow::on_btnEstRun_4_clicked()    { this->btnStationStartStop(4); }
+
+void DataVisualizerWindow::on_btnEstRun_5_clicked()    { this->btnStationStartStop(5); }
+
+void DataVisualizerWindow::on_btnEstRun_6_clicked()    { this->btnStationStartStop(6); }
 
 void DataVisualizerWindow::on_serialConnect_triggered() {
     if(this->myActivePort->isOpen()) { this->myActivePort->closePort(); }

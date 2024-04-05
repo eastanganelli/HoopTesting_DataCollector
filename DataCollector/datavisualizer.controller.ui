@@ -27,7 +27,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="Icons.qrc">
-    <normaloff>:/icon/icons/logos ezequiel2_Mesa de trabajo.png</normaloff>:/icon/icons/logos ezequiel2_Mesa de trabajo.png</iconset>
+    <normaloff>:/icon/logo</normaloff>:/icon/logo</iconset>
   </property>
   <property name="autoFillBackground">
    <bool>true</bool>
@@ -1406,7 +1406,7 @@
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="autoFillBackground">

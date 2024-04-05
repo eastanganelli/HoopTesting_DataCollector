@@ -17,12 +17,14 @@ class SetStation : public QDialog {
     Q_OBJECT
 
     unsigned int hooppressure();
-    static void inputPressureFixed(float pressure_, QSpinBox* input_);
-    static void clearComboBox(QComboBox* myWidget, QString text, bool state);
     void preLoadData();
     void setConnectionSignals();
     void checkSpecimen();
+    void isPopulated();
     void configureStation();
+
+    static void inputPressureFixed(float pressure_, QSpinBox* input_);
+    static void clearComboBox(QComboBox* myWidget, QString text, bool state);
 
     Ui::SetStation *ui;
     QSharedPointer<Schemas::Static> normsDB;

@@ -36,6 +36,7 @@ void SetStation::sharePointer(QSharedPointer<Schemas::Data> dataDB, QSharedPoint
     this->selectedStation = selectedStation;
     this->ui->gpParameters->setTitle("Estación: " + QString::number(selectedStation->getID()));
     if(selectedStation->getID() < 4) { this->ui->inputPressure->setMaximum(30); }
+    this->isPopulated();
 }
 
 void SetStation::on_inputWallThickness_valueChanged(int wallthickness) {
@@ -64,7 +65,6 @@ void SetStation::clearComboBox(QComboBox* myWidget, QString text, bool state) {
 }
 
 void SetStation::preLoadData() {
-
     this->listStandards = NodeStandard::get(*this->normsDB.get());
     for(auto myStandard : this->listStandards) { this->ui->cbStandard->addItem(myStandard->getStandard()); }
 
@@ -94,6 +94,31 @@ void SetStation::checkSpecimen() {
     this->ui->lblSpecimen->setText("Prueba Nro.: " + QString::number(Data::NodeSpecimen::count(*this->dataDB.get(), this->idSample) + 1));
 }
 
+void SetStation::isPopulated() {
+    if(this->selectedStation->getStatus() == StationStatus::WAITING) {
+        this->ui->cbStandard->setCurrentText(this->selectedStation->getSample()->getStandard());
+        this->ui->cbMaterial->setEnabled(true);
+        this->ui->cbMaterial->setCurrentText(this->selectedStation->getSample()->getMaterial());
+        this->ui->cbSpecification->setEnabled(true);
+        this->ui->cbSpecification->setCurrentText(this->selectedStation->getSample()->getSpecification());
+        this->ui->cbBoxTestType->setEnabled(true);
+        this->ui->cbBoxTestType->setCurrentText(this->selectedStation->getSpecimen()->getTestName());
+        this->ui->cbBoxEnviroment->setEnabled(true);
+        this->ui->cbBoxEnviroment->setCurrentText(this->selectedStation->getSpecimen()->getEnviroment());
+        this->ui->cbBoxEndCap->setEnabled(true);
+        this->ui->cbBoxEndCap->setCurrentText(this->selectedStation->getSpecimen()->getEndCap());
+        this->ui->cbBoxOperator->setEnabled(true);
+        this->ui->cbBoxOperator->setCurrentText(this->selectedStation->getSpecimen()->getOperatorName());
+        this->ui->inputDiamNormal->setValue(this->selectedStation->getSample()->getDiamNom());
+        this->ui->inputDiamReal->setValue(this->selectedStation->getSample()->getDiamReal());
+        this->ui->inputWallThickness->setValue(this->selectedStation->getSample()->getWallThick());
+        this->ui->inputLenFree->setValue(this->selectedStation->getSample()->getLenFree());
+        this->ui->inputLenTotal->setValue(this->selectedStation->getSample()->getLenTotal());
+        this->ui->inputPressure->setValue(this->selectedStation->getSample()->getTargetPressure());
+        this->ui->cbTemp->setCurrentText(QString::number(this->selectedStation->getSample()->getTargetTemperature()));
+    }
+}
+
 void SetStation::configureStation() {
     const QString standard          = this->ui->cbStandard->currentText(),
                   material          = this->ui->cbMaterial->currentText(),
@@ -103,6 +128,7 @@ void SetStation::configureStation() {
                   enviroment        = this->ui->cbBoxEnviroment->currentText(),
                   typeTest          = this->ui->cbBoxTestType->currentText(),
                   endCap            = this->ui->cbBoxEndCap->currentText();
+
     const uint time_ = this->ui->radHours->isChecked() ? this->ui->cbBoxTestTime->currentText().toUInt() * 3600 : this->ui->cbBoxTestTime->currentText().toUInt(),
                lengthFree        = this->ui->inputLenFree->value(),
                lengthTotal       = this->ui->inputLenTotal->value(),
@@ -112,9 +138,10 @@ void SetStation::configureStation() {
                targetTemperature = this->ui->cbTemp->currentText().toUInt(),
                targetPressure    = this->ui->inputPressure->value();
 
-    QSharedPointer<Data::NodeSample>   SampleData   = Data::NodeSample::add(*this->dataDB.get(), standard, material, specification,diameterNormal, diameterReal, wallthickness, lengthFree, lengthTotal, targetPressure, targetTemperature, conditionalPeriod);
-    QSharedPointer<Data::NodeSpecimen> SpecimenData = Data::NodeSpecimen::add(*this->dataDB.get(), SampleData->getID(), operatorName, enviroment, typeTest, endCap);
-    Station::configure(this->selectedStation, SampleData, SpecimenData, time_);
+    QSharedPointer<Data::NodeSample>   SampleData   = QSharedPointer<Data::NodeSample>(new Data::NodeSample(this->idSample, standard, material, specification, diameterNormal, diameterReal, wallthickness, lengthFree, lengthTotal, targetPressure, targetTemperature, conditionalPeriod));
+    QSharedPointer<Data::NodeSpecimen> SpecimenData = QSharedPointer<Data::NodeSpecimen>(new Data::NodeSpecimen(0, this->idSample, operatorName, enviroment, typeTest, endCap));
+
+    Station::set(this->selectedStation, SampleData, SpecimenData, time_);
 }
 
 void SetStation::checkFieldsCompletetion() {
@@ -206,8 +233,12 @@ void SetStation::on_cbSpecification_currentIndexChanged(int index) {
 }
 
 void SetStation::on_btnSave_clicked() {
-    int ret = QMessageBox::information(this, "Ajuste Estación "  + QString::number(this->selectedStation->getID()), "Está seguro que desea guardar?", QMessageBox::Yes | QMessageBox::No);
-    switch(ret) {
+    QMessageBox msgBox(QMessageBox::Warning, "Configuración: Estación "  + QString::number(this->selectedStation->getID()), "Desea guardar cambios?");
+    msgBox.setWindowIcon(QIcon(":/icon/logo"));
+    msgBox.addButton(QMessageBox::Yes)->setText("Si");
+    msgBox.addButton(QMessageBox::No)->setText("No");
+
+    switch(msgBox.exec()) {
         case QMessageBox::Yes: {
             this->configureStation();
             this->close();
@@ -218,8 +249,12 @@ void SetStation::on_btnSave_clicked() {
 }
 
 void SetStation::on_btnCancel_clicked() {
-    int ret = QMessageBox::information(this, "Ajuste Estación "  + QString::number(this->selectedStation->getID()), "Está seguro que desea cancelar?", QMessageBox::Yes | QMessageBox::No);
-    switch(ret) {
+    QMessageBox msgBox(QMessageBox::Warning, "Configuración: Estación "  + QString::number(this->selectedStation->getID()), "Desea cancelar cambios?");
+    msgBox.setWindowIcon(QIcon(":/icon/logo"));
+    msgBox.addButton(QMessageBox::Yes)->setText("Si");
+    msgBox.addButton(QMessageBox::No)->setText("No");
+
+    switch(msgBox.exec()) {
         case QMessageBox::Yes: {
             this->close();
             break;
@@ -228,18 +263,9 @@ void SetStation::on_btnCancel_clicked() {
     }
 }
 
-void SetStation::on_cbBoxOperator_currentIndexChanged(int index) {
-    if(index > -1) {
-        this->selectedOperator = this->listOperators[index];
-    }
-}
+void SetStation::on_cbBoxOperator_currentIndexChanged(int index) { if(index > -1) { this->selectedOperator = this->listOperators[index]; } }
 
-void SetStation::on_cbBoxTestType_currentIndexChanged(int index) {
-    if(index > -1) {
-        this->selectedTestType = this->listTestTypes[index];
-    }
-}
-
+void SetStation::on_cbBoxTestType_currentIndexChanged(int index) { if(index > -1) { this->selectedTestType = this->listTestTypes[index]; } }
 
 void SetStation::on_cbBoxEnviroment_currentIndexChanged(int index) {
     if(index > -1) {

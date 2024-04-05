@@ -33,6 +33,7 @@ namespace Schemas {
         QAction* lblConnectDB;
 
         void changingLblConnectionState(const QString state_, const QString color_);
+
     public:
         Data(QLabel* dbstatus, QAction* dbconnect);
         ~Data();
@@ -45,6 +46,7 @@ namespace Schemas {
 
     class Static {
         Database myDB;
+
     public:
         Static();
         ~Static();
@@ -60,16 +62,26 @@ namespace Data {
         QString standard, material, specification, condPeriod;
         uint diamNom, diamReal, wallthick, lenFree, lenTotal;
         int targetPressure, targetTemp;
+
     public:
+        NodeSample(const NodeSample& me, const uint id_);
         NodeSample(const uint id_, const QString standard, const QString material, const QString specification, const uint diamNom, const uint diamReal, const uint wallthick, const uint lenFree, const uint lenTotal, const int targetPressure, const int targetTemp, const QString condPeriod);
         ~NodeSample();
 
         static QSharedPointer<NodeSample> get(Schemas::Data& myDB, const uint idSample);
-        static QSharedPointer<NodeSample> add(Schemas::Data& myDB, const QString standard, const QString material, const QString specification, const uint diamNom, const uint diamReal, const uint wallthick, const uint lenFree, const uint lenTotal, const int targetPressure, const int targetTemp, const QString condPeriod);
-        static uint insert(Schemas::Data& myDB, const QString standard, const QString material, const QString specification, const uint diamNom, const uint diamReal, const uint wallthick, const uint lenFree, const uint lenTotal, const int targetPressure, const int targetTemp, const QString condPeriod);
+        static uint insert(Schemas::Data& myDB, QSharedPointer<NodeSample> sample);
         static uint exists(Schemas::Data& myDB, const QString standard, const QString material, const QString specification, const uint diamNom, const uint diamReal, const uint wallthick, const uint lenFree, const uint lenTotal, const int targetPressure, const int targetTemp);
 
         uint getID();
+        QString getStandard();
+        QString getMaterial();
+        QString getSpecification();
+        QString getCondPeriod();
+        uint  getDiamNom();
+        uint  getDiamReal();
+        uint  getWallThick();
+        uint  getLenFree();
+        uint  getLenTotal();
         int  getTargetPressure();
         int  getTargetTemperature();
     };
@@ -80,14 +92,15 @@ namespace Data {
                 operatorName,
                 testName,
                 endCap;
-        QDateTime start, end;
+
     public:
-        NodeSpecimen(const uint id, const uint idSample, const QString operatorName, const QString enviroment);
+        NodeSpecimen(const NodeSpecimen& me, const uint id, const uint idSample);
+        NodeSpecimen(const uint id, const uint idSample, const QString operatorName, const QString enviroment, const QString testName, const QString endCap);
         ~NodeSpecimen();
 
         static QSharedPointer<NodeSpecimen> get(Schemas::Data& myDB, const uint idSpecimen);
-        static QSharedPointer<NodeSpecimen> add(Schemas::Data& myDB, const uint idSample, const QString peratorName, const QString enviroment, const QString testName, const QString endCap);
-        static uint insert(Schemas::Data& myDB, const uint idSample, const uint idOperator, const QString enviromental);
+        static uint insert(Schemas::Data& myDB, QSharedPointer<NodeSpecimen> specimen);
+        static uint insert(Schemas::Data& myDB, QSharedPointer<NodeSpecimen> specimen, const uint idSample);
         static uint count(Schemas::Data& myDB, const uint idSample);
 
         uint getID();
@@ -96,22 +109,22 @@ namespace Data {
         const QString getTestName();
         const QString getEndCap();
         const QString getOperatorName();
-        const QDateTime getStartTime();
-        const QDateTime getEndTime();
     };
 
     class NodeData {
         const uint idSpecimen;
         double pressure, temperature;
+
     public:
         NodeData(const uint idData, const uint idSpecimen, const double pressure, const double temperature);
         NodeData(const uint idSpecimen, const double pressure, const double temperature);
         ~NodeData();
 
+        static void insert(Schemas::Data& myDB, NodeData &myData);
+
         uint getIDSpecimen();
         double getTemperature();
         double getPressure();
-        static void insert(Schemas::Data& myDB, NodeData &myData);
     };
 }
 

@@ -33,7 +33,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="Icons.qrc">
-    <normaloff>:/icon/logos ezequiel2_Mesa de trabajo 1.ico</normaloff>:/icon/logos ezequiel2_Mesa de trabajo 1.ico</iconset>
+    <normaloff>:/icon/logo</normaloff>:/icon/logo</iconset>
   </property>
   <property name="sizeGripEnabled">
    <bool>false</bool>
