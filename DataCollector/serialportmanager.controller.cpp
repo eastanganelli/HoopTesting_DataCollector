@@ -1,4 +1,6 @@
 #include "serialportmanager.controller.h"
+#include "defines.h"
+#include "global.service.h"
 
 SerialPortReader::SerialPortReader(const QString portName, const QString baudRate) {
     this->setDataBits(QSerialPort::Data8);
@@ -39,25 +41,28 @@ SerialPortReader::SerialPortReader(QSerialPort* serialPortPort, QLabel *portStat
 
 void SerialPortReader::save(const QString portName, const QString baudRate) {
     QSettings mySettings(QApplication::applicationDirPath() + "/settings.ini", QSettings::IniFormat);
-    mySettings.beginGroup("SerialConfig");
-    mySettings.setValue("portName", portName);
-    mySettings.setValue("baudRate", baudRate);
+    mySettings.beginGroup("SerialConfig"); {
+        mySettings.setValue("portName", portName);
+        mySettings.setValue("baudRate", baudRate);
+    }
     mySettings.endGroup();
 }
 
 void SerialPortReader::save(const SerialPortReader myPort) {
     QSettings mySettings(QApplication::applicationDirPath() + "/settings.ini", QSettings::IniFormat);
-    mySettings.beginGroup("SerialConfig");
-    mySettings.setValue("portName", myPort.portName());
-    mySettings.setValue("baudRate", QString::number(myPort.baudRate()));
+    mySettings.beginGroup("SerialConfig"); {
+        mySettings.setValue("portName", myPort.portName());
+        mySettings.setValue("baudRate", QString::number(myPort.baudRate()));
+    }
     mySettings.endGroup();
 }
 
 void SerialPortReader::read(QString& serialName, uint& baudRate) {
     QSettings mySettings(QApplication::applicationDirPath() + "/settings.ini", QSettings::IniFormat);
-    mySettings.beginGroup("SerialConfig");
-    serialName = mySettings.value("portName", QString()).toString();
-    baudRate   = mySettings.value("baudRate", QString()).toUInt();
+    mySettings.beginGroup("SerialConfig");{
+        serialName = mySettings.value("portName", QString()).toString();
+        baudRate   = mySettings.value("baudRate", QString()).toUInt();
+    }
     mySettings.endGroup();
 }
 
@@ -101,11 +106,7 @@ void SerialPortReader::sendMessage(const QByteArray &message) {
     this->waitForBytesWritten(-1);
 }
 
-void SerialPortReader::stationStop(const uint ID) {
-    QString msg = QString::number(ID) + ",1\n";
-    myData.pushMessageSendPort(msg.toUtf8());
-    myData.getStation(ID)->stop();
-}
+void SerialPortReader::stationStop(QSharedPointer<Station> auxStation) { auxStation->stop(); }
 
 bool SerialPortReader::openPort() {
     QString serialName;
@@ -179,10 +180,10 @@ void SerialPortReader::serialToStation() {
     for(QByteArray& msg : msgs) {
         QList<QByteArray> substring = msg.split(',');
         if(substring.length() == 3) {
-            uint id   = substring.at(0).toUInt();
+            QSharedPointer<Station> auxStation = myData.getStation(substring.at(0).toUInt());
             float bar  = substring.at(1).toFloat(),
                   temp = substring.at(2).toFloat();
-            if(myData.getStation(id)->updateStatus(bar, temp)) { this->stationStop(id); }
+            if(auxStation->getStatus() == StationStatus::RUNNING && auxStation->updateStatus(bar, temp)) { this->stationStop(auxStation); }
         }
     }
 }

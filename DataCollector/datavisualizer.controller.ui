@@ -27,7 +27,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="Icons.qrc">
-    <normaloff>:/icon/logos ezequiel2_Mesa de trabajo 1.ico</normaloff>:/icon/logos ezequiel2_Mesa de trabajo 1.ico</iconset>
+    <normaloff>:/icon/logo</normaloff>:/icon/logo</iconset>
   </property>
   <property name="autoFillBackground">
    <bool>true</bool>
@@ -925,28 +925,56 @@
            <property name="bottomMargin">
             <number>0</number>
            </property>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="btnEstRun_1">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Iniciar</string>
+             </property>
+             <property name="flat">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="0">
             <widget class="QPushButton" name="btnEstConfig_1">
              <property name="enabled">
               <bool>true</bool>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
              </property>
              <property name="text">
               <string>Configurar</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
-            <widget class="QPushButton" name="btnEstRun_1">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="text">
-              <string>Iniciar/Detener</string>
-             </property>
-            </widget>
-           </item>
           </layout>
          </widget>
+        </item>
+        <item row="0" column="1">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
@@ -988,6 +1016,12 @@
              <property name="enabled">
               <bool>true</bool>
              </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
+             </property>
              <property name="text">
               <string>Configurar</string>
              </property>
@@ -996,15 +1030,34 @@
            <item row="0" column="1">
             <widget class="QPushButton" name="btnEstRun_2">
              <property name="enabled">
-              <bool>true</bool>
+              <bool>false</bool>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
              </property>
              <property name="text">
-              <string>Iniciar/Detener</string>
+              <string>Iniciar</string>
              </property>
             </widget>
            </item>
           </layout>
          </widget>
+        </item>
+        <item row="0" column="1">
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
@@ -1016,7 +1069,7 @@
         <item row="1" column="0" colspan="2">
          <widget class="PressureTempGraph" name="GraphE_3" native="true">
           <property name="enabled">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -1046,6 +1099,12 @@
              <property name="enabled">
               <bool>true</bool>
              </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
+             </property>
              <property name="text">
               <string>Configurar</string>
              </property>
@@ -1054,15 +1113,34 @@
            <item row="0" column="1">
             <widget class="QPushButton" name="btnEstRun_3">
              <property name="enabled">
-              <bool>true</bool>
+              <bool>false</bool>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>98</width>
+               <height>16777215</height>
+              </size>
              </property>
              <property name="text">
-              <string>Iniciar/Detener</string>
+              <string>Iniciar</string>
              </property>
             </widget>
            </item>
           </layout>
          </widget>
+        </item>
+        <item row="0" column="1">
+         <spacer name="horizontalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
@@ -1074,7 +1152,7 @@
         <item row="1" column="0" colspan="2">
          <widget class="PressureTempGraph" name="GraphE_4" native="true">
           <property name="enabled">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -1104,6 +1182,12 @@
              <property name="enabled">
               <bool>true</bool>
              </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
+             </property>
              <property name="text">
               <string>Configurar</string>
              </property>
@@ -1112,15 +1196,34 @@
            <item row="0" column="1">
             <widget class="QPushButton" name="btnEstRun_4">
              <property name="enabled">
-              <bool>true</bool>
+              <bool>false</bool>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
              </property>
              <property name="text">
-              <string>Iniciar/Detener</string>
+              <string>Iniciar</string>
              </property>
             </widget>
            </item>
           </layout>
          </widget>
+        </item>
+        <item row="0" column="1">
+         <spacer name="horizontalSpacer_6">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
@@ -1132,7 +1235,7 @@
         <item row="1" column="0" colspan="2">
          <widget class="PressureTempGraph" name="GraphE_5" native="true">
           <property name="enabled">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -1162,6 +1265,12 @@
              <property name="enabled">
               <bool>true</bool>
              </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
+             </property>
              <property name="text">
               <string>Configurar</string>
              </property>
@@ -1170,15 +1279,37 @@
            <item row="0" column="1">
             <widget class="QPushButton" name="btnEstRun_5">
              <property name="enabled">
-              <bool>true</bool>
+              <bool>false</bool>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="cursor">
+              <cursorShape>ArrowCursor</cursorShape>
              </property>
              <property name="text">
-              <string>Iniciar/Detener</string>
+              <string>Iniciar</string>
              </property>
             </widget>
            </item>
           </layout>
          </widget>
+        </item>
+        <item row="0" column="1">
+         <spacer name="horizontalSpacer_7">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
@@ -1190,7 +1321,7 @@
         <item row="1" column="0" colspan="2">
          <widget class="PressureTempGraph" name="GraphE_6" native="true">
           <property name="enabled">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -1220,6 +1351,12 @@
              <property name="enabled">
               <bool>true</bool>
              </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
+             </property>
              <property name="text">
               <string>Configurar</string>
              </property>
@@ -1228,15 +1365,34 @@
            <item row="0" column="1">
             <widget class="QPushButton" name="btnEstRun_6">
              <property name="enabled">
-              <bool>true</bool>
+              <bool>false</bool>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
              </property>
              <property name="text">
-              <string>Iniciar/Detener</string>
+              <string>Iniciar</string>
              </property>
             </widget>
            </item>
           </layout>
          </widget>
+        </item>
+        <item row="0" column="1">
+         <spacer name="horizontalSpacer_8">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
@@ -1250,7 +1406,7 @@
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="autoFillBackground">

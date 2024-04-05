@@ -1,9 +1,11 @@
 #include "datavisualizer.controller.h"
 #include "ui_datavisualizer.controller.h"
+#include "global.service.h"
+#include "setserial.controller.h"
+#include "setdb.controller.h"
 
 DataVisualizerWindow::DataVisualizerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::DataVisualizerWindow) {
     ui->setupUi(this);
-
     {
         this->dialogStation = nullptr;
         this->initStatusBar();
@@ -13,7 +15,6 @@ DataVisualizerWindow::DataVisualizerWindow(QWidget *parent) : QMainWindow(parent
     }
 
     {
-
         this->myDataDB->open();
         this->myActivePort->openPort();
         this->setStationsUI();
@@ -39,15 +40,9 @@ void DataVisualizerWindow::setStationsUI() {
                    * btnRun    = this->findChild<QPushButton*>("btnEstRun_" + QString::number(myStation->getID()));
         PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(myStation->getID()));
         QTabWidget* myTabs     = this->ui->tabWidget;
-        myStation->start(this->myDataDB, pressurelbl, temperaturelbl, timelbl, btnConfig, btnRun, myTabs, mygraph);
+        btnRun->setVisible(false);
+        myStation->set(this->myDataDB, pressurelbl, temperaturelbl, timelbl, btnConfig, btnRun, myTabs, mygraph);
         Station::read(*this->myDataDB.get(), *myStation.get());
-        if(!myStation->isFree()) {
-            myData.pushMessageSendPort(QString(QString::number(myStation->getID()) + "," + QString::number(myStation->getTargetPressure()) + "," + QString::number(myStation->getTargetTemperature()) + "\n").toUtf8());
-            /**
-             * Use timer to resend msg with station data to restart.
-             * If time is greater than the finish time, station must stop
-             */
-        }
     }
 }
 
@@ -67,44 +62,56 @@ void DataVisualizerWindow::initStatusBar() {
     this->ui->serialConnect->setText("Abrir Puerto");
 }
 
-void DataVisualizerWindow::btnsStates(const bool state_) {
-    this->ui->tabWidget->setEnabled(state_);
-}
+void DataVisualizerWindow::btnsStates(const bool state_) { this->ui->tabWidget->setEnabled(state_); }
 
 bool DataVisualizerWindow::btnsStates() {
     for(auto myStation : myData.getStations()) { return this->findChild<QGroupBox*>("gbBtns_" + QString::number(myStation->getID()))->isEnabled(); }
     return false;
 }
 
-void DataVisualizerWindow::btnStationsDialog(const unsigned int id_, QPushButton* btnState) {
+void DataVisualizerWindow::btnStationsDialog(const uint id_) {
     QSharedPointer<Station> myStation = myData.getStation(id_);
-    if(myStation->isFree()) {
-        this->dialogStation = new SetStation();
-        StationResponse response = StationResponse::Cancel;
-        this->dialogStation->sharePointer(&response, this->myDataDB, this->myActivePort, myStation);
-        this->dialogStation->setModal(true);
-        this->dialogStation->exec();
-        delete this->dialogStation;
+    this->dialogStation = new SetStation();
+    this->dialogStation->sharePointer(this->myDataDB, myStation);
+    this->dialogStation->setModal(true);
+    this->dialogStation->exec();
+    delete this->dialogStation;
+    this->dialogStation = nullptr;
+}
 
-        if(response == StationResponse::Save) { btnState->setText("Detener"); }
-        this->dialogStation = nullptr;
-    } else {
-        this->myActivePort->stationStop(id_);
-        btnState->setText("Iniciar");
+void DataVisualizerWindow::btnStationStartStop(const uint id_) {
+    QSharedPointer<Station> myAuxStation = myData.getStation(id_);
+    if(myAuxStation->getStatus() == StationStatus::WAITING) {
+        Station::set(*this->myDataDB.get(), *myAuxStation.get());
+        myAuxStation->start();
+    } else if(myAuxStation->getStatus() == StationStatus::RUNNING) {
+        myAuxStation->stop();
     }
 }
 
-void DataVisualizerWindow::on_btnEstConfig_1_clicked() { this->btnStationsDialog(1, this->ui->btnEstConfig_1); }
+void DataVisualizerWindow::on_btnEstConfig_1_clicked() { this->btnStationsDialog(1); }
 
-void DataVisualizerWindow::on_btnEstConfig_2_clicked() { this->btnStationsDialog(2, this->ui->btnEstConfig_2); }
+void DataVisualizerWindow::on_btnEstConfig_2_clicked() { this->btnStationsDialog(2); }
 
-void DataVisualizerWindow::on_btnEstConfig_3_clicked() { this->btnStationsDialog(3, this->ui->btnEstConfig_3); }
+void DataVisualizerWindow::on_btnEstConfig_3_clicked() { this->btnStationsDialog(3); }
 
-void DataVisualizerWindow::on_btnEstConfig_4_clicked() { this->btnStationsDialog(4, this->ui->btnEstConfig_4); }
+void DataVisualizerWindow::on_btnEstConfig_4_clicked() { this->btnStationsDialog(4); }
 
-void DataVisualizerWindow::on_btnEstConfig_5_clicked() { this->btnStationsDialog(5, this->ui->btnEstConfig_5); }
+void DataVisualizerWindow::on_btnEstConfig_5_clicked() { this->btnStationsDialog(5); }
 
-void DataVisualizerWindow::on_btnEstConfig_6_clicked() { this->btnStationsDialog(6, this->ui->btnEstConfig_6); }
+void DataVisualizerWindow::on_btnEstConfig_6_clicked() { this->btnStationsDialog(6); }
+
+void DataVisualizerWindow::on_btnEstRun_1_clicked()    { this->btnStationStartStop(1); }
+
+void DataVisualizerWindow::on_btnEstRun_2_clicked()    { this->btnStationStartStop(2); }
+
+void DataVisualizerWindow::on_btnEstRun_3_clicked()    { this->btnStationStartStop(3); }
+
+void DataVisualizerWindow::on_btnEstRun_4_clicked()    { this->btnStationStartStop(4); }
+
+void DataVisualizerWindow::on_btnEstRun_5_clicked()    { this->btnStationStartStop(5); }
+
+void DataVisualizerWindow::on_btnEstRun_6_clicked()    { this->btnStationStartStop(6); }
 
 void DataVisualizerWindow::on_serialConnect_triggered() {
     if(this->myActivePort->isOpen()) { this->myActivePort->closePort(); }

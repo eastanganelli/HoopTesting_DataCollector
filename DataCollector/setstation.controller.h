@@ -2,10 +2,12 @@
 #define SETSTATION_H
 #include <QDialog>
 #include <QScopedPointer>
+#include <QSharedPointer>
 #include <QMessageBox>
+#include <QList>
 #include <QStringList>
-#include "defines.h"
-#include "serialportmanager.controller.h"
+
+#include "station.controller.h"
 
 typedef enum { Save, Cancel } StationResponse;
 namespace Ui { class SetStation; }
@@ -15,24 +17,24 @@ class SetStation : public QDialog {
     Q_OBJECT
 
     unsigned int hooppressure();
-    static void inputPressureFixed(float pressure_, QSpinBox* input_);
-    static void clearComboBox(QComboBox* myWidget, QString text, bool state);
-    void loadStandardCombobox();
-    void loadOperatorCombobox();
+    void preLoadData();
     void setConnectionSignals();
     void checkSpecimen();
+    void isPopulated();
     void configureStation();
+
+    static void inputPressureFixed(float pressure_, QSpinBox* input_);
+    static void clearComboBox(QComboBox* myWidget, QString text, bool state);
 
     Ui::SetStation *ui;
     QSharedPointer<Schemas::Static> normsDB;
     QSharedPointer<Schemas::Data>   dataDB;
     QSharedPointer<Station> selectedStation;
     uint idSample;
-    StationResponse* response;
-    QSharedPointer<SerialPortReader>  portWriting;
     QSharedPointer<NodeStandard>      selectedStandard;
     QSharedPointer<NodeMaterial>      selectedMaterial;
     QSharedPointer<NodeSpecification> selectedSpecification;
+    QSharedPointer<NodeEndCap>        selectedEndCap;
     QSharedPointer<NodeTestType>      selectedTestType;
     QSharedPointer<NodeOperator>      selectedOperator;
     QSharedPointer<NodeEnviroment>    selectedEnviroment;
@@ -41,7 +43,8 @@ class SetStation : public QDialog {
     QList<QSharedPointer<NodeSpecification>>     listSpecifications;
     QList<QSharedPointer<NodeConditionalPeriod>> listCondPeriods;
     QList<QSharedPointer<NodeSetting>>           listSettings;
-    QList<QSharedPointer<NodeTestType>>         listTestTypes;
+    QList<QSharedPointer<NodeEndCap>>            listEndCap;
+    QList<QSharedPointer<NodeTestType>>          listTestTypes;
     QList<QSharedPointer<NodeOperator>>          listOperators;
     QList<QSharedPointer<NodeEnviroment>>        listEnviroments;
 
@@ -62,6 +65,6 @@ private slots:
 public:
     explicit SetStation(QWidget *parent = nullptr);
     ~SetStation();
-    void sharePointer(StationResponse* response, QSharedPointer<Schemas::Data> dataDB = nullptr, QSharedPointer<SerialPortReader> myPort = nullptr, QSharedPointer<Station> selectedStation = nullptr);
+    void sharePointer(QSharedPointer<Schemas::Data> dataDB = nullptr, QSharedPointer<Station> selectedStation = nullptr);
 };
 #endif // SETSTATION_H

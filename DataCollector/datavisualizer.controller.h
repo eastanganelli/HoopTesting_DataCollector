@@ -2,12 +2,11 @@
 #define DATAVISUALIZER_H
 #include <QMainWindow>
 #include <QTimer>
-#include <QPushButton>
-#include <iomanip>
-#include "defines.h"
+
+#include "database.service.h"
+#include "serialportmanager.controller.h"
+
 #include "setstation.controller.h"
-#include "setserial.controller.h"
-#include "setdb.controller.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class DataVisualizerWindow; }
@@ -20,7 +19,8 @@ class DataVisualizerWindow : public QMainWindow {
     void initStatusBar();
     void btnsStates(const bool state_);
     bool btnsStates();
-    void btnStationsDialog(const unsigned int id_, QPushButton* btnState);
+    void btnStationsDialog(const uint id_);
+    void btnStationStartStop(const uint id_);
 
     Ui::DataVisualizerWindow *ui;
     QSharedPointer<QTimer> mStatusTimer;
@@ -31,6 +31,7 @@ class DataVisualizerWindow : public QMainWindow {
           * ConnectionPort,
           * PortStatus;
     bool myBtnsStates;
+
 private slots:
     void on_btnEstConfig_1_clicked();
     void on_btnEstConfig_2_clicked();
@@ -38,11 +39,16 @@ private slots:
     void on_btnEstConfig_4_clicked();
     void on_btnEstConfig_5_clicked();
     void on_btnEstConfig_6_clicked();
+    void on_btnEstRun_1_clicked();
+    void on_btnEstRun_2_clicked();
+    void on_btnEstRun_3_clicked();
+    void on_btnEstRun_4_clicked();
+    void on_btnEstRun_5_clicked();
+    void on_btnEstRun_6_clicked();
     void on_serialConfig_triggered();
     void on_serialConnect_triggered();
     void on_close_triggered();
     void on_dbConfig_triggered();
-
     void statusConnections();
     void on_dbConnect_triggered();
 
