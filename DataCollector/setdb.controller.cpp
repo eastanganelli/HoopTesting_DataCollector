@@ -1,5 +1,6 @@
 #include "setdb.controller.h"
 #include "ui_setdb.controller.h"
+#include "defines.h"
 
 DBConfig::DBConfig(QWidget *parent) : QDialog(parent), ui(new Ui::DBConfig) {
     ui->setupUi(this);
@@ -8,6 +9,7 @@ DBConfig::DBConfig(QWidget *parent) : QDialog(parent), ui(new Ui::DBConfig) {
         connect(this->ui->inputUser,     SIGNAL(textChanged(QString)), this, SLOT(dataIsComplete()));
         connect(this->ui->inputPassword, SIGNAL(textChanged(QString)), this, SLOT(dataIsComplete()));
     }
+    this->loadSave();
     #if MODE_ == Emulation
         this->ui->inputHostname->setText("localhost");
         this->ui->inputPort->setValue(3306);
@@ -30,6 +32,21 @@ void DBConfig::on_btnSave_clicked() {
             break;
         }
         default: break;
+    }
+}
+
+void DBConfig::loadSave() {
+    QSettings mySettings(QApplication::applicationDirPath() + "/settings.ini", QSettings::IniFormat);
+    mySettings.beginGroup("DBConfig");
+    const QString hostName = mySettings.value("hostname", QString()).toString(),
+        userName = mySettings.value("username", QString()).toString();
+    const uint port = mySettings.value("port", QString()).toUInt();
+    mySettings.endGroup();
+
+    if(hostName != "" && userName != "" && port != 0) {
+        this->ui->inputHostname->setText(hostName);
+        this->ui->inputPort->setValue(port);
+        this->ui->inputUser->setText(userName);
     }
 }
 

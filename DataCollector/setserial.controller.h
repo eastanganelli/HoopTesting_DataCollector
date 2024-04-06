@@ -17,8 +17,11 @@ class serialConfig : public QDialog {
     Ui::serialConfig *ui;
 
 private slots:
-    void on_buttonBox_accepted();
-    void on_btnCheckSerial_clicked();
+    void on_btnTest_clicked();
+
+    void on_btnSave_clicked();
+
+    void on_btnCancel_clicked();
 
 public:
     explicit serialConfig(QWidget *parent = nullptr);
