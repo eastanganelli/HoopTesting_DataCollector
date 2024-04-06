@@ -29,11 +29,8 @@
    <iconset resource="Icons.qrc">
     <normaloff>:/icon/logo</normaloff>:/icon/logo</iconset>
   </property>
-  <property name="autoFillBackground">
-   <bool>true</bool>
-  </property>
-  <property name="styleSheet">
-   <string notr="true"/>
+  <property name="animated">
+   <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
@@ -83,9 +80,6 @@
 	border: 0px;
 }</string>
       </property>
-      <property name="alignment">
-       <set>Qt::AlignBottom|Qt::AlignHCenter</set>
-      </property>
       <property name="flat">
        <bool>true</bool>
       </property>
@@ -94,7 +88,7 @@
       </property>
       <layout class="QGridLayout" name="glEstacionesInfo">
        <property name="sizeConstraint">
-        <enum>QLayout::SetMinimumSize</enum>
+        <enum>QLayout::SetDefaultConstraint</enum>
        </property>
        <property name="topMargin">
         <number>0</number>
@@ -129,14 +123,11 @@
           <string>00:00:00</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="1" column="7" alignment="Qt::AlignHCenter">
+       <item row="1" column="7">
         <widget class="QLabel" name="lblPress_5">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -154,10 +145,7 @@
           <string>00.00 bar</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -185,10 +173,7 @@
           <string>00:00:00</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -216,10 +201,7 @@
           <string>00:00:00</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -247,14 +229,11 @@
           <string>00:00:00</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="2" column="7" alignment="Qt::AlignHCenter">
+       <item row="2" column="7">
         <widget class="QLabel" name="lblTemp_5">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -272,14 +251,11 @@
           <string>00.00 C</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="1" column="4" alignment="Qt::AlignHCenter">
+       <item row="1" column="4">
         <widget class="QLabel" name="lblPress_2">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -297,14 +273,11 @@
           <string>00.00 bar</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="1" column="5" alignment="Qt::AlignHCenter">
+       <item row="1" column="5">
         <widget class="QLabel" name="lblPress_3">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -322,14 +295,11 @@
           <string>00.00 bar</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="0" column="4" alignment="Qt::AlignHCenter">
+       <item row="0" column="4">
         <widget class="QLabel" name="lblEst_2">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -347,14 +317,11 @@
           <string>Estación 2</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="2" column="6" alignment="Qt::AlignHCenter">
+       <item row="2" column="6">
         <widget class="QLabel" name="lblTemp_4">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -372,14 +339,11 @@
           <string>00.00 C</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="1" column="8" alignment="Qt::AlignHCenter">
+       <item row="1" column="8">
         <widget class="QLabel" name="lblPress_6">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -397,14 +361,11 @@
           <string>00.00 bar</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="2" column="5" alignment="Qt::AlignHCenter">
+       <item row="2" column="5">
         <widget class="QLabel" name="lblTemp_3">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -422,14 +383,11 @@
           <string>00.00 C</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="0" column="3" alignment="Qt::AlignHCenter">
+       <item row="0" column="3">
         <widget class="QLabel" name="lblEst_1">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -447,14 +405,11 @@
           <string>Estación 1</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="0" column="7" alignment="Qt::AlignHCenter">
+       <item row="0" column="7">
         <widget class="QLabel" name="lblEst_5">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -472,14 +427,11 @@
           <string>Estación 5</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="2" column="2" alignment="Qt::AlignHCenter">
+       <item row="2" column="2">
         <widget class="QLabel" name="lblTemp">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -502,14 +454,11 @@
           <string>Temperatura</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="2" column="3" alignment="Qt::AlignHCenter">
+       <item row="2" column="3">
         <widget class="QLabel" name="lblTemp_1">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -527,10 +476,7 @@
           <string>00.00 C</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -558,14 +504,11 @@
           <string>00:00:00</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="0" column="8" alignment="Qt::AlignHCenter">
+       <item row="0" column="8">
         <widget class="QLabel" name="lblEst_6">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -583,14 +526,11 @@
           <string>Estación 6</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="0" column="6" alignment="Qt::AlignHCenter">
+       <item row="0" column="6">
         <widget class="QLabel" name="lblEst_4">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -608,14 +548,11 @@
           <string>Estación 4</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="2" column="8" alignment="Qt::AlignHCenter">
+       <item row="2" column="8">
         <widget class="QLabel" name="lblTemp_6">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -633,14 +570,11 @@
           <string>00.00 C</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="0" column="5" alignment="Qt::AlignHCenter">
+       <item row="0" column="5">
         <widget class="QLabel" name="lblEst_3">
          <property name="font">
           <font>
@@ -652,14 +586,11 @@
           <string>Estación 3</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="1" column="3" alignment="Qt::AlignHCenter">
+       <item row="1" column="3">
         <widget class="QLabel" name="lblPress_1">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -677,10 +608,7 @@
           <string>00.00 bar</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -710,10 +638,7 @@
           <string>Presión</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -740,14 +665,11 @@
           <string>Tiempo</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="2" column="4" alignment="Qt::AlignHCenter">
+       <item row="2" column="4">
         <widget class="QLabel" name="lblTemp_2">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -765,14 +687,11 @@
           <string>00.00 C</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
-       <item row="1" column="6" alignment="Qt::AlignHCenter">
+       <item row="1" column="6">
         <widget class="QLabel" name="lblPress_4">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -790,10 +709,7 @@
           <string>00.00 bar</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -821,18 +737,12 @@
           <string>00:00:00</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::AutoText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <enum>Qt::PlainText</enum>
          </property>
         </widget>
        </item>
        <item row="1" column="9" rowspan="3">
         <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
          <property name="sizeType">
           <enum>QSizePolicy::Fixed</enum>
          </property>
@@ -846,9 +756,6 @@
        </item>
        <item row="1" column="0" rowspan="3">
         <spacer name="horizontalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
          <property name="sizeType">
           <enum>QSizePolicy::Fixed</enum>
          </property>
@@ -884,7 +791,7 @@
        <number>0</number>
       </property>
       <property name="elideMode">
-       <enum>Qt::ElideNone</enum>
+       <enum>Qt::ElideLeft</enum>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -897,6 +804,9 @@
         <item row="1" column="0" colspan="2">
          <widget class="PressureTempGraph" name="GraphE_1" native="true">
           <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="autoFillBackground">
            <bool>true</bool>
           </property>
          </widget>
@@ -965,9 +875,6 @@
         </item>
         <item row="0" column="1">
          <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
           <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
@@ -1048,9 +955,6 @@
         </item>
         <item row="0" column="1">
          <spacer name="horizontalSpacer_4">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
           <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
@@ -1131,9 +1035,6 @@
         </item>
         <item row="0" column="1">
          <spacer name="horizontalSpacer_5">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
           <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
@@ -1214,9 +1115,6 @@
         </item>
         <item row="0" column="1">
          <spacer name="horizontalSpacer_6">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
           <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
@@ -1300,9 +1198,6 @@
         </item>
         <item row="0" column="1">
          <spacer name="horizontalSpacer_7">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
           <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
@@ -1383,9 +1278,6 @@
         </item>
         <item row="0" column="1">
          <spacer name="horizontalSpacer_8">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
           <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
@@ -1406,16 +1298,14 @@
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="autoFillBackground">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="styleSheet">
-    <string notr="true">#menubar {
-	background-color: rgb(240, 240, 240);
-}</string>
+    <string notr="true"/>
    </property>
    <widget class="QMenu" name="menuMenu">
     <property name="title">

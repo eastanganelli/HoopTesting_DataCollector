@@ -11,6 +11,7 @@
 #include <QDateTime>
 #include <QLabel>
 #include <QException>
+#include <QString>
 
 #define datetime_format "yyyy/MM/dd hh:mm:ss"
 
@@ -237,46 +238,46 @@ namespace FrontClases {
 
 namespace DatabaseError {
     class ConfigurationError : public QException {
-        char* error;
+        QString error;
     public:
-        ConfigurationError(char* error) { this->error = error; }
-        const char* what() { return this->error; }
+        ConfigurationError(QString error) { this->error = error; }
+        const QString what() { return this->error; }
         void raise() const override { throw *this; }
         ConfigurationError *clone() const override { return new ConfigurationError(*this); }
     };
 
     class QuerySelectError : public QException {
-        char* error;
+        QString error;
     public:
-        QuerySelectError(char* error) { this->error = error; }
-        const char* what() { return this->error; }
+        QuerySelectError(QString error) { this->error = error; }
+        const QString what() { return this->error; }
         void raise() const override { throw *this; }
         QuerySelectError *clone() const override { return new QuerySelectError(*this); }
     };
 
     class QueryInsertError : public QException {
-        char* error;
+        QString error;
     public:
-        QueryInsertError(char* error) { this->error = error; }
-        const char* what() { return this->error; }
+        QueryInsertError(QString error) { this->error = error; }
+        const QString what() { return this->error; }
         void raise() const override { throw *this; }
         QueryInsertError *clone() const override { return new QueryInsertError(*this); }
     };
 
     class QueryUpdateError : public QException {
-        char* error;
+        QString error;
     public:
-        QueryUpdateError(char* error) { this->error = error; }
-        const char* what() { return this->error; }
+        QueryUpdateError(QString error) { this->error = error; }
+        const QString what() { return this->error; }
         void raise() const override { throw *this; }
         QueryUpdateError *clone() const override { return new QueryUpdateError(*this); }
     };
 
     class QueryDeleteError : public QException {
-        char* error;
+        QString error;
     public:
-        QueryDeleteError(char* error) { this->error = error; }
-        const char* what() { return this->error; }
+        QueryDeleteError(QString error) { this->error = error; }
+        const QString what() { return this->error; }
         void raise() const override { throw *this; }
         QueryDeleteError *clone() const override { return new QueryDeleteError(*this); }
     };

@@ -47,7 +47,7 @@ FORMS += \
     setstation.controller.ui
 
 # QMAKE_CXXFLAGS += -Wa,-mbig-obj, -Wno-ignored-qualifiers, -Wsign-compare, -Wignored-qualifiers
-QMAKE_CXXFLAGS += -Wa,-mbig-obj#,-Wdeprecated-delcarations,-Wignored-qualifiers
+# QMAKE_CXXFLAGS += -Wa,-mbig-obj#,-Wdeprecated-delcarations,-Wignored-qualifiers
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
