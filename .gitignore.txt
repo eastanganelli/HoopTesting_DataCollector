@@ -1,2 +1,0 @@
-[Bb]uild/
-[Ss]TEL_HoopTestingStations.pro.user
