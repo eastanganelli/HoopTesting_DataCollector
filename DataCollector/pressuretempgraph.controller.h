@@ -1,10 +1,10 @@
 #ifndef AGRAPH_H
 #define AGRAPH_H
 #include <QtMath>
-#include "defines.h"
 #include "qcustomplot.controller.h"
 
 class PressureTempGraph : public QCustomPlot {
+    Q_OBJECT
 public:
     PressureTempGraph(QWidget* parent = nullptr);
     void maxRanges(const unsigned int pressure, const unsigned int temp);
