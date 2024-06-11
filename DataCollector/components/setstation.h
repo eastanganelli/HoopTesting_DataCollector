@@ -8,6 +8,7 @@
 #include <QStringList>
 
 #include "utils/station.h"
+#include "services/schemas/schemaFront.h"
 
 typedef enum { Save, Cancel } StationResponse;
 namespace Ui { class SetStation; }

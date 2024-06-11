@@ -26,7 +26,7 @@
    <string>Hoop Reader</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="Icons.qrc">
+   <iconset resource="../Icons.qrc">
     <normaloff>:/icon/logo</normaloff>:/icon/logo</iconset>
   </property>
   <property name="animated">
@@ -119,6 +119,9 @@
            <height>5000</height>
           </size>
          </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>00:00:00</string>
          </property>
@@ -140,6 +143,9 @@
            <width>75</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
          </property>
          <property name="text">
           <string>00.00 bar</string>
@@ -169,6 +175,9 @@
            <height>5000</height>
           </size>
          </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>00:00:00</string>
          </property>
@@ -196,6 +205,9 @@
            <width>75</width>
            <height>5000</height>
           </size>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
          </property>
          <property name="text">
           <string>00:00:00</string>
@@ -225,6 +237,9 @@
            <height>5000</height>
           </size>
          </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>00:00:00</string>
          </property>
@@ -246,6 +261,9 @@
            <width>75</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
          </property>
          <property name="text">
           <string>00.00 C</string>
@@ -269,6 +287,9 @@
            <height>16777215</height>
           </size>
          </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>00.00 bar</string>
          </property>
@@ -290,6 +311,9 @@
            <width>75</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
          </property>
          <property name="text">
           <string>00.00 bar</string>
@@ -313,6 +337,9 @@
            <bold>true</bold>
           </font>
          </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>Estación 2</string>
          </property>
@@ -334,6 +361,9 @@
            <width>75</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
          </property>
          <property name="text">
           <string>00.00 C</string>
@@ -357,6 +387,9 @@
            <height>16777215</height>
           </size>
          </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>00.00 bar</string>
          </property>
@@ -378,6 +411,9 @@
            <width>75</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
          </property>
          <property name="text">
           <string>00.00 C</string>
@@ -401,6 +437,9 @@
            <bold>true</bold>
           </font>
          </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>Estación 1</string>
          </property>
@@ -422,6 +461,9 @@
            <pointsize>12</pointsize>
            <bold>true</bold>
           </font>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
          </property>
          <property name="text">
           <string>Estación 5</string>
@@ -450,6 +492,9 @@
            <pointsize>10</pointsize>
           </font>
          </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>Temperatura</string>
          </property>
@@ -471,6 +516,9 @@
            <width>75</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
          </property>
          <property name="text">
           <string>00.00 C</string>
@@ -500,6 +548,9 @@
            <height>5000</height>
           </size>
          </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>00:00:00</string>
          </property>
@@ -521,6 +572,9 @@
            <pointsize>12</pointsize>
            <bold>true</bold>
           </font>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
          </property>
          <property name="text">
           <string>Estación 6</string>
@@ -544,6 +598,9 @@
            <bold>true</bold>
           </font>
          </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>Estación 4</string>
          </property>
@@ -566,6 +623,9 @@
            <height>16777215</height>
           </size>
          </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>00.00 C</string>
          </property>
@@ -581,6 +641,9 @@
            <pointsize>12</pointsize>
            <bold>true</bold>
           </font>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
          </property>
          <property name="text">
           <string>Estación 3</string>
@@ -603,6 +666,9 @@
            <width>75</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
          </property>
          <property name="text">
           <string>00.00 bar</string>
@@ -630,6 +696,9 @@
           <font>
            <pointsize>10</pointsize>
           </font>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
          </property>
          <property name="styleSheet">
           <string notr="true"/>
@@ -661,6 +730,9 @@
            <pointsize>10</pointsize>
           </font>
          </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>Tiempo</string>
          </property>
@@ -683,6 +755,9 @@
            <height>16777215</height>
           </size>
          </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>00.00 C</string>
          </property>
@@ -704,6 +779,9 @@
            <width>75</width>
            <height>16777215</height>
           </size>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
          </property>
          <property name="text">
           <string>00.00 bar</string>
@@ -733,6 +811,9 @@
            <height>5000</height>
           </size>
          </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
          <property name="text">
           <string>00:00:00</string>
          </property>
@@ -743,26 +824,32 @@
        </item>
        <item row="1" column="9" rowspan="3">
         <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
          <property name="sizeType">
           <enum>QSizePolicy::Fixed</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>100</width>
-           <height>20</height>
+           <width>20</width>
+           <height>100</height>
           </size>
          </property>
         </spacer>
        </item>
        <item row="1" column="0" rowspan="3">
         <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
          <property name="sizeType">
           <enum>QSizePolicy::Fixed</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>100</width>
-           <height>20</height>
+           <width>20</width>
+           <height>100</height>
           </size>
          </property>
         </spacer>
@@ -875,10 +962,13 @@
         </item>
         <item row="0" column="1">
          <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>40</width>
-            <height>20</height>
+            <width>20</width>
+            <height>40</height>
            </size>
           </property>
          </spacer>
@@ -955,10 +1045,13 @@
         </item>
         <item row="0" column="1">
          <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>40</width>
-            <height>20</height>
+            <width>20</width>
+            <height>40</height>
            </size>
           </property>
          </spacer>
@@ -1035,10 +1128,13 @@
         </item>
         <item row="0" column="1">
          <spacer name="horizontalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>40</width>
-            <height>20</height>
+            <width>20</width>
+            <height>40</height>
            </size>
           </property>
          </spacer>
@@ -1115,10 +1211,13 @@
         </item>
         <item row="0" column="1">
          <spacer name="horizontalSpacer_6">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>40</width>
-            <height>20</height>
+            <width>20</width>
+            <height>40</height>
            </size>
           </property>
          </spacer>
@@ -1198,10 +1297,13 @@
         </item>
         <item row="0" column="1">
          <spacer name="horizontalSpacer_7">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>40</width>
-            <height>20</height>
+            <width>20</width>
+            <height>40</height>
            </size>
           </property>
          </spacer>
@@ -1278,10 +1380,13 @@
         </item>
         <item row="0" column="1">
          <spacer name="horizontalSpacer_8">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>40</width>
-            <height>20</height>
+            <width>20</width>
+            <height>40</height>
            </size>
           </property>
          </spacer>
@@ -1369,7 +1474,7 @@
   <customwidget>
    <class>PressureTempGraph</class>
    <extends>QWidget</extends>
-   <header>pressuretempgraph.controller.h</header>
+   <header>services/pressuretempgraph.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -1377,7 +1482,7 @@
   <tabstop>tabWidget</tabstop>
  </tabstops>
  <resources>
-  <include location="Icons.qrc"/>
+  <include location="../Icons.qrc"/>
  </resources>
  <connections/>
 </ui>

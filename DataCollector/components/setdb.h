@@ -11,7 +11,7 @@ class DBConfig : public QDialog {
     void loadSave();
 
     Ui::DBConfig *ui;
-    Database myDB;
+    QSqlDatabase myDB;
 
 private slots:
     void on_btnDBTest_clicked();

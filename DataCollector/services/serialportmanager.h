@@ -7,7 +7,6 @@
 #include <QAction>
 #include <QLabel>
 
-#include "services/database.h"
 #include "utils/station.h"
 
 #define ms_ 10              // In miliseconds
@@ -24,7 +23,6 @@ class SerialPortReader : public QSerialPort {
     void status();
     void stationStop(QSharedPointer<Station> auxStation);
 
-    QSharedPointer<Database> dataDB;
     QSharedPointer<QTimer> mSerialTimer;
     QByteArray buffer;
     bool portState, connectionState;

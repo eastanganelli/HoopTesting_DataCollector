@@ -17,6 +17,9 @@ SOURCES += \
     services/database.cpp \
     services/global.cpp \
     services/pressuretempgraph.cpp \
+    services/schemas/schemaData.cpp \
+    services/schemas/schemaFront.cpp \
+    services/schemas/schemas.cpp \
     services/serialportmanager.cpp \
     utils/qcustomplot.cpp \
     utils/shareddata.cpp \
@@ -34,6 +37,9 @@ HEADERS += \
     services/database.h \
     services/global.h \
     services/pressuretempgraph.h \
+    services/schemas/schemaData.h \
+    services/schemas/schemaFront.h \
+    services/schemas/schemas.h \
     services/serialportmanager.h \
     utils/qcustomplot.h \
     utils/shareddata.h \

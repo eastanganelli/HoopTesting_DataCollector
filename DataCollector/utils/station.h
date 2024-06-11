@@ -4,7 +4,8 @@
 #include <QTimer>
 #include <QLabel>
 #include <QDateTime>
-#include "services/database.h"
+#include "services/schemas/schemas.h"
+#include "services/schemas/schemaData.h"
 #include "services/pressuretempgraph.h"
 
 #define OFFSET_UPPER 1

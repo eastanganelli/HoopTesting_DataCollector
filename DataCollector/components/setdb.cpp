@@ -1,9 +1,10 @@
+#include "../defines.h"
 #include "setdb.h"
 #include "ui_setdb.h"
-#include "../defines.h"
 
 DBConfig::DBConfig(QWidget *parent) : QDialog(parent), ui(new Ui::DBConfig) {
     ui->setupUi(this);
+
     {
         connect(this->ui->inputHostname, SIGNAL(textChanged(QString)), this, SLOT(dataIsComplete()));
         connect(this->ui->inputUser,     SIGNAL(textChanged(QString)), this, SLOT(dataIsComplete()));
@@ -27,7 +28,7 @@ void DBConfig::on_btnSave_clicked() {
 
     switch(msgBox.exec()) {
         case QMessageBox::Yes : {
-            Database::save(this->myDB);
+            DatabaseManager::save(this->myDB);
             this->close();
             break;
         }
@@ -51,7 +52,13 @@ void DBConfig::loadSave() {
 }
 
 void DBConfig::on_btnDBTest_clicked() {
-    const bool state = Database::test(this->myDB);
+    this->myDB = QSqlDatabase::addDatabase("QMYSQL", "testDB");
+    this->myDB.setHostName(this->ui->inputHostname->text());
+    this->myDB.setPort(this->ui->inputPort->value());
+    this->myDB.setUserName(this->ui->inputUser->text());
+    this->myDB.setPassword(this->ui->inputPassword->text());
+
+    const bool state = DatabaseManager::test(this->myDB);
     const QString response = state ? "Prueba exitosa" : "Falló la prueba";
     QMessageBox msgBox(QMessageBox::Information, "Prueba Conexión", response, QMessageBox::Ok);
     msgBox.exec();
