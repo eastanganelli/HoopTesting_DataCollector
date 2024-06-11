@@ -1,4 +1,4 @@
-#include "stationlist.controller.h"
+#include "stationlist.h"
 
 QSharedPointer<Station> StationList::operator[](const uint ID) {
    QSharedPointer<Station> selectedStation = nullptr;

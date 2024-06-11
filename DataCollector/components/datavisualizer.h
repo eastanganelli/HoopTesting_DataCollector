@@ -3,10 +3,10 @@
 #include <QMainWindow>
 #include <QTimer>
 
-#include "database.service.h"
-#include "serialportmanager.controller.h"
+#include "services/database.h"
+#include "services/serialportmanager.h"
 
-#include "setstation.controller.h"
+#include "setstation.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class DataVisualizerWindow; }

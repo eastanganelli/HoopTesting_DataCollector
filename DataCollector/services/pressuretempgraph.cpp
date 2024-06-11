@@ -1,4 +1,4 @@
-#include "pressuretempgraph.controller.h"
+#include "services/pressuretempgraph.h"
 #include <QDebug>
 
 PressureTempGraph::PressureTempGraph(QWidget* parent) : QCustomPlot(parent) {

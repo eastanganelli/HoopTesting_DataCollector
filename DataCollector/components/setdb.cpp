@@ -1,6 +1,6 @@
-#include "setdb.controller.h"
-#include "ui_setdb.controller.h"
-#include "defines.h"
+#include "setdb.h"
+#include "ui_setdb.h"
+#include "../defines.h"
 
 DBConfig::DBConfig(QWidget *parent) : QDialog(parent), ui(new Ui::DBConfig) {
     ui->setupUi(this);

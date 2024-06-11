@@ -1,6 +1,6 @@
-#include "setserial.controller.h"
-#include "ui_setserial.controller.h"
-#include "serialportmanager.controller.h"
+#include "setserial.h"
+#include "ui_setserial.h"
+#include "services/serialportmanager.h"
 
 serialConfig::serialConfig(QWidget *parent) : QDialog(parent), ui(new Ui::serialConfig) {
     ui->setupUi(this);

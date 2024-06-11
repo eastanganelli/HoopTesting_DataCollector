@@ -1,4 +1,4 @@
-#include "shareddata.controller.h"
+#include "shareddata.h"
 
 SharedData::SharedData(const uint stations) {
     this->myStations = StationList();

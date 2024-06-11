@@ -7,7 +7,7 @@
 #include <QList>
 #include <QStringList>
 
-#include "station.controller.h"
+#include "utils/station.h"
 
 typedef enum { Save, Cancel } StationResponse;
 namespace Ui { class SetStation; }

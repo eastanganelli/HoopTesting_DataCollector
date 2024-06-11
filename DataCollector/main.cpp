@@ -1,4 +1,4 @@
-#include "datavisualizer.controller.h"
+#include "components/datavisualizer.h"
 #include <QApplication>
 
 int main(int argc, char *argv[]) {

@@ -9,42 +9,44 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    database.service.cpp \
-    datavisualizer.controller.cpp \
-    global.service.cpp \
+    components/datavisualizer.cpp \
+    components/setdb.cpp \
+    components/setserial.cpp \
+    components/setstation.cpp \
     main.cpp \
-    pressuretempgraph.controller.cpp \
-    qcustomplot.controller.cpp \
-    serialportmanager.controller.cpp \
-    setdb.controller.cpp \
-    setserial.controller.cpp \
-    setstation.controller.cpp \
-    shareddata.controller.cpp \
-    simplecrypt.cpp \
-    station.controller.cpp \
-    stationlist.controller.cpp
+    services/database.cpp \
+    services/global.cpp \
+    services/pressuretempgraph.cpp \
+    services/serialportmanager.cpp \
+    utils/qcustomplot.cpp \
+    utils/shareddata.cpp \
+    utils/sharedstations.cpp \
+    utils/simplecrypt.cpp \
+    utils/station.cpp \
+    utils/stationlist.cpp
 
 HEADERS += \
-    database.service.h \
-    datavisualizer.controller.h \
+    components/datavisualizer.h \
+    components/setdb.h \
+    components/setserial.h \
+    components/setstation.h \
     defines.h \
-    global.service.h \
-    pressuretempgraph.controller.h \
-    qcustomplot.controller.h \
-    serialportmanager.controller.h \
-    setdb.controller.h \
-    setserial.controller.h \
-    setstation.controller.h \
-    shareddata.controller.h \
-    simplecrypt.h \
-    station.controller.h \
-    stationlist.controller.h
+    services/database.h \
+    services/global.h \
+    services/pressuretempgraph.h \
+    services/serialportmanager.h \
+    utils/qcustomplot.h \
+    utils/shareddata.h \
+    utils/sharedstations.h \
+    utils/simplecrypt.h \
+    utils/station.h \
+    utils/stationlist.h
 
 FORMS += \
-    datavisualizer.controller.ui \
-    setdb.controller.ui \
-    setserial.controller.ui \
-    setstation.controller.ui
+    components/datavisualizer.ui \
+    components/setdb.ui \
+    components/setserial.ui \
+    components/setstation.ui
 
 # QMAKE_CXXFLAGS += -Wa,-mbig-obj, -Wno-ignored-qualifiers, -Wsign-compare, -Wignored-qualifiers
 # QMAKE_CXXFLAGS += -Wa,-mbig-obj#,-Wdeprecated-delcarations,-Wignored-qualifiers

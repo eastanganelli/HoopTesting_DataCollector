@@ -2,7 +2,7 @@
 #define SETDB_H
 #include <QDialog>
 #include <QMessageBox>
-#include "database.service.h"
+#include "services/database.h"
 
 namespace Ui { class DBConfig; }
 class DBConfig : public QDialog {

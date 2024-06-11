@@ -1,8 +1,8 @@
-#include "datavisualizer.controller.h"
-#include "ui_datavisualizer.controller.h"
-#include "global.service.h"
-#include "setserial.controller.h"
-#include "setdb.controller.h"
+#include "datavisualizer.h"
+#include "ui_datavisualizer.h"
+#include "services/global.h"
+#include "setserial.h"
+#include "setdb.h"
 
 DataVisualizerWindow::DataVisualizerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::DataVisualizerWindow) {
     ui->setupUi(this);

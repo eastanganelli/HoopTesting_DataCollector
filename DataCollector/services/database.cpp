@@ -1,6 +1,6 @@
-#include "database.service.h"
-#include "defines.h"
-#include "simplecrypt.h"
+#include "../defines.h"
+#include "services/database.h"
+#include "utils/simplecrypt.h"
 
 Database::Database() : QSqlDatabase("QMYSQL") {
     this->setHostName("");

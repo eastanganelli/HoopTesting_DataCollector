@@ -1,7 +1,7 @@
 #ifndef AGRAPH_H
 #define AGRAPH_H
 #include <QtMath>
-#include "qcustomplot.controller.h"
+#include "utils/qcustomplot.h"
 
 class PressureTempGraph : public QCustomPlot {
     Q_OBJECT

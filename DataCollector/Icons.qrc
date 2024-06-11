@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/icon">
-        <file alias="logo">logos ezequiel2_Mesa de trabajo 1.ico</file>
+        <file alias="logo">assets/Data_Collector.ico</file>
     </qresource>
 </RCC>

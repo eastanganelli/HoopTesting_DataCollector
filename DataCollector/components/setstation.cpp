@@ -1,6 +1,6 @@
-#include "setstation.controller.h"
-#include "ui_setstation.controller.h"
-#include "defines.h"
+#include "setstation.h"
+#include "ui_setstation.h"
+#include "../defines.h"
 
 SetStation::SetStation(QWidget *parent) : QDialog(parent) , ui(new Ui::SetStation) {
     ui->setupUi(this);

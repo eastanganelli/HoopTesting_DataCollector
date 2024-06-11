@@ -3,8 +3,8 @@
 #include <QList>
 #include <QSharedPointer>
 #include <QStack>
-#include "defines.h"
-#include "stationlist.controller.h"
+#include "../defines.h"
+#include "utils/stationlist.h"
 
 class SharedData {
     StationList myStations;

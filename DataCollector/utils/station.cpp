@@ -1,6 +1,6 @@
-#include "station.controller.h"
 #include "defines.h"
-#include "global.service.h"
+#include "utils/station.h"
+#include "services/global.h"
 
 unsigned int Station::stations = 0;
 

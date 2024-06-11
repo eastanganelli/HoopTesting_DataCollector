@@ -7,8 +7,8 @@
 #include <QAction>
 #include <QLabel>
 
-#include "database.service.h"
-#include "station.controller.h"
+#include "services/database.h"
+#include "utils/station.h"
 
 #define ms_ 10              // In miliseconds
 #define timeoutConnection 3 // In seconds
