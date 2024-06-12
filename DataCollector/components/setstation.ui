@@ -29,7 +29,7 @@
    <string>Configuración de Estación</string>
   </property>
   <property name="windowIcon">
-   <iconset theme="applications-utilities" resource="Icons.qrc">
+   <iconset theme="applications-utilities" resource="../Icons.qrc">
     <normaloff>:/icon/logo</normaloff>:/icon/logo</iconset>
   </property>
   <property name="modal">
@@ -1234,9 +1234,15 @@
   <tabstop>inputPressure</tabstop>
   <tabstop>inputHoopStress</tabstop>
   <tabstop>txtCondPeriod</tabstop>
+  <tabstop>cbBoxTestType</tabstop>
+  <tabstop>cbBoxEnviroment</tabstop>
+  <tabstop>cbBoxOperator</tabstop>
+  <tabstop>cbBoxEndCap</tabstop>
+  <tabstop>btnSave</tabstop>
+  <tabstop>btnCancel</tabstop>
  </tabstops>
  <resources>
-  <include location="Icons.qrc"/>
+  <include location="../Icons.qrc"/>
  </resources>
  <connections/>
 </ui>

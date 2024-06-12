@@ -41,8 +41,8 @@ void DataVisualizerWindow::setStationsUI() {
         PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(myStation->getID()));
         QTabWidget* myTabs     = this->ui->tabWidget;
         btnRun->setVisible(false);
-        myStation->set(this->myDataDB, pressurelbl, temperaturelbl, timelbl, btnConfig, btnRun, myTabs, mygraph);
-        Station::read(*this->myDataDB.get(), *myStation.get());
+        myStation->set(pressurelbl, temperaturelbl, timelbl, btnConfig, btnRun, myTabs, mygraph);
+        Station::read(*myStation.get());
     }
 }
 
@@ -72,7 +72,7 @@ bool DataVisualizerWindow::btnsStates() {
 void DataVisualizerWindow::btnStationsDialog(const uint id_) {
     QSharedPointer<Station> myStation = myData.getStation(id_);
     this->dialogStation = new SetStation();
-    this->dialogStation->sharePointer(this->myDataDB, myStation);
+    this->dialogStation->sharePointer(myStation);
     this->dialogStation->setModal(true);
     this->dialogStation->exec();
     delete this->dialogStation;
@@ -82,7 +82,7 @@ void DataVisualizerWindow::btnStationsDialog(const uint id_) {
 void DataVisualizerWindow::btnStationStartStop(const uint id_) {
     QSharedPointer<Station> myAuxStation = myData.getStation(id_);
     if(myAuxStation->getStatus() == StationStatus::WAITING) {
-        Station::set(*this->myDataDB.get(), *myAuxStation.get());
+        Station::set(*myAuxStation.get());
         myAuxStation->start();
     } else if(myAuxStation->getStatus() == StationStatus::RUNNING) {
         myAuxStation->stop();

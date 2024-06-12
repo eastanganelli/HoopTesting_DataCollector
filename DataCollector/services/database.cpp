@@ -1,7 +1,7 @@
 #include "utils/simplecrypt.h"
 #include "services/database.h"
 
-QSqlDatabase DatabaseManager::loadConfiguration(const QString connectionName, const QString schemaName) {
+void DatabaseManager::loadConfiguration(QSqlDatabase &myDB) {
     SimpleCrypt myDecrypt;
     myDecrypt.setKey(Q_UINT64_C(0x3453049));
     QSettings mySettings(QApplication::applicationDirPath() + "/settings.ini", QSettings::IniFormat);
@@ -15,14 +15,10 @@ QSqlDatabase DatabaseManager::loadConfiguration(const QString connectionName, co
     if(hostName == "" || userName == "" || password == "" || port == 0) {
         throw new DatabaseError::ConfigurationError("Base de datos no configurada!");
     }
-    QSqlDatabase myDB = QSqlDatabase::addDatabase("QMYSQL", connectionName);
     myDB.setHostName(hostName);
     myDB.setPort(port);
     myDB.setUserName(userName);
     myDB.setPassword(password);
-    myDB.setDatabaseName(schemaName);
-
-    return myDB;
 }
 
 bool DatabaseManager::test(const QString hostname, const uint port, const QString username, const QString password) {

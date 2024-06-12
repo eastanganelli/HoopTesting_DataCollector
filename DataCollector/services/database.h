@@ -11,7 +11,7 @@
 
 class DatabaseManager {
 public:
-    static QSqlDatabase loadConfiguration(const QString connectionName, const QString schemaName);
+    static void loadConfiguration(QSqlDatabase& myDB);
     static bool test(const QString hostname, const uint port, const QString username, const QString password);
     static bool test(QSqlDatabase testDB);
     static void save(const QString hostname, const uint port, const QString username, const QString password);
@@ -19,6 +19,15 @@ public:
 };
 
 namespace DatabaseError {
+    class ConnectionError : public QException {
+        QString error;
+    public:
+        ConnectionError(QString error) { this->error = error; }
+        const QString what() { return this->error; }
+        void raise() const override { throw *this; }
+        ConnectionError *clone() const override { return new ConnectionError(*this); }
+    };
+
     class ConfigurationError : public QException {
         QString error;
     public:

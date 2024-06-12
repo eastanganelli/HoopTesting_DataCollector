@@ -32,7 +32,7 @@
    <string>Base de Datos - Configuración</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="Icons.qrc">
+   <iconset resource="../Icons.qrc">
     <normaloff>:/icon/logo</normaloff>:/icon/logo</iconset>
   </property>
   <property name="sizeGripEnabled">
@@ -172,7 +172,7 @@
   <tabstop>btnCancel</tabstop>
  </tabstops>
  <resources>
-  <include location="Icons.qrc"/>
+  <include location="../Icons.qrc"/>
  </resources>
  <connections/>
 </ui>

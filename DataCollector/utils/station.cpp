@@ -43,7 +43,7 @@ void Station::start() {
         uint condPeriod = this->ui->txtCondPeriod->text().split(" ")[0].toUInt() * 3600;
         QString myMessage = QString::number(this->ID) + "," + QString::number(this->getTargetPressure()) + "," + QString::number(this->getTargetTemperature()) + "," + QString::number(condPeriod) + "\n";
     #else
-       QString myMessage = QString::number(this->ID) + "," + QString::number(this->getTargetPressure()) + "," + QString::number(this->getTargetTemperature()) + "\n";
+       QString myMessage = "start," + QString::number(this->ID) + "," + QString::number(this->getTargetPressure()) + "," + QString::number(this->getTargetTemperature()) + "\n";
     #endif
 
     this->status     = StationStatus::RUNNING;
@@ -57,7 +57,7 @@ void Station::start() {
 }
 
 void Station::stop() {
-    QString msg = QString::number(this->ID) + ",1\n";
+    QString msg = "stop," + QString::number(this->ID) + "\n";
     myData.pushMessageSendPort(msg.toUtf8());
 
     this->myUI.resetUI();
@@ -71,10 +71,9 @@ void Station::stop() {
     this->clearCache();
 }
 
-void Station::set(QSharedPointer<Schemas::Data> dataDB, QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeLabel, QPushButton* configBtn, QPushButton* runBtn, QTabWidget* myTab, PressureTempGraph* myGraph) {
+void Station::set(QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeLabel, QPushButton* configBtn, QPushButton* runBtn, QTabWidget* myTab, PressureTempGraph* myGraph) {
     this->myUI.startUI(pressureLabel, temperatureLabel, timeLabel, configBtn, runBtn, myTab, myGraph);
     this->myUI.graphMaxYAxis(this->MaxPressure, 80);
-    this->dataDB = dataDB;
 }
 
 bool Station::updateStatus(const float pressureInput, const float temperatureInput) {
@@ -101,7 +100,7 @@ bool Station::updateStatus(const float pressureInput, const float temperatureInp
         QString time_ = QString::number((lblText.date().day() - 1) * 24 + lblText.time().hour()) + ":" + lblText.toString("mm:ss");
         this->myUI.updateUI(QString::number(pressureInput, 'f', 2) + " bar", QString::number(temperatureInput, 'f', 2) + " C", time_, key, pressureInput, temperatureInput);
         Data::NodeData myData(this->getIDSpecimen(), pressureInput, temperatureInput);
-        Data::NodeData::insert(*this->dataDB.get(), myData);
+        Data::NodeData::insert(myData);
         return false;
     }
     this->stop();
@@ -118,7 +117,7 @@ uint Station::getIDSample()   { return this->mySample->getID(); }
 
 uint Station::getIDSpecimen() { return this->mySpecimen->getID(); }
 
-void Station::setIDSample(const uint id)                        { this->mySample = QSharedPointer<Data::NodeSample>(new Data::NodeSample(*this->getSample().get(), id)); }
+void Station::setIDSample(const uint id)                         { this->mySample = QSharedPointer<Data::NodeSample>(new Data::NodeSample(*this->getSample().get(), id)); }
 
 void Station::setIDSpecimen(const uint id, const uint idSample) { this->mySpecimen = QSharedPointer<Data::NodeSpecimen>(new Data::NodeSpecimen(*this->getSpecimen().get(), id, idSample));}
 
@@ -157,7 +156,7 @@ void Station::clearCache() {
     mySettings.sync();
 }
 
-void Station::read(Schemas::Data& myDB, Station& myStation) {
+void Station::read(Station& myStation) {
     QSettings mySettings(QApplication::applicationDirPath() + "/cachedStations.ini", QSettings::IniFormat);
     mySettings.beginGroup("Station_" + QString::number(myStation.getID()));
     const uint idSpecimen = mySettings.value("idSpecimen").toUInt();
@@ -171,25 +170,25 @@ void Station::read(Schemas::Data& myDB, Station& myStation) {
     }
 
     if(idSpecimen > 0) {
-        QSharedPointer<Data::NodeSpecimen> mySpecimen = Data::NodeSpecimen::get(myDB, idSpecimen);
-        QSharedPointer<Data::NodeSample>   mySample   = Data::NodeSample::get(myDB, mySpecimen->getIDSample());
+        QSharedPointer<Data::NodeSpecimen> mySpecimen = Data::NodeSpecimen::get(idSpecimen);
+        QSharedPointer<Data::NodeSample>   mySample   = Data::NodeSample::get(mySpecimen->getIDSample());
         myStation.ini(mySample, mySpecimen, initDate, finishDate);
         myStation.start();
     }
     mySettings.endGroup();
 }
 
-void Station::set(Schemas::Data &myDB, Station &myStation) {
+void Station::set(Station &myStation) {
     QSharedPointer<Data::NodeSample>   auxSample   = myStation.getSample();
     QSharedPointer<Data::NodeSpecimen> auxSpecimen = myStation.getSpecimen();
 
-    const uint idSample = Data::NodeSample::insert(myDB, auxSample);
+    const uint idSample = Data::NodeSample::insert(auxSample);
     if(idSample != myStation.getIDSample()) {
         myStation.setIDSample(idSample);
         auxSample = myStation.getSample();
     }
 
-    const uint idSpecimen = Data::NodeSpecimen::insert(myDB, auxSpecimen, idSample);
+    const uint idSpecimen = Data::NodeSpecimen::insert(auxSpecimen, idSample);
     myStation.setIDSpecimen(idSpecimen, idSample);
 }
 

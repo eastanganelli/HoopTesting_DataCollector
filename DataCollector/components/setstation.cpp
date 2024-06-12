@@ -31,8 +31,7 @@ SetStation::~SetStation() {
     delete ui;
 }
 
-void SetStation::sharePointer(QSharedPointer<Schemas::Data> dataDB, QSharedPointer<Station> selectedStation) {
-    this->dataDB          = dataDB;
+void SetStation::sharePointer(QSharedPointer<Station> selectedStation) {
     this->selectedStation = selectedStation;
     this->ui->gpParameters->setTitle("Estación: " + QString::number(selectedStation->getID()));
     if(selectedStation->getID() < 4) { this->ui->inputPressure->setMaximum(30); }
@@ -90,8 +89,8 @@ void SetStation::setConnectionSignals() {
 }
 
 void SetStation::checkSpecimen() {
-    this->idSample = Data::NodeSample::exists(*this->dataDB.get(), this->ui->cbStandard->currentText(), this->ui->cbMaterial->currentText(), this->ui->cbSpecification->currentText(), this->ui->inputDiamNormal->value(), this->ui->inputDiamReal->value(), this->ui->inputWallThickness->value(),  this->ui->inputLenFree->value(), this->ui->inputLenTotal->value(), this->ui->inputPressure->value(), this->ui->cbTemp->currentText().toUInt());
-    this->ui->lblSpecimen->setText("Prueba Nro.: " + QString::number(Data::NodeSpecimen::count(*this->dataDB.get(), this->idSample) + 1));
+    this->idSample = Data::NodeSample::exists(this->ui->cbStandard->currentText(), this->ui->cbMaterial->currentText(), this->ui->cbSpecification->currentText(), this->ui->inputDiamNormal->value(), this->ui->inputDiamReal->value(), this->ui->inputWallThickness->value(),  this->ui->inputLenFree->value(), this->ui->inputLenTotal->value(), this->ui->inputPressure->value(), this->ui->cbTemp->currentText().toUInt());
+    this->ui->lblSpecimen->setText("Prueba Nro.: " + QString::number(Data::NodeSpecimen::count(this->idSample) + 1));
 }
 
 void SetStation::isPopulated() {

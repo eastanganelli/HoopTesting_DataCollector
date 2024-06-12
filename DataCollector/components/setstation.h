@@ -29,7 +29,6 @@ class SetStation : public QDialog {
 
     Ui::SetStation *ui;
     QSharedPointer<Schemas::Static> normsDB;
-    QSharedPointer<Schemas::Data>   dataDB;
     QSharedPointer<Station> selectedStation;
     uint idSample;
     QSharedPointer<NodeStandard>      selectedStandard;
@@ -66,6 +65,6 @@ private slots:
 public:
     explicit SetStation(QWidget *parent = nullptr);
     ~SetStation();
-    void sharePointer(QSharedPointer<Schemas::Data> dataDB = nullptr, QSharedPointer<Station> selectedStation = nullptr);
+    void sharePointer(QSharedPointer<Station> selectedStation = nullptr);
 };
 #endif // SETSTATION_H

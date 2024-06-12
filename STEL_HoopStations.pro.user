@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 13.0.2, 2024-06-11T19:29:22. -->
+<!-- Written by QtCreator 13.0.2, 2024-06-12T01:14:31. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -160,11 +160,13 @@
     <value type="bool" key="PE.EnvironmentAspect.PrintOnRun">false</value>
     <value type="QString" key="PerfRecordArgsId">-e cpu-cycles --call-graph &quot;dwarf,4096&quot; -F 250</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">ProjectExplorer.CustomExecutableRunConfiguration</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey"></value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:D:/ezequ/Projects/HoopTesting_System/HoopTesting_DataCollector/DataCollector/DataCollector.pro</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">D:/ezequ/Projects/HoopTesting_System/HoopTesting_DataCollector/DataCollector/DataCollector.pro</value>
     <value type="bool" key="ProjectExplorer.RunConfiguration.Customized">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
+    <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">D:/ezequ/Projects/HoopTesting_System/HoopTesting_DataCollector/build/Desktop_Qt_6_7_1_MSVC2019_64bit-Debug/DataCollector</value>
    </valuemap>
    <value type="qlonglong" key="ProjectExplorer.Target.RunConfigurationCount">1</value>
   </valuemap>

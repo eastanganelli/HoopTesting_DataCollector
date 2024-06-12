@@ -1480,6 +1480,18 @@
  </customwidgets>
  <tabstops>
   <tabstop>tabWidget</tabstop>
+  <tabstop>btnEstConfig_1</tabstop>
+  <tabstop>btnEstRun_1</tabstop>
+  <tabstop>btnEstConfig_2</tabstop>
+  <tabstop>btnEstRun_2</tabstop>
+  <tabstop>btnEstConfig_3</tabstop>
+  <tabstop>btnEstRun_3</tabstop>
+  <tabstop>btnEstConfig_4</tabstop>
+  <tabstop>btnEstRun_4</tabstop>
+  <tabstop>btnEstConfig_5</tabstop>
+  <tabstop>btnEstRun_5</tabstop>
+  <tabstop>btnEstConfig_6</tabstop>
+  <tabstop>btnEstRun_6</tabstop>
  </tabstops>
  <resources>
   <include location="../Icons.qrc"/>
