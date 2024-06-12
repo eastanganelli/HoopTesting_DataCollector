@@ -1,0 +1,26 @@
+#ifndef SETDB_H
+#define SETDB_H
+#include <QDialog>
+#include <QMessageBox>
+#include "../services/database.h"
+
+namespace Ui { class DBConfig; }
+class DBConfig : public QDialog {
+    Q_OBJECT
+
+    void loadSave();
+
+    Ui::DBConfig *ui;
+    QSqlDatabase myDB;
+
+private slots:
+    void on_btnDBTest_clicked();
+    void on_btnSave_clicked();
+    void on_btnCancel_clicked();
+    void dataIsComplete();
+
+public:
+    explicit DBConfig(QWidget *parent = nullptr);
+    ~DBConfig();
+};
+#endif // SETDB_H
