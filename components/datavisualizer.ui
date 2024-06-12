@@ -1474,7 +1474,7 @@
   <customwidget>
    <class>PressureTempGraph</class>
    <extends>QWidget</extends>
-   <header>services/pressuretempgraph.h</header>
+   <header>../services/pressuretempgraph.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
