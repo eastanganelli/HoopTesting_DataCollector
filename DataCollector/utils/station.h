@@ -4,7 +4,6 @@
 #include <QTimer>
 #include <QLabel>
 #include <QDateTime>
-#include "services/schemas/schemas.h"
 #include "services/schemas/schemaData.h"
 #include "services/pressuretempgraph.h"
 
@@ -50,7 +49,6 @@ class Station {
     const float MaxPressure;
     uint testDuration;
     QDateTime timer, initTest, finishTest;
-    QSharedPointer<Schemas::Data>      dataDB;
     QSharedPointer<Data::NodeSample>   mySample;
     QSharedPointer<Data::NodeSpecimen> mySpecimen;
 
@@ -58,12 +56,12 @@ public:
     Station();
     ~Station();
 
-    static void read(Schemas::Data& myDB, Station& myStation);
-    static void set(Schemas::Data&  myDB, Station& myStation);
+    static void read(Station& myStation);
+    static void set(Station& myStation);
     static void set(QSharedPointer<Station> selectedStation, QSharedPointer<Data::NodeSample> newSample, QSharedPointer<Data::NodeSpecimen> newSpecimen);
     static void set(QSharedPointer<Station> selectedStation, QSharedPointer<Data::NodeSample> mySample,  QSharedPointer<Data::NodeSpecimen> mySpecimen, const uint time_);
 
-    void set(QSharedPointer<Schemas::Data> dataDB, QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeLabel, QPushButton* configBtn, QPushButton *runBtn, QTabWidget* myTab, PressureTempGraph* myGraph);
+    void set(QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeLabel, QPushButton* configBtn, QPushButton *runBtn, QTabWidget* myTab, PressureTempGraph* myGraph);
     void ini(QSharedPointer<Data::NodeSample> inSample = nullptr, QSharedPointer<Data::NodeSpecimen> inSpecimen = nullptr, const uint time_ = 0);
     void ini(QSharedPointer<Data::NodeSample> inSample = nullptr, QSharedPointer<Data::NodeSpecimen> inSpecimen = nullptr, const QDateTime initTime = DEFAULT_DATETIME, const QDateTime finisTime = DEFAULT_DATETIME);
     void start();

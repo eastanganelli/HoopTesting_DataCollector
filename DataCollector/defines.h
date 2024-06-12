@@ -11,8 +11,9 @@
     #define FullDebbuging    1
     #define ParcialDebbuging 2
     #define LightDebbuging   3
-        #define ConsoleDebugOn  1
-        #define ConsoleDebugOff 2
+
+    #define ConsoleDebugOn  1
+    #define ConsoleDebugOff 2
 
 
 #define isRelease 1
