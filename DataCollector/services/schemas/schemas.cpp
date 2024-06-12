@@ -97,8 +97,3 @@ void Schemas::Static::close() {
     this->myDB.close();
     QSqlDatabase::removeDatabase(STATIC_SCHEMA_NAME);
 }
-
-QSqlQuery Schemas::Static::exec(QString query) {
-    QSqlQuery myQuery(query, this->myDB);
-    return myQuery;
-}

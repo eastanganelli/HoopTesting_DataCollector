@@ -45,7 +45,6 @@ namespace Schemas {
         ~Static();
         bool open();
         void close();
-        QSqlQuery exec(QString query);
     };
 }
 

@@ -64,10 +64,10 @@ void SetStation::clearComboBox(QComboBox* myWidget, QString text, bool state) {
 }
 
 void SetStation::preLoadData() {
-    this->listStandards = NodeStandard::get(*this->normsDB.get());
+    this->listStandards = NodeStandard::get();
     for(auto myStandard : this->listStandards) { this->ui->cbStandard->addItem(myStandard->getStandard()); }
 
-    this->listOperators = NodeOperator::get(*this->normsDB.get());
+    this->listOperators = NodeOperator::get();
     for(auto myOperator : this->listOperators) { this->ui->cbBoxOperator->addItem(myOperator->getFullName()); }
 }
 
@@ -167,11 +167,11 @@ void SetStation::on_cbStandard_currentIndexChanged(int index) {
         this->selectedStandard = this->listStandards[index];
         const uint idStandard = this->selectedStandard->getID();
 
-        this->listCondPeriods = NodeConditionalPeriod::get(*this->normsDB.get(), idStandard);
-        this->listEnviroments = NodeEnviroment::get(*this->normsDB.get(),        idStandard);
-        this->listEndCap      = NodeEndCap::get(*this->normsDB.get(),            idStandard);
-        this->listTestTypes   = NodeTestType::get(*this->normsDB.get(),          idStandard);
-        this->listMaterials   = NodeMaterial::get(*this->normsDB.get(),          idStandard);
+        this->listCondPeriods = NodeConditionalPeriod::get(idStandard);
+        this->listEnviroments = NodeEnviroment::get(       idStandard);
+        this->listEndCap      = NodeEndCap::get(           idStandard);
+        this->listTestTypes   = NodeTestType::get(         idStandard);
+        this->listMaterials   = NodeMaterial::get(         idStandard);
 
         QStringList testEndCapsList;
         for(auto myEndCap : this->listEndCap) { testEndCapsList << myEndCap->getEndCap(); }
@@ -202,7 +202,7 @@ void SetStation::on_cbMaterial_currentIndexChanged(int index) {
     if(index > -1) {
         this->selectedMaterial = this->listMaterials[index];
 
-        this->listSpecifications = NodeSpecification::get(*this->normsDB.get(), this->selectedMaterial->getID());
+        this->listSpecifications = NodeSpecification::get(this->selectedMaterial->getID());
         if(this->listSpecifications.length() > 0) {
             QStringList specificationsList;
             for(auto mySpec : this->listSpecifications) { specificationsList << mySpec->getSpecification(); }
@@ -218,7 +218,7 @@ void SetStation::on_cbSpecification_currentIndexChanged(int index) {
     if(index > -1) {
         this->selectedSpecification = this->listSpecifications[index];
 
-        this->listSettings = NodeSetting::get(*this->normsDB.get(), this->selectedSpecification->getID());
+        this->listSettings = NodeSetting::get(this->selectedSpecification->getID());
         if(this->listSettings.length() > 0) {
             QStringList tempList, timeList;
             for(auto mySetting : this->listSettings) {
