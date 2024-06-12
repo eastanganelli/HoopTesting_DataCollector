@@ -23,7 +23,7 @@
    <enum>Qt::NoContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string>Hoop Reader</string>
+   <string>Colector de Datos</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../Icons.qrc">

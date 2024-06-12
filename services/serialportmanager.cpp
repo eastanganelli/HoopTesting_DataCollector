@@ -114,7 +114,7 @@ bool SerialPortReader::openPort() {
     this->portState = false;
     SerialPortReader::read(serialName, baudRate);
     if(serialName.isEmpty()) {
-        QMessageBox msgBox(QMessageBox::Warning , "Puerto Serial - No Configurado", "Configurar el puerto!");
+        QMessageBox msgBox(QMessageBox::Warning , "Configuración", "Puerto Serial no configurado!");
         msgBox.exec();
         this->btnConnect->setText("Conectar");
     } else {
