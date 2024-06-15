@@ -8,19 +8,12 @@
   - [Steps](#steps)
 - [Configuration](#configuration)
   - [Database Configuration](#database-configuration)
+  - [Serial port Configuration](#serial-port-configuration)
   - [Station Settings](#station-settings)
 - [Usage](#usage)
   - [Starting the Application](#starting-the-application)
   - [Collecting Data](#collecting-data)
   - [Visualizing Data](#visualizing-data)
-- [Contributing](#contributing)
-  - [Forking the Repository](#forking-the-repository)
-  - [Creating a New Branch](#creating-a-new-branch)
-  - [Making Changes](#making-changes)
-  - [Pushing Changes](#pushing-changes)
-  - [Opening a Pull Request](#opening-a-pull-request)
-- [License](#license)
-- [Acknowledgements](#acknowledgements)
 
 ## Introduction
 HoopTesting DataCollector is a software application designed to collect and visualize data for hoop testing systems. This project is developed using C++ and the Qt framework, providing a robust and user-friendly interface for managing and analyzing test data.
