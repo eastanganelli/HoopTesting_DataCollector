@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['validrange_0',['validRange',['../class_q_c_p_range.html#ab38bd4841c77c7bb86c9eea0f142dcc0',1,'QCPRange::validRange(double lower, double upper)'],['../class_q_c_p_range.html#a801b964752eaad6219be9d8a651ec2b3',1,'QCPRange::validRange(const QCPRange &amp;range)']]],
+  ['value_1',['value',['../class_q_c_p_graph_data.html#ac97e3ddbdcbe0b58d0b4d6f95250d59c',1,'QCPGraphData::value'],['../class_q_c_p_curve_data.html#a72b39b8e1dbf7b45382ebd48419b6828',1,'QCPCurveData::value'],['../class_q_c_p_bars_data.html#ab636644fb40630f3b1b72f44d65ec072',1,'QCPBarsData::value'],['../class_q_c_p_item_position.html#acfcf86f840a7366a4299bff593d5d636',1,'QCPItemPosition::value()']]],
+  ['valueaxis_2',['valueAxis',['../class_q_c_p_abstract_plottable.html#a842b3831660d3e33b73863fd133889dd',1,'QCPAbstractPlottable::valueAxis()'],['../class_q_c_p_item_position.html#aaa4dc49c9f142ff00b491272febc1de6',1,'QCPItemPosition::valueAxis()'],['../class_q_c_p_polar_graph.html#a5f9549655e46d1a8329029787a17954c',1,'QCPPolarGraph::valueAxis()']]],
+  ['valuerange_3',['valueRange',['../class_q_c_p_data_container.html#a35a102dc2424d1228fc374d9313efbe9',1,'QCPDataContainer::valueRange()'],['../class_q_c_p_graph_data.html#a2f8dd30360356f66cc418a170a9f3792',1,'QCPGraphData::valueRange()'],['../class_q_c_p_curve_data.html#acf15deffd18d400651f8384a95dad9f8',1,'QCPCurveData::valueRange()'],['../class_q_c_p_bars_data.html#acf3e6479dacacd6c81eebe7d4cd62185',1,'QCPBarsData::valueRange()'],['../class_q_c_p_statistical_box_data.html#a1a2410fcf3d45fa3a1ad09e265b9bcad',1,'QCPStatisticalBoxData::valueRange()'],['../class_q_c_p_color_map_data.html#a818e4e384aa4e5fad69ac603924394d3',1,'QCPColorMapData::valueRange()'],['../class_q_c_p_financial_data.html#a164d5584eeeb9ba48b4b595ac2ac7fcf',1,'QCPFinancialData::valueRange()']]],
+  ['valuesize_4',['valueSize',['../class_q_c_p_color_map_data.html#a8510cafea24645bbb62b5e0bfc43209f',1,'QCPColorMapData']]],
+  ['ver_5fcompanydomain_5fstr_5',['VER_COMPANYDOMAIN_STR',['../version_8h.html#a2a7b2019dfe4e3cf3b89f7f186dc5640',1,'version.h']]],
+  ['ver_5fcompanyname_5fstr_6',['VER_COMPANYNAME_STR',['../version_8h.html#ae5e9111e9af54e6a31e3f8b369cd3e19',1,'version.h']]],
+  ['ver_5ffiledescription_5fstr_7',['VER_FILEDESCRIPTION_STR',['../version_8h.html#ad53fc999ea2c9ed67903bcc0bc88f257',1,'version.h']]],
+  ['ver_5ffileversion_8',['VER_FILEVERSION',['../version_8h.html#ae6ef9058da3d1f2efdc365d6643d1de3',1,'version.h']]],
+  ['ver_5ffileversion_5fstr_9',['VER_FILEVERSION_STR',['../version_8h.html#a9ab9575a5fdacc8d78fb6a6a982bb060',1,'version.h']]],
+  ['ver_5finternalname_5fstr_10',['VER_INTERNALNAME_STR',['../version_8h.html#a9c575d8650180954b0a0318d0bb30c71',1,'version.h']]],
+  ['ver_5flegalcopyright_5fstr_11',['VER_LEGALCOPYRIGHT_STR',['../version_8h.html#a0592f3cc57ce5994c8339bd057ae130c',1,'version.h']]],
+  ['ver_5flegaltrademarks1_5fstr_12',['VER_LEGALTRADEMARKS1_STR',['../version_8h.html#a9532e03b291a013007c17978f72d1a80',1,'version.h']]],
+  ['ver_5flegaltrademarks2_5fstr_13',['VER_LEGALTRADEMARKS2_STR',['../version_8h.html#a3788d012ee2bbc1972b1003a16608f31',1,'version.h']]],
+  ['ver_5foriginalfilename_5fstr_14',['VER_ORIGINALFILENAME_STR',['../version_8h.html#abfbc08ce9e78d5afc2d0c129643d9909',1,'version.h']]],
+  ['ver_5fproductname_5fstr_15',['VER_PRODUCTNAME_STR',['../version_8h.html#a80f0560c57c182d6c4a4aaca02d9b261',1,'version.h']]],
+  ['ver_5fproductversion_16',['VER_PRODUCTVERSION',['../version_8h.html#a1f0c72807dfc9de46855bff55bae541c',1,'version.h']]],
+  ['ver_5fproductversion_5fstr_17',['VER_PRODUCTVERSION_STR',['../version_8h.html#a5084df706ac15e76da275c143313f3d9',1,'version.h']]],
+  ['version_2eh_18',['version.h',['../version_8h.html',1,'']]],
+  ['via_20layers_19',['Controlling the rendering order via layers',['../class_q_c_p_layer.html#qcplayer-ordering',1,'']]],
+  ['viewport_20',['viewport',['../class_q_custom_plot.html#a19842409b18f556b256d05e97fffc670',1,'QCustomPlot']]],
+  ['viewportrect_21',['viewportRect',['../class_q_c_p_axis_painter_private.html#a8627dc6b40781e3291bb508e4ac574d6',1,'QCPAxisPainterPrivate']]],
+  ['visible_22',['visible',['../class_q_c_p_layer.html#ad1cc2d6b32d2abb33c7f449b964e068c',1,'QCPLayer::visible()'],['../class_q_c_p_layerable.html#af0297b944b6192b6d67d00bff41b6b70',1,'QCPLayerable::visible()']]]
+];
