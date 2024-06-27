@@ -24,28 +24,28 @@ PressureTempGraph::PressureTempGraph(QWidget* parent) : QCustomPlot(parent) {
     this->replot();
 
     connect(this->xAxis,  SIGNAL(rangeChanged(QCPRange)), this->xAxis2, SLOT(setRange(QCPRange)));
-    connect(this->yAxis,  SIGNAL(rangeChanged(QCPRange)), this->yAxis, SLOT(setRange(QCPRange)));
+    connect(this->yAxis,  SIGNAL(rangeChanged(QCPRange)), this->yAxis,  SLOT(setRange(QCPRange)));
     connect(this->yAxis2, SIGNAL(rangeChanged(QCPRange)), this->yAxis2, SLOT(setRange(QCPRange)));
 }
 
-void PressureTempGraph::changeRanges(const float _pressure, const float _temp) {
-    const float offset = 2.00;
-    if(_pressure > this->maxPressureVal || _pressure < this->minPressureVal) {
-        if(_pressure > this->maxPressureVal) {
-            this->maxPressureVal = _pressure + offset;
+void PressureTempGraph::changeRanges(const float actualPressure, const float actualTemp) {
+    const double offset  = 2.00;
+    if(actualPressure > this->maxPressureVal || actualPressure < this->minPressureVal) {
+        if(actualPressure > this->maxPressureVal) {
+            this->maxPressureVal = actualPressure + offset;
         }
-        else if(_pressure < this->minPressureVal) {
-            this->minPressureVal = _pressure - offset;
+        else if(actualPressure < this->minPressureVal) {
+            this->minPressureVal = actualPressure - offset;
         }
         this->yAxis->setRange(this->minPressureVal, this->maxPressureVal);
     }
 
-    if(_temp > this->maxTempVal || _temp < this->minTempVal) {
-        if(_temp > this->maxTempVal) {
-            this->maxTempVal = _temp + offset;
+    if(actualTemp > this->maxTempVal || actualTemp < this->minTempVal) {
+        if(actualTemp > this->maxTempVal) {
+            this->maxTempVal = actualTemp + offset;
         }
-        else if(_temp < this->minTempVal) {
-            this->minTempVal = _temp - offset;
+        else if(actualTemp < this->minTempVal) {
+            this->minTempVal = actualTemp - offset;
         }
         this->yAxis2->setRange(this->minTempVal, this->maxTempVal);
     }
@@ -61,7 +61,15 @@ void PressureTempGraph::changeRanges(const float _pressure, const float _temp) {
 // void PressureTempGraph::maxtemperature(const unsigned int temperature) { this->yAxis2->setRange(QCPRange(00, (double)temperature + 5.00)); }
 
 void PressureTempGraph::insertData(const double key, const float _pressure, const float _temp) {
-    this->changeRanges(_pressure, _temp);
+    if((this->maxPressureVal == 0.00 && this->minPressureVal == 0.00) && (this->maxTempVal == 0.00 && this->minTempVal == 0.00)) {
+        this->maxPressureVal = static_cast<double>(_pressure) + 2.00;
+        this->minPressureVal = static_cast<double>(_pressure) - 2.00;
+        this->maxTempVal = static_cast<double>(_temp) + 2.00;
+        this->minTempVal = static_cast<double>(_temp) - 2.00;
+
+        this->yAxis->setRange(this->minPressureVal, this->maxPressureVal);
+        this->yAxis2->setRange(this->minTempVal, this->maxTempVal);
+    } else { this->changeRanges(static_cast<double>(_pressure), static_cast<double>(_temp)); }
     this->graph(0)->addData(key, _pressure);
     this->graph(1)->addData(key, _temp);
     this->graph(0)->rescaleValueAxis(true);

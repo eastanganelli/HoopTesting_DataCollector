@@ -7,13 +7,15 @@
 namespace FrontClases {
 class NodeSetting {
     const uint id;
-    uint times, temperature;
+    uint time, temperature;
+    QString timeType;
 public:
-    NodeSetting(const uint id_, const uint times_, const uint temperature_);
+    NodeSetting(const uint id_, const uint time_, const QString timeType_, const uint temperature_);
     static QList<QSharedPointer<FrontClases::NodeSetting>> get(const uint idSpecification);
 
     uint getID() const;
-    uint getTimes() const;
+    QString getTimeType() const;
+    uint getTime() const;
     uint getTemperature() const;
 };
 

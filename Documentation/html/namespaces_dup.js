@@ -87,8 +87,9 @@ var namespaces_dup =
       [ "isInvalidData", "namespace_q_c_p.html#a07ab701c05329089f933b9cae2638a63", null ],
       [ "isInvalidData", "namespace_q_c_p.html#a728903e5c3dd17847bee280f4005496f", null ],
       [ "setMarginValue", "namespace_q_c_p.html#afbf6e3084c108f2bb4372107945ee82f", null ],
-      [ "staticMetaObject", "namespace_q_c_p.html#a07ffa1eb1537a3b1f218ff2a442b2017", null ]
+      [ "staticMetaObject", "namespace_q_c_p.html#a6de91ee30f2faa5e847a7be8b178b0f6", null ]
     ] ],
+    [ "QT_WARNING_DISABLE_DEPRECATED", "namespace_q_t___w_a_r_n_i_n_g___d_i_s_a_b_l_e___d_e_p_r_e_c_a_t_e_d.html", null ],
     [ "Schemas", "namespace_schemas.html", "namespace_schemas" ],
-    [ "Ui", "namespace_ui.html", null ]
+    [ "Ui", "namespace_ui.html", "namespace_ui" ]
 ];

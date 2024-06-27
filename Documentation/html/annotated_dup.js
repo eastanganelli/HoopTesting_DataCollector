@@ -28,6 +28,12 @@ var annotated_dup =
       [ "Data", "class_schemas_1_1_data.html", "class_schemas_1_1_data" ],
       [ "Static", "class_schemas_1_1_static.html", "class_schemas_1_1_static" ]
     ] ],
+    [ "Ui", "namespace_ui.html", [
+      [ "DataVisualizerWindow", "class_ui_1_1_data_visualizer_window.html", null ],
+      [ "DBConfig", "class_ui_1_1_d_b_config.html", null ],
+      [ "serialConfig", "class_ui_1_1serial_config.html", null ],
+      [ "SetStation", "class_ui_1_1_set_station.html", null ]
+    ] ],
     [ "DatabaseManager", "class_database_manager.html", null ],
     [ "DataVisualizerWindow", "class_data_visualizer_window.html", "class_data_visualizer_window" ],
     [ "DBConfig", "class_d_b_config.html", "class_d_b_config" ],
@@ -115,5 +121,9 @@ var annotated_dup =
     [ "SimpleCrypt", "class_simple_crypt.html", "class_simple_crypt" ],
     [ "Station", "class_station.html", "class_station" ],
     [ "StationList", "class_station_list.html", "class_station_list" ],
-    [ "StationUI", "class_station_u_i.html", "class_station_u_i" ]
+    [ "StationUI", "class_station_u_i.html", "class_station_u_i" ],
+    [ "Ui_DataVisualizerWindow", "class_ui___data_visualizer_window.html", "class_ui___data_visualizer_window" ],
+    [ "Ui_DBConfig", "class_ui___d_b_config.html", "class_ui___d_b_config" ],
+    [ "Ui_serialConfig", "class_ui__serial_config.html", "class_ui__serial_config" ],
+    [ "Ui_SetStation", "class_ui___set_station.html", "class_ui___set_station" ]
 ];

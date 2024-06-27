@@ -194,5 +194,5 @@ var qcustomplot_8h =
     [ "Q_DECLARE_TYPEINFO", "qcustomplot_8h.html#adfb047f77f52e89d50655c95ea5469e2", null ],
     [ "Q_DECLARE_TYPEINFO", "qcustomplot_8h.html#accbe1a1a6b69d3db3f495f66375f7301", null ],
     [ "setMarginValue", "qcustomplot_8h.html#afbf6e3084c108f2bb4372107945ee82f", null ],
-    [ "staticMetaObject", "qcustomplot_8h.html#a07ffa1eb1537a3b1f218ff2a442b2017", null ]
+    [ "staticMetaObject", "qcustomplot_8h.html#a6de91ee30f2faa5e847a7be8b178b0f6", null ]
 ];

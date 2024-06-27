@@ -24,7 +24,6 @@ void Station::ini(QSharedPointer<Data::NodeSample> inSample, QSharedPointer<Data
     this->mySample     = inSample;
     this->mySpecimen   = inSpecimen;
     this->testDuration = time_;
-    // this->myUI.graphMaxYAxis(this->mySample->getTargetPressure() + OFFSET_UPPER, this->mySample->getTargetTemperature() + OFFSET_UPPER);
     this->myUI.waiting();
 }
 
@@ -34,18 +33,11 @@ void Station::ini(QSharedPointer<Data::NodeSample> inSample, QSharedPointer<Data
     this->mySpecimen = inSpecimen;
     this->initTest   = initTime;
     this->finishTest = finisTime;
-    // this->myUI.graphMaxYAxis(this->mySample->getTargetPressure() + OFFSET_UPPER, this->mySample->getTargetTemperature() + OFFSET_UPPER);
     this->myUI.waiting();
 }
 
 void Station::start() {
-    #if MODE_ == Emulation
-        uint condPeriod = this->ui->txtCondPeriod->text().split(" ")[0].toUInt() * 3600;
-        QString myMessage = QString::number(this->ID) + "," + QString::number(this->getTargetPressure()) + "," + QString::number(this->getTargetTemperature()) + "," + QString::number(condPeriod) + "\n";
-    #else
-       QString myMessage = "start," + QString::number(this->ID) + "," + QString::number(this->getTargetPressure()) + "," + QString::number(this->getTargetTemperature()) + "\n";
-    #endif
-
+    QString myMessage = "start," + QString::number(this->ID) + "," + QString::number(this->getTargetPressure()) + "," + QString::number(this->getTargetTemperature()) + "\n";
     this->status     = StationStatus::RUNNING;
     this->myUI.running();
     if(this->initTest == DEFAULT_DATETIME && this->finishTest == DEFAULT_DATETIME) {
@@ -73,29 +65,14 @@ void Station::stop() {
 
 void Station::set(QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeLabel, QPushButton* configBtn, QPushButton* runBtn, QTabWidget* myTab, PressureTempGraph* myGraph) {
     this->myUI.startUI(pressureLabel, temperatureLabel, timeLabel, configBtn, runBtn, myTab, myGraph);
-    // this->myUI.graphMaxYAxis(this->MaxPressure, 80);
 }
 
 bool Station::updateStatus(const float pressureInput, const float temperatureInput) {
     QDateTime actualTime = QDateTime::currentDateTime();
-    {
-        #if CONSOLEDEBUGMODE == ConsoleDebugOn
-            qDebug() << "Init   Time:" << this->initTest.toString(datetime_format) << this->initTest.toSecsSinceEpoch();
-            qDebug() << "Actual Time:" << actualTime.toString(datetime_format) << actualTime.toSecsSinceEpoch();
-            qDebug() << "Finish Time:" << this->finishTest.toString(datetime_format) << this->finishTest.toSecsSinceEpoch();
-            qDebug() << (actualTime < this->finishTest);
-        #endif
-    }
 
-    if(actualTime <= this->finishTest) {
+    if(actualTime <= this->finishTest.addSecs(1)) {
         uint key = this->initTest.msecsTo(actualTime);
         QDateTime lblText = this->timer.addMSecs(key);
-        {
-            #if CONSOLEDEBUGMODE == ConsoleDebugOn
-                qDebug() << "Key   value:" << key;
-                qDebug() << "Label Time:" << lblText.toString(datetime_format) << lblText.toSecsSinceEpoch();
-            #endif
-        }
 
         QString time_ = QString::number((lblText.date().day() - 1) * 24 + lblText.time().hour()) + ":" + lblText.toString("mm:ss");
         this->myUI.updateUI(QString::number(pressureInput, 'f', 2) + " bar", QString::number(temperatureInput, 'f', 2) + " C", time_, key, pressureInput, temperatureInput);
@@ -106,8 +83,6 @@ bool Station::updateStatus(const float pressureInput, const float temperatureInp
     this->stop();
     return true;
 }
-
-// void Station::setMax() { this->myUI.graphMaxYAxis(this->getTargetPressure() + OFFSET_UPPER, this->getTargetTemperature() + OFFSET_UPPER); }
 
 void Station::setVisibleGraph(uint index) { this->myUI.selectGraph(index); }
 
@@ -142,17 +117,14 @@ void Station::saveCache() {
     mySettings.setValue("initTime",    this->initTest.toString(datetime_format));
     mySettings.setValue("finishTime",  this->finishTest.toString(datetime_format));
     mySettings.endGroup();
-
     mySettings.sync();
 }
 
 void Station::clearCache() {
     QSettings mySettings(QApplication::applicationDirPath() + "/cachedStations.ini", QSettings::IniFormat);
-
     mySettings.beginGroup("Station_" + QString::number(this->ID));
     mySettings.remove("");
     mySettings.endGroup();
-
     mySettings.sync();
 }
 
@@ -162,13 +134,6 @@ void Station::read(Station& myStation) {
     const uint idSpecimen = mySettings.value("idSpecimen").toUInt();
     const QDateTime finishDate = QDateTime::fromString(mySettings.value("finishTime").toString(), QString(datetime_format)),
                     initDate   = QDateTime::fromString(mySettings.value("initTime").toString(),   QString(datetime_format));
-    {
-        #if CONSOLEDEBUGMODE == ConsoleDebugOn
-            qDebug() << "ID Specimen:"     << idSpecimen
-                     << "Finish Datetime:" << finishDate.toString(datetime_format);
-        #endif
-    }
-
     if(idSpecimen > 0) {
         QSharedPointer<Data::NodeSpecimen> mySpecimen = Data::NodeSpecimen::get(idSpecimen);
         QSharedPointer<Data::NodeSample>   mySample   = Data::NodeSample::get(mySpecimen->getIDSample());
@@ -181,20 +146,17 @@ void Station::read(Station& myStation) {
 void Station::set(Station &myStation) {
     QSharedPointer<Data::NodeSample>   auxSample   = myStation.getSample();
     QSharedPointer<Data::NodeSpecimen> auxSpecimen = myStation.getSpecimen();
-
     const uint idSample = Data::NodeSample::insert(auxSample);
     if(idSample != myStation.getIDSample()) {
         myStation.setIDSample(idSample);
         auxSample = myStation.getSample();
     }
-
     const uint idSpecimen = Data::NodeSpecimen::insert(auxSpecimen, idSample);
     myStation.setIDSpecimen(idSpecimen, idSample);
 }
 
 void Station::set(QSharedPointer<Station> selectedStation, QSharedPointer<Data::NodeSample> mySample, QSharedPointer<Data::NodeSpecimen> mySpecimen, const uint time_) {
     selectedStation->ini(mySample, mySpecimen, time_);
-    // selectedStation->setMax();
     selectedStation->setVisibleGraph(selectedStation->getID());
 }
 
@@ -246,11 +208,6 @@ void StationUI::resetUI() {
     this->runBtn->setText("Iniciar");
     this->myGraph->reset();
 }
-
-// void StationUI::graphMaxYAxis(const uint maxPressure, const uint maxTemperature) {
-//     this->myGraph->maxPressure(maxPressure);
-//     this->myGraph->maxtemperature(maxTemperature);
-// }
 
 void StationUI::selectGraph(uint index) { this->myTab->setCurrentIndex(index - 1); }
 

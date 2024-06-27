@@ -83,22 +83,24 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"_icons__rc_8py.html",
-"class_q_c_p_abstract_item.html#a81d1ecfea3368b836cf9675a0045e659",
-"class_q_c_p_axis.html#a893e8d6cfed9267eb2b793cb1d2b4dce",
-"class_q_c_p_axis_ticker.html#aefbd11725678ca824add8cf926cbc856",
-"class_q_c_p_color_gradient.html#afd38ab8d2cceef9cd98eef88408ccb7ea6abad803991346258fe0270ba24c2172",
-"class_q_c_p_data_selection.html",
-"class_q_c_p_grid.html#af16a269b15b2a8d904be087d060536bc",
-"class_q_c_p_item_rect.html#af94d87da501e9429c0e874f1c0369b03",
-"class_q_c_p_layerable.html#aa0d79b005686f668622bbe66ac03ba2c",
-"class_q_c_p_line_ending.html#a5ef16e6876b4b74959c7261d8d4c2cd5a378fe5a8b768411b0bc1765210fe7200",
-"class_q_c_p_polar_axis_angular.html#ac7419c6d953e8be82fd2dddc72f417b3",
-"class_q_c_p_polar_graph.html#a13330b1512186ab5e26ee0d7b207ceab",
-"class_q_c_p_selection_decorator_bracket.html#a2f4ea0bfb0ea980252b76dd349dd53aa",
-"class_q_custom_plot.html#a62bf8e4e7f8d23fc1e9301ba0148269f",
-"class_station_u_i.html#a52a56653af4daa6c1f905466b9d72685",
-"namespacemembers_func.html"
+"_desktop___qt__6__7__2___m_s_v_c2019__64bit-_debug_2_c_make_files_23_829_83_2_compiler_id_c_x_x_2_c_make_c_x_x_compiler_id_8cpp.html",
+"class_database_error_1_1_connection_error.html#ae1d620f9dbc189d46e8e636c9a21d251",
+"class_q_c_p_abstract_plottable.html#a663b1a44123c8340ac041a29d1e2c973",
+"class_q_c_p_axis_painter_private.html#a389dde97f02fdee23965e4736e7d8c62",
+"class_q_c_p_axis_ticker_time.html#a58305b56f847bcab8b3c852a21bdb91a",
+"class_q_c_p_color_scale.html#a409d2ab78dff1f92da5e6acfb062e811",
+"class_q_c_p_financial.html#a25d9a8f256e5ddcba56b6e2e7e968653",
+"class_q_c_p_item_ellipse.html#a8288f7ce760fc795f5ce4e61136bda19",
+"class_q_c_p_item_tracer.html#a4e42d7b49f293273a74a49a2457856e2",
+"class_q_c_p_layout_grid.html#a35a20072cbca5659dd75ca74eae87beb",
+"class_q_c_p_polar_axis_angular.html#a1513b98be721e6f8abb75aa49932cf20",
+"class_q_c_p_polar_axis_radial.html#a3ebe71553581fe726a7f5108686655ca",
+"class_q_c_p_polar_grid.html#a654c8090e410942f7c0e939c8b4dcfe0",
+"class_q_c_p_statistical_box_data.html#a168100275e85935207deec86216abc88",
+"class_q_custom_plot.html#ad3547aded026d8a9ae6ef13a69080d06",
+"class_ui___data_visualizer_window.html#aa5b4af51b7cec05ee133fd8236ced51e",
+"functions_u.html",
+"qcustomplot_8h.html#ae55dbe315d41fe80f29ba88100843a0caaedf83369188a15a69f92bb1d85ca97b"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

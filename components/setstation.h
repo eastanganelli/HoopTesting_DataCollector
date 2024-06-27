@@ -34,6 +34,7 @@ class SetStation : public QDialog {
     QSharedPointer<NodeStandard>      selectedStandard;
     QSharedPointer<NodeMaterial>      selectedMaterial;
     QSharedPointer<NodeSpecification> selectedSpecification;
+    QSharedPointer<NodeSetting>       selectedSetting;
     QSharedPointer<NodeEndCap>        selectedEndCap;
     QSharedPointer<NodeTestType>      selectedTestType;
     QSharedPointer<NodeOperator>      selectedOperator;
@@ -61,6 +62,8 @@ private slots:
     void on_cbBoxEnviroment_currentIndexChanged(int index);
     void on_btnSave_clicked();
     void on_btnCancel_clicked();
+
+    void on_cbBoxTestTime_currentIndexChanged(int index);
 
 public:
     explicit SetStation(QWidget *parent = nullptr);

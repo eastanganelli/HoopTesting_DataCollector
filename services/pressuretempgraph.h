@@ -5,8 +5,8 @@
 
 class PressureTempGraph : public QCustomPlot {
     Q_OBJECT
-    float minPressureVal, maxPressureVal, minTempVal, maxTempVal;
-    void changeRanges(const float _pressure, const float _temp);
+    double minPressureVal, maxPressureVal, minTempVal, maxTempVal;
+    void changeRanges(const float actualPressure, const float actualTemp);
 
 public:
     PressureTempGraph(QWidget* parent = nullptr);

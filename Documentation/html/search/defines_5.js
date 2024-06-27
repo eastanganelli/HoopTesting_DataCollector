@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lightdebbuging_0',['LightDebbuging',['../defines_8h.html#aff804800683ca2fbe7680990d9e8af9e',1,'defines.h']]]
+  ['fulldebbuging_0',['FullDebbuging',['../defines_8h.html#afbc6a018afa5a50649d958bc5795e414',1,'defines.h']]]
 ];

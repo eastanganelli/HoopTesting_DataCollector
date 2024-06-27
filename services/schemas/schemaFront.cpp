@@ -1,8 +1,9 @@
 #include "../../services/database.h"
 #include "schemaFront.h"
 
-FrontClases::NodeSetting::NodeSetting(const uint id_, const uint times_, const uint temperature_) : id(id_) {
-    this->times       = times_;
+FrontClases::NodeSetting::NodeSetting(const uint id_, const uint time_, const QString timeType_, const uint temperature_) : id(id_) {
+    this->time        = time_;
+    this->timeType    = timeType_;
     this->temperature = temperature_;
 }
 
@@ -16,7 +17,7 @@ QList<QSharedPointer<FrontClases::NodeSetting>> FrontClases::NodeSetting::get(co
     try {
         QSqlQuery mySettingsQuery(myDB);
         mySettingsQuery.exec(Script);
-        while(mySettingsQuery.next()) { auxList.append(QSharedPointer<FrontClases::NodeSetting>(new FrontClases::NodeSetting(mySettingsQuery.value(0).toUInt(), mySettingsQuery.value(1).toUInt(), mySettingsQuery.value(2).toUInt()))); }
+        while(mySettingsQuery.next()) { auxList.append(QSharedPointer<FrontClases::NodeSetting>(new FrontClases::NodeSetting(mySettingsQuery.value("idSetting").toUInt(), mySettingsQuery.value("time").toUInt(), mySettingsQuery.value("timeType").toString(), mySettingsQuery.value("temperature").toUInt()))); }
     }
     catch(DatabaseError::QuerySelectError* ex) { qDebug() << ex->what(); }
     return auxList;
@@ -24,7 +25,9 @@ QList<QSharedPointer<FrontClases::NodeSetting>> FrontClases::NodeSetting::get(co
 
 uint FrontClases::NodeSetting::getID() const { return this->id; }
 
-uint FrontClases::NodeSetting::getTimes() const { return this->times; }
+uint FrontClases::NodeSetting::getTime() const { return this->time; }
+
+QString FrontClases::NodeSetting::getTimeType() const { return this->timeType; }
 
 uint FrontClases::NodeSetting::getTemperature() const { return this->temperature; }
 

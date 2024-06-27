@@ -158,5 +158,21 @@ var hierarchy =
     [ "Schemas::Static", "class_schemas_1_1_static.html", null ],
     [ "Station", "class_station.html", null ],
     [ "StationUI", "class_station_u_i.html", null ],
-    [ "QCPAxisPainterPrivate::TickLabelData", "struct_q_c_p_axis_painter_private_1_1_tick_label_data.html", null ]
+    [ "QCPAxisPainterPrivate::TickLabelData", "struct_q_c_p_axis_painter_private_1_1_tick_label_data.html", null ],
+    [ "Ui_DataVisualizerWindow", "class_ui___data_visualizer_window.html", [
+      [ "Ui::DataVisualizerWindow", "class_ui_1_1_data_visualizer_window.html", null ],
+      [ "Ui::DataVisualizerWindow", "class_ui_1_1_data_visualizer_window.html", null ]
+    ] ],
+    [ "Ui_DBConfig", "class_ui___d_b_config.html", [
+      [ "Ui::DBConfig", "class_ui_1_1_d_b_config.html", null ],
+      [ "Ui::DBConfig", "class_ui_1_1_d_b_config.html", null ]
+    ] ],
+    [ "Ui_serialConfig", "class_ui__serial_config.html", [
+      [ "Ui::serialConfig", "class_ui_1_1serial_config.html", null ],
+      [ "Ui::serialConfig", "class_ui_1_1serial_config.html", null ]
+    ] ],
+    [ "Ui_SetStation", "class_ui___set_station.html", [
+      [ "Ui::SetStation", "class_ui_1_1_set_station.html", null ],
+      [ "Ui::SetStation", "class_ui_1_1_set_station.html", null ]
+    ] ]
 ];

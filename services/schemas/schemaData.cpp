@@ -41,9 +41,6 @@ QSharedPointer<Data::NodeSample> Data::NodeSample::get(const uint idSample) {
     QSqlQuery getSample(myDB);
     getSample.exec(Script);
     getSample.next();
-#if CONSOLEDEBUGMODE == ConsoleDebugOn
-    qDebug() << "SQl Script: " << Script;
-#endif
     const QString standard = getSample.value("standard").toString(),
         material           = getSample.value("material").toString(),
         specification      = getSample.value("specification").toString(),
@@ -67,12 +64,6 @@ uint Data::NodeSample::insert(QSharedPointer<Data::NodeSample> sample) {
     QSqlQuery newSample(myDB);
     newSample.exec(Script);
     newSample.next();
-    {
-#if CONSOLEDEBUGMODE == ConsoleDebugOn
-        qDebug() << "SQl Script: " << Script;
-        qDebug() << "ID Sample: "  << newSample.value("idSample").toUInt();
-#endif
-    }
     return newSample.value("idSample").toUInt();
 }
 
@@ -86,12 +77,6 @@ uint Data::NodeSample::exists(const QString standard, const QString material, co
         QSqlQuery sampleExists(myDB);
         sampleExists.exec(Script);
         sampleExists.next();
-        {
-#if CONSOLEDEBUGMODE == ConsoleDebugOn
-            qDebug() << "SQL Script: " << Script;
-            qDebug() << "ID Sample: "  << sampleExists.value("idSample").toInt();
-#endif
-        }
         return sampleExists.value("idSample").toUInt();
     }
     catch(DatabaseError::QuerySelectError* ex) { qDebug() << "Base de Datos - Selección: " << ex->what(); }
@@ -140,17 +125,10 @@ Data::NodeSpecimen::~NodeSpecimen() { }
 QSharedPointer<Data::NodeSpecimen> Data::NodeSpecimen::get(const uint idSpecimen) {
     const QString Script = "CALL selectSpecimen(" + QString::number(idSpecimen) + ");";
     QSqlDatabase myDB = QSqlDatabase::database(DATA_SCHEMA_NAME);
-    if(!myDB.isOpen()) {
-        throw "no esta abierto";
-    }
+    if(!myDB.isOpen()) { throw "no esta abierto"; }
     QSqlQuery getSpecimen(myDB);
     getSpecimen.exec(Script);
     getSpecimen.next();
-    {
-#if CONSOLEDEBUGMODE == ConsoleDebugOn
-        qDebug() << "SQL Script: "  << Script;
-#endif
-    }
 
     const uint idSample = getSpecimen.value("idSample").toUInt();
     const QString enviromental = getSpecimen.value("enviroment").toString(),
@@ -169,12 +147,6 @@ uint Data::NodeSpecimen::insert(QSharedPointer<Data::NodeSpecimen> specimen) {
     QSqlQuery newSpecimen(myDB);
     newSpecimen.exec(Script);
     newSpecimen.next();
-    {
-#if CONSOLEDEBUGMODE == ConsoleDebugOn
-        qDebug() << "SQL Script: "  << Script;
-        qDebug() << "ID Specimen: " << newSpecimen.value("idSpecimen").toUInt();
-#endif
-    }
     return newSpecimen.value("idSpecimen").toUInt();
 }
 
@@ -187,12 +159,6 @@ uint Data::NodeSpecimen::insert(QSharedPointer<NodeSpecimen> specimen, const uin
     QSqlQuery newSpecimen(myDB);
     newSpecimen.exec(Script);
     newSpecimen.next();
-    {
-#if CONSOLEDEBUGMODE == ConsoleDebugOn
-        qDebug() << "SQL Script: "  << Script;
-        qDebug() << "ID Specimen: " << newSpecimen.value("idSpecimen").toUInt();
-#endif
-    }
     return newSpecimen.value("idSpecimen").toUInt();
 }
 
@@ -206,13 +172,6 @@ uint Data::NodeSpecimen::count(const uint idSample) {
         QSqlQuery countSpecimens(myDB);
         countSpecimens.exec(Script);
         countSpecimens.next();
-        {
-#if CONSOLEDEBUGMODE == ConsoleDebugOn
-            qDebug() << "SQL Script: " << Script;
-            qDebug() << "Specimens counts: " << countSpecimens.value("counts").toUInt();
-#endif
-        }
-
         return countSpecimens.value("counts").toUInt();
     } catch(DatabaseError::QuerySelectError* ex) { qDebug() << "Base de Datos - Selección: " << ex->what(); }
     return NULL;
@@ -252,7 +211,4 @@ void Data::NodeData::insert(Data::NodeData &myData) {
     QSqlQuery insertData(myDB);
     insertData.exec(Script);
     insertData.next();
-#if CONSOLEDEBUGMODE == ConsoleDebugOn
-    qDebug() << "SQL Script: " << Script;
-#endif
 }

@@ -1,6 +1,25 @@
 var searchData=
 [
-  ['upper_0',['upper',['../class_q_c_p_range.html#ae44eb3aafe1d0e2ed34b499b6d2e074f',1,'QCPRange']]],
-  ['upperending_1',['upperEnding',['../class_q_c_p_axis_painter_private.html#af764be913be5f924700ac9bbb8c01139',1,'QCPAxisPainterPrivate']]],
-  ['upperquartile_2',['upperQuartile',['../class_q_c_p_statistical_box_data.html#a5604dfe04b103e5ac73ce7895b46303b',1,'QCPStatisticalBoxData']]]
+  ['serialconfig_0',['serialConfig',['../class_ui___data_visualizer_window.html#adadcd0154e56e0a6810a569748f7d362',1,'Ui_DataVisualizerWindow']]],
+  ['serialconnect_1',['serialConnect',['../class_ui___data_visualizer_window.html#aa41c1ccc1dd87f35a6eaa167f11ba75d',1,'Ui_DataVisualizerWindow']]],
+  ['side_2',['side',['../struct_q_c_p_label_painter_private_1_1_label_data.html#af7606f1262f0892069925803a95b8966',1,'QCPLabelPainterPrivate::LabelData']]],
+  ['start_3',['start',['../class_q_c_p_item_line.html#a602da607a09498b0f152ada1d6851bc5',1,'QCPItemLine::start'],['../class_q_c_p_item_curve.html#a20c3b5ea31c33764f4f30c2ec7ae518b',1,'QCPItemCurve::start']]],
+  ['startdir_4',['startDir',['../class_q_c_p_item_curve.html#aa124bf66c09cc51c627fb49db8bf8a7b',1,'QCPItemCurve']]],
+  ['staticmetaobject_5',['staticMetaObject',['../namespace_q_c_p.html#a6de91ee30f2faa5e847a7be8b178b0f6',1,'QCP']]],
+  ['station_5f1_6',['Station_1',['../class_ui___data_visualizer_window.html#a463953c9457d91886e72f55145ccffcf',1,'Ui_DataVisualizerWindow']]],
+  ['station_5f2_7',['Station_2',['../class_ui___data_visualizer_window.html#a87a6070daf237c28fb8d30e921e4cf92',1,'Ui_DataVisualizerWindow']]],
+  ['station_5f3_8',['Station_3',['../class_ui___data_visualizer_window.html#adefb5688d59ff2a5d71848daa3af1de5',1,'Ui_DataVisualizerWindow']]],
+  ['station_5f4_9',['Station_4',['../class_ui___data_visualizer_window.html#aa5b7bb13c6045856405c38870356f2d2',1,'Ui_DataVisualizerWindow']]],
+  ['station_5f5_10',['Station_5',['../class_ui___data_visualizer_window.html#a86367baf8aa5e6bc13c48df7ec12e511',1,'Ui_DataVisualizerWindow']]],
+  ['station_5f6_11',['Station_6',['../class_ui___data_visualizer_window.html#ac53ad48390344e13d79165c4f761ae46',1,'Ui_DataVisualizerWindow']]],
+  ['statusbar_12',['statusBar',['../class_ui___data_visualizer_window.html#ab808d4587c5679343b2f5d295debc3bd',1,'Ui_DataVisualizerWindow']]],
+  ['substituteexponent_13',['substituteExponent',['../class_q_c_p_axis_painter_private.html#a546d22b10ddb5ca8582b7deb90223a91',1,'QCPAxisPainterPrivate']]],
+  ['subticklengthin_14',['subTickLengthIn',['../class_q_c_p_axis_painter_private.html#af11f7d83021c9cb3b0e76fe7814c6110',1,'QCPAxisPainterPrivate']]],
+  ['subticklengthout_15',['subTickLengthOut',['../class_q_c_p_axis_painter_private.html#a5f1afddc3dc7ccc4d5adcbcd8f0c2218',1,'QCPAxisPainterPrivate']]],
+  ['subtickpen_16',['subTickPen',['../class_q_c_p_axis_painter_private.html#a9b9cf594cd16575f52ecda9abef4e412',1,'QCPAxisPainterPrivate']]],
+  ['subtickpositions_17',['subTickPositions',['../class_q_c_p_axis_painter_private.html#afcde7484bbcc1004b8f59ab984ada6f9',1,'QCPAxisPainterPrivate']]],
+  ['suffixbounds_18',['suffixBounds',['../struct_q_c_p_label_painter_private_1_1_label_data.html#abd6814f47433d8209aaad6cdb6e44053',1,'QCPLabelPainterPrivate::LabelData::suffixBounds'],['../struct_q_c_p_axis_painter_private_1_1_tick_label_data.html#aa286a44422223bd4f0b044cc822079f6',1,'QCPAxisPainterPrivate::TickLabelData::suffixBounds']]],
+  ['suffixpart_19',['suffixPart',['../struct_q_c_p_label_painter_private_1_1_label_data.html#a4aefeae9615a47a789bfff5e73ce54a6',1,'QCPLabelPainterPrivate::LabelData::suffixPart'],['../struct_q_c_p_axis_painter_private_1_1_tick_label_data.html#a3cbf21c6411730a318f8d2287b77d840',1,'QCPAxisPainterPrivate::TickLabelData::suffixPart']]],
+  ['symbolcross_20',['SymbolCross',['../class_q_c_p_label_painter_private.html#a4299cda0568e3463c4e37000db399a12',1,'QCPLabelPainterPrivate']]],
+  ['symboldot_21',['SymbolDot',['../class_q_c_p_label_painter_private.html#a24727e07d16b53e26be3ab57b8a47ffa',1,'QCPLabelPainterPrivate']]]
 ];

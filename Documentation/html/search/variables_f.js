@@ -1,22 +1,10 @@
 var searchData=
 [
-  ['t_0',['t',['../class_q_c_p_curve_data.html#aecc395525be28e9178a088793beb3ff3',1,'QCPCurveData']]],
-  ['ticklabelcolor_1',['tickLabelColor',['../class_q_c_p_axis_painter_private.html#a88032cf15c997e3956b79617b859e8ad',1,'QCPAxisPainterPrivate']]],
-  ['ticklabelfont_2',['tickLabelFont',['../class_q_c_p_axis_painter_private.html#a06cb4b185feb1e560e01d65887e4d80d',1,'QCPAxisPainterPrivate']]],
-  ['ticklabelpadding_3',['tickLabelPadding',['../class_q_c_p_axis_painter_private.html#a264cfa080e84e536cf2d1ab9c5d5cc5f',1,'QCPAxisPainterPrivate']]],
-  ['ticklabelrotation_4',['tickLabelRotation',['../class_q_c_p_axis_painter_private.html#ae6ade9232a8e400924009e8edca94bac',1,'QCPAxisPainterPrivate']]],
-  ['ticklabels_5',['tickLabels',['../class_q_c_p_axis_painter_private.html#ad0a4998ca358ba751e84fca45a025abd',1,'QCPAxisPainterPrivate']]],
-  ['ticklabelside_6',['tickLabelSide',['../class_q_c_p_axis_painter_private.html#a9d27f7625fcfbeb3a60193d0c18fc7e9',1,'QCPAxisPainterPrivate']]],
-  ['ticklengthin_7',['tickLengthIn',['../class_q_c_p_axis_painter_private.html#ae7360ff805fc6097019de8b35ffbd7e7',1,'QCPAxisPainterPrivate']]],
-  ['ticklengthout_8',['tickLengthOut',['../class_q_c_p_axis_painter_private.html#acbebb1f868906200f968627bc907b77d',1,'QCPAxisPainterPrivate']]],
-  ['tickpen_9',['tickPen',['../class_q_c_p_axis_painter_private.html#a389dde97f02fdee23965e4736e7d8c62',1,'QCPAxisPainterPrivate']]],
-  ['tickpositions_10',['tickPositions',['../class_q_c_p_axis_painter_private.html#ae55e3dc2cf2af8d8a6e7235ccab54786',1,'QCPAxisPainterPrivate']]],
-  ['top_11',['top',['../class_q_c_p_item_rect.html#a96e50db552fb297d6fb62614676217bc',1,'QCPItemRect::top'],['../class_q_c_p_item_text.html#a5c87ee162cbbe3d166b97826c8849304',1,'QCPItemText::top'],['../class_q_c_p_item_ellipse.html#ad50f907d6f9d1402c6c5d302dca5c5d5',1,'QCPItemEllipse::top'],['../class_q_c_p_item_pixmap.html#af7a156590b1d59ab21b453c430c56a7c',1,'QCPItemPixmap::top']]],
-  ['topleft_12',['topLeft',['../class_q_c_p_item_rect.html#aa70feeef173489b03c3fbe906a5023c4',1,'QCPItemRect::topLeft'],['../class_q_c_p_item_text.html#a6354d8762182a3502103fabe5fbb8512',1,'QCPItemText::topLeft'],['../class_q_c_p_item_ellipse.html#a12fd8420c06718d0c8a2303d6a652848',1,'QCPItemEllipse::topLeft'],['../class_q_c_p_item_pixmap.html#a43c281ef6ad46f3cf04f365289abe51a',1,'QCPItemPixmap::topLeft']]],
-  ['topleftrim_13',['topLeftRim',['../class_q_c_p_item_ellipse.html#a33ebd2a751b63b9240edc9aa46c19eff',1,'QCPItemEllipse']]],
-  ['topright_14',['topRight',['../class_q_c_p_item_rect.html#a77e0eb6e4aa6efee620d35e2c21bdad7',1,'QCPItemRect::topRight'],['../class_q_c_p_item_text.html#ad18ac45cb4cc135de1eb78f2e86b6504',1,'QCPItemText::topRight'],['../class_q_c_p_item_pixmap.html#a72eabd0010be41a4ec1b22aa983d2aa1',1,'QCPItemPixmap::topRight']]],
-  ['toprightrim_15',['topRightRim',['../class_q_c_p_item_ellipse.html#a744446970b38a4a3bbea46d722b7c54d',1,'QCPItemEllipse']]],
-  ['totalbounds_16',['totalBounds',['../struct_q_c_p_label_painter_private_1_1_label_data.html#af4843231109ed291e6d1801e355ea723',1,'QCPLabelPainterPrivate::LabelData::totalBounds'],['../struct_q_c_p_axis_painter_private_1_1_tick_label_data.html#afbb3163cf4c628914f1b703945419ea5',1,'QCPAxisPainterPrivate::TickLabelData::totalBounds']]],
-  ['transform_17',['transform',['../struct_q_c_p_label_painter_private_1_1_label_data.html#a5e53ca7c728fbbd6abaf66f9eba5186c',1,'QCPLabelPainterPrivate::LabelData']]],
-  ['type_18',['type',['../class_q_c_p_axis_painter_private.html#ae04594e97417336933d807c86d353098',1,'QCPAxisPainterPrivate']]]
+  ['radhours_0',['radHours',['../class_ui___set_station.html#ab817a82bf6a9cfc5246595f8c4021aff',1,'Ui_SetStation']]],
+  ['radseconds_1',['radSeconds',['../class_ui___set_station.html#ad48e0cda90e2956d874f1b643e71f8ef',1,'Ui_SetStation']]],
+  ['rcc_5fversion_2',['rcc_version',['../namespace_icons__rc.html#a2c7ac7b371a9b3964ff81381e338318b',1,'Icons_rc']]],
+  ['reversedendings_3',['reversedEndings',['../class_q_c_p_axis_painter_private.html#a06d0ef3f4f1b567feb84196fc3b140da',1,'QCPAxisPainterPrivate']]],
+  ['right_4',['right',['../class_q_c_p_item_rect.html#a7979c1915f61ad2609a9cc179c2e445e',1,'QCPItemRect::right'],['../class_q_c_p_item_text.html#aef159622ce6502412e782a21ba6d84f2',1,'QCPItemText::right'],['../class_q_c_p_item_ellipse.html#a50091a3bd8761d3ce0d95d9c727e4a82',1,'QCPItemEllipse::right'],['../class_q_c_p_item_pixmap.html#ac9c0fd231f9e285765978a05d13f8280',1,'QCPItemPixmap::right'],['../class_q_c_p_item_bracket.html#afa6c1360b05a50c4e0df37b3cebab6be',1,'QCPItemBracket::right']]],
+  ['rotatedtotalbounds_5',['rotatedTotalBounds',['../struct_q_c_p_label_painter_private_1_1_label_data.html#ac5360318c8f86dc79fd485f125befa09',1,'QCPLabelPainterPrivate::LabelData::rotatedTotalBounds'],['../struct_q_c_p_axis_painter_private_1_1_tick_label_data.html#aa4d38c5ea47c9184a78ee33ae7f1012e',1,'QCPAxisPainterPrivate::TickLabelData::rotatedTotalBounds']]],
+  ['rotation_6',['rotation',['../struct_q_c_p_label_painter_private_1_1_label_data.html#a37774ba8469ad8c5e4b3b75fef6f1ea7',1,'QCPLabelPainterPrivate::LabelData']]]
 ];

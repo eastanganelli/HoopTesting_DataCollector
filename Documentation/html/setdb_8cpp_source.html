@@ -28,7 +28,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">DataCollector<span id="projectnumber">&#160;1.0</span>
+   <div id="projectname">DataCollector<span id="projectnumber">&#160;1.0.2</span>
    </div>
    <div id="projectbrief">Data Collector Documentation</div>
   </td>
@@ -107,19 +107,19 @@ $(function(){initNavTree('setdb_8cpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
 <div class="foldopen" id="foldopen00005" data-start="{" data-end="}">
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno"><a class="line" href="class_d_b_config.html#a8f07b7b90d0b3baa642a924a587d4dfb">    5</a></span><a class="code hl_function" href="class_d_b_config.html#a8f07b7b90d0b3baa642a924a587d4dfb">DBConfig::DBConfig</a>(QWidget *parent) : QDialog(parent), ui(new <a class="code hl_namespace" href="namespace_ui.html">Ui</a>::<a class="code hl_class" href="class_d_b_config.html">DBConfig</a>) {</div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span>    ui-&gt;setupUi(<span class="keyword">this</span>);</div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span>    ui-&gt;<a class="code hl_function" href="class_ui___d_b_config.html#a5e4d67a9f47ac1b7d0deea3ebe1d26f7">setupUi</a>(<span class="keyword">this</span>);</div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>    {</div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>        connect(this-&gt;ui-&gt;inputHostname, SIGNAL(textChanged(QString)), <span class="keyword">this</span>, SLOT(dataIsComplete()));</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>        connect(this-&gt;ui-&gt;inputUser,     SIGNAL(textChanged(QString)), <span class="keyword">this</span>, SLOT(dataIsComplete()));</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>        connect(this-&gt;ui-&gt;inputPassword, SIGNAL(textChanged(QString)), <span class="keyword">this</span>, SLOT(dataIsComplete()));</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>        connect(this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#a814b540f7ea7e93b5e281e4f025c944e">inputHostname</a>, SIGNAL(textChanged(QString)), <span class="keyword">this</span>, SLOT(dataIsComplete()));</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>        connect(this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#ab16f81867331ff12ca739539c2294351">inputUser</a>,     SIGNAL(textChanged(QString)), <span class="keyword">this</span>, SLOT(dataIsComplete()));</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>        connect(this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#afa4e2912f73838a58f8d255383f83737">inputPassword</a>, SIGNAL(textChanged(QString)), <span class="keyword">this</span>, SLOT(dataIsComplete()));</div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    }</div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    this-&gt;loadSave();</div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">    #if MODE_ == Emulation</span></div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>        this-&gt;ui-&gt;inputHostname-&gt;setText(<span class="stringliteral">&quot;localhost&quot;</span>);</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>        this-&gt;ui-&gt;inputPort-&gt;setValue(3306);</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>        this-&gt;ui-&gt;inputUser-&gt;setText(<span class="stringliteral">&quot;root&quot;</span>);</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>        this-&gt;ui-&gt;inputPassword-&gt;setText(<span class="stringliteral">&quot;root&quot;</span>);</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>        this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#a814b540f7ea7e93b5e281e4f025c944e">inputHostname</a>-&gt;setText(<span class="stringliteral">&quot;localhost&quot;</span>);</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>        this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#a28b9f0756a90e7cd430ae7c9ed738b6b">inputPort</a>-&gt;setValue(3306);</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>        this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#ab16f81867331ff12ca739539c2294351">inputUser</a>-&gt;setText(<span class="stringliteral">&quot;root&quot;</span>);</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>        this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#afa4e2912f73838a58f8d255383f83737">inputPassword</a>-&gt;setText(<span class="stringliteral">&quot;root&quot;</span>);</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">    #endif</span></div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>}</div>
 </div>
@@ -150,18 +150,18 @@ $(function(){initNavTree('setdb_8cpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    mySettings.endGroup();</div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keywordflow">if</span>(hostName != <span class="stringliteral">&quot;&quot;</span> &amp;&amp; userName != <span class="stringliteral">&quot;&quot;</span> &amp;&amp; port != 0) {</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        this-&gt;ui-&gt;inputHostname-&gt;setText(hostName);</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        this-&gt;ui-&gt;inputPort-&gt;setValue(port);</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        this-&gt;ui-&gt;inputUser-&gt;setText(userName);</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#a814b540f7ea7e93b5e281e4f025c944e">inputHostname</a>-&gt;setText(hostName);</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#a28b9f0756a90e7cd430ae7c9ed738b6b">inputPort</a>-&gt;setValue(port);</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#ab16f81867331ff12ca739539c2294351">inputUser</a>-&gt;setText(userName);</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    }</div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>}</div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><span class="keywordtype">void</span> DBConfig::on_btnDBTest_clicked() {</div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    this-&gt;myDB = QSqlDatabase::addDatabase(<span class="stringliteral">&quot;QMYSQL&quot;</span>, <span class="stringliteral">&quot;testDB&quot;</span>);</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    this-&gt;myDB.setHostName(this-&gt;ui-&gt;inputHostname-&gt;text());</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    this-&gt;myDB.setPort(this-&gt;ui-&gt;inputPort-&gt;value());</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    this-&gt;myDB.setUserName(this-&gt;ui-&gt;inputUser-&gt;text());</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    this-&gt;myDB.setPassword(this-&gt;ui-&gt;inputPassword-&gt;text());</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    this-&gt;myDB.setHostName(this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#a814b540f7ea7e93b5e281e4f025c944e">inputHostname</a>-&gt;text());</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    this-&gt;myDB.setPort(this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#a28b9f0756a90e7cd430ae7c9ed738b6b">inputPort</a>-&gt;value());</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    this-&gt;myDB.setUserName(this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#ab16f81867331ff12ca739539c2294351">inputUser</a>-&gt;text());</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    this-&gt;myDB.setPassword(this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#afa4e2912f73838a58f8d255383f83737">inputPassword</a>-&gt;text());</div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    <span class="keyword">const</span> <span class="keywordtype">bool</span> state = <a class="code hl_function" href="class_database_manager.html#a08c138346227a5acd24a68949cab7ed8">DatabaseManager::test</a>(this-&gt;myDB);</div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <span class="keyword">const</span> QString response = state ? <span class="stringliteral">&quot;Prueba exitosa&quot;</span> : <span class="stringliteral">&quot;Falló la prueba&quot;</span>;</div>
@@ -172,18 +172,18 @@ $(function(){initNavTree('setdb_8cpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="keywordtype">void</span> DBConfig::on_btnCancel_clicked() { this-&gt;close(); }</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span><span class="keywordtype">void</span> DBConfig::dataIsComplete() {</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keywordflow">if</span>(!this-&gt;ui-&gt;inputHostname-&gt;text().isEmpty() &amp;&amp; !this-&gt;ui-&gt;inputPassword-&gt;text().isEmpty() &amp;&amp; !this-&gt;ui-&gt;inputUser-&gt;text().isEmpty()) {</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        this-&gt;ui-&gt;btnDBTest-&gt;setEnabled(<span class="keyword">true</span>);</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>        this-&gt;ui-&gt;btnSave-&gt;setEnabled(<span class="keyword">true</span>);</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keywordflow">if</span>(!this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#a814b540f7ea7e93b5e281e4f025c944e">inputHostname</a>-&gt;text().isEmpty() &amp;&amp; !this-&gt;ui-&gt;inputPassword-&gt;text().isEmpty() &amp;&amp; !this-&gt;ui-&gt;inputUser-&gt;text().isEmpty()) {</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#a04e60d62dd94b800579bf93b0544970b">btnDBTest</a>-&gt;setEnabled(<span class="keyword">true</span>);</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>        this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#a2fb0142876debd77d5abe9854e996c14">btnSave</a>-&gt;setEnabled(<span class="keyword">true</span>);</div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>        {</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>            this-&gt;myDB.setHostName(this-&gt;ui-&gt;inputHostname-&gt;text());</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>            this-&gt;myDB.setPort(this-&gt;ui-&gt;inputPort-&gt;value());</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>            this-&gt;myDB.setUserName(this-&gt;ui-&gt;inputUser-&gt;text());</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>            this-&gt;myDB.setPassword(this-&gt;ui-&gt;inputPassword-&gt;text());</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>            this-&gt;myDB.setHostName(this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#a814b540f7ea7e93b5e281e4f025c944e">inputHostname</a>-&gt;text());</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>            this-&gt;myDB.setPort(this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#a28b9f0756a90e7cd430ae7c9ed738b6b">inputPort</a>-&gt;value());</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>            this-&gt;myDB.setUserName(this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#ab16f81867331ff12ca739539c2294351">inputUser</a>-&gt;text());</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>            this-&gt;myDB.setPassword(this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#afa4e2912f73838a58f8d255383f83737">inputPassword</a>-&gt;text());</div>
 <div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>        }</div>
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>        this-&gt;ui-&gt;btnDBTest-&gt;setEnabled(<span class="keyword">false</span>);</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>        this-&gt;ui-&gt;btnSave-&gt;setEnabled(<span class="keyword">false</span>);</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>        this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#a04e60d62dd94b800579bf93b0544970b">btnDBTest</a>-&gt;setEnabled(<span class="keyword">false</span>);</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>        this-&gt;ui-&gt;<a class="code hl_variable" href="class_ui___d_b_config.html#a2fb0142876debd77d5abe9854e996c14">btnSave</a>-&gt;setEnabled(<span class="keyword">false</span>);</div>
 <div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    }</div>
 <div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>}</div>
 <div class="ttc" id="aclass_d_b_config_html"><div class="ttname"><a href="class_d_b_config.html">DBConfig</a></div><div class="ttdef"><b>Definition</b> <a href="setdb_8h_source.html#l00008">setdb.h:8</a></div></div>
@@ -191,8 +191,15 @@ $(function(){initNavTree('setdb_8cpp_source.html',''); initResizable(true); });
 <div class="ttc" id="aclass_d_b_config_html_a8f07b7b90d0b3baa642a924a587d4dfb"><div class="ttname"><a href="class_d_b_config.html#a8f07b7b90d0b3baa642a924a587d4dfb">DBConfig::DBConfig</a></div><div class="ttdeci">DBConfig(QWidget *parent=nullptr)</div><div class="ttdef"><b>Definition</b> <a href="#l00005">setdb.cpp:5</a></div></div>
 <div class="ttc" id="aclass_database_manager_html_a08c138346227a5acd24a68949cab7ed8"><div class="ttname"><a href="class_database_manager.html#a08c138346227a5acd24a68949cab7ed8">DatabaseManager::test</a></div><div class="ttdeci">static bool test(const QString hostname, const uint port, const QString username, const QString password)</div><div class="ttdef"><b>Definition</b> <a href="database_8cpp_source.html#l00024">database.cpp:24</a></div></div>
 <div class="ttc" id="aclass_database_manager_html_abb566d6d7e0b19c3af8a944c70399e98"><div class="ttname"><a href="class_database_manager.html#abb566d6d7e0b19c3af8a944c70399e98">DatabaseManager::save</a></div><div class="ttdeci">static void save(const QString hostname, const uint port, const QString username, const QString password)</div><div class="ttdef"><b>Definition</b> <a href="database_8cpp_source.html#l00056">database.cpp:56</a></div></div>
+<div class="ttc" id="aclass_ui___d_b_config_html_a04e60d62dd94b800579bf93b0544970b"><div class="ttname"><a href="class_ui___d_b_config.html#a04e60d62dd94b800579bf93b0544970b">Ui_DBConfig::btnDBTest</a></div><div class="ttdeci">QPushButton * btnDBTest</div><div class="ttdef"><b>Definition</b> <a href="_desktop___qt__6__7__2___m_s_v_c2019__64bit-_debug_2_data_collector__autogen_2include_2ui__setdb_8h_source.html#l00038">ui_setdb.h:38</a></div></div>
+<div class="ttc" id="aclass_ui___d_b_config_html_a28b9f0756a90e7cd430ae7c9ed738b6b"><div class="ttname"><a href="class_ui___d_b_config.html#a28b9f0756a90e7cd430ae7c9ed738b6b">Ui_DBConfig::inputPort</a></div><div class="ttdeci">QSpinBox * inputPort</div><div class="ttdef"><b>Definition</b> <a href="_desktop___qt__6__7__2___m_s_v_c2019__64bit-_debug_2_data_collector__autogen_2include_2ui__setdb_8h_source.html#l00029">ui_setdb.h:29</a></div></div>
+<div class="ttc" id="aclass_ui___d_b_config_html_a2fb0142876debd77d5abe9854e996c14"><div class="ttname"><a href="class_ui___d_b_config.html#a2fb0142876debd77d5abe9854e996c14">Ui_DBConfig::btnSave</a></div><div class="ttdeci">QPushButton * btnSave</div><div class="ttdef"><b>Definition</b> <a href="_desktop___qt__6__7__2___m_s_v_c2019__64bit-_debug_2_data_collector__autogen_2include_2ui__setdb_8h_source.html#l00036">ui_setdb.h:36</a></div></div>
+<div class="ttc" id="aclass_ui___d_b_config_html_a5e4d67a9f47ac1b7d0deea3ebe1d26f7"><div class="ttname"><a href="class_ui___d_b_config.html#a5e4d67a9f47ac1b7d0deea3ebe1d26f7">Ui_DBConfig::setupUi</a></div><div class="ttdeci">void setupUi(QDialog *DBConfig)</div><div class="ttdef"><b>Definition</b> <a href="_desktop___qt__6__7__2___m_s_v_c2019__64bit-_debug_2_data_collector__autogen_2include_2ui__setdb_8h_source.html#l00043">ui_setdb.h:43</a></div></div>
+<div class="ttc" id="aclass_ui___d_b_config_html_a814b540f7ea7e93b5e281e4f025c944e"><div class="ttname"><a href="class_ui___d_b_config.html#a814b540f7ea7e93b5e281e4f025c944e">Ui_DBConfig::inputHostname</a></div><div class="ttdeci">QLineEdit * inputHostname</div><div class="ttdef"><b>Definition</b> <a href="_desktop___qt__6__7__2___m_s_v_c2019__64bit-_debug_2_data_collector__autogen_2include_2ui__setdb_8h_source.html#l00034">ui_setdb.h:34</a></div></div>
+<div class="ttc" id="aclass_ui___d_b_config_html_ab16f81867331ff12ca739539c2294351"><div class="ttname"><a href="class_ui___d_b_config.html#ab16f81867331ff12ca739539c2294351">Ui_DBConfig::inputUser</a></div><div class="ttdeci">QLineEdit * inputUser</div><div class="ttdef"><b>Definition</b> <a href="_desktop___qt__6__7__2___m_s_v_c2019__64bit-_debug_2_data_collector__autogen_2include_2ui__setdb_8h_source.html#l00030">ui_setdb.h:30</a></div></div>
+<div class="ttc" id="aclass_ui___d_b_config_html_afa4e2912f73838a58f8d255383f83737"><div class="ttname"><a href="class_ui___d_b_config.html#afa4e2912f73838a58f8d255383f83737">Ui_DBConfig::inputPassword</a></div><div class="ttdeci">QLineEdit * inputPassword</div><div class="ttdef"><b>Definition</b> <a href="_desktop___qt__6__7__2___m_s_v_c2019__64bit-_debug_2_data_collector__autogen_2include_2ui__setdb_8h_source.html#l00039">ui_setdb.h:39</a></div></div>
 <div class="ttc" id="adefines_8h_html"><div class="ttname"><a href="defines_8h.html">defines.h</a></div></div>
-<div class="ttc" id="anamespace_ui_html"><div class="ttname"><a href="namespace_ui.html">Ui</a></div><div class="ttdef"><b>Definition</b> <a href="datavisualizer_8h_source.html#l00012">datavisualizer.h:12</a></div></div>
+<div class="ttc" id="anamespace_ui_html"><div class="ttname"><a href="namespace_ui.html">Ui</a></div><div class="ttdef"><b>Definition</b> <a href="_desktop___qt__6__7__2___m_s_v_c2019__64bit-_debug_2_data_collector__autogen_2include_2components_2ui__setstation_8h_source.html#l00719">ui_setstation.h:719</a></div></div>
 <div class="ttc" id="asetdb_8h_html"><div class="ttname"><a href="setdb_8h.html">setdb.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

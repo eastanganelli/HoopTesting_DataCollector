@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['isrelease_0',['isRelease',['../defines_8h.html#af43466229dbcdfae85c1237d78a2f97e',1,'defines.h']]]
+  ['emulation_0',['Emulation',['../defines_8h.html#a5f276ff4f09aa36d7f103d63c20c8831',1,'defines.h']]]
 ];

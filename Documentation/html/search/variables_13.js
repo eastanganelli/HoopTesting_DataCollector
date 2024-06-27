@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['yaxis_0',['yAxis',['../class_q_custom_plot.html#af6fea5679725b152c14facd920b19367',1,'QCustomPlot']]],
-  ['yaxis2_1',['yAxis2',['../class_q_custom_plot.html#af13fdc5bce7d0fabd640f13ba805c0b7',1,'QCustomPlot']]]
+  ['value_0',['value',['../class_q_c_p_graph_data.html#ac97e3ddbdcbe0b58d0b4d6f95250d59c',1,'QCPGraphData::value'],['../class_q_c_p_curve_data.html#a72b39b8e1dbf7b45382ebd48419b6828',1,'QCPCurveData::value'],['../class_q_c_p_bars_data.html#ab636644fb40630f3b1b72f44d65ec072',1,'QCPBarsData::value']]],
+  ['verticalspacer_1',['verticalSpacer',['../class_ui___d_b_config.html#a8eee50927c54693f32f38f4605952d3b',1,'Ui_DBConfig']]],
+  ['viewportrect_2',['viewportRect',['../class_q_c_p_axis_painter_private.html#a8627dc6b40781e3291bb508e4ac574d6',1,'QCPAxisPainterPrivate']]]
 ];

@@ -1,0 +1,4 @@
+var _desktop___qt__6__7__2___m_s_v_c2019__64bit__release_2_data_collector__autogen_27_h_e_h_e_g_d_a3_t_2moc__qcustomplot_8cpp =
+[
+    [ "Q_CONSTINIT", "_desktop___qt__6__7__2___m_s_v_c2019__64bit-_release_2_data_collector__autogen_27_h_e_h_e_g_d_a3_t_2moc__qcustomplot_8cpp.html#ad83b2306f94b5b9e5625794fc238c8a0", null ]
+];

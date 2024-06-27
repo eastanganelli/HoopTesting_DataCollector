@@ -9,21 +9,6 @@ SetStation::SetStation(QWidget *parent) : QDialog(parent) , ui(new Ui::SetStatio
     if(this->normsDB->open()) { this->preLoadData(); }
     this->setConnectionSignals();
     this->ui->lblSpecimen->setText("Prueba Nro.: 0");
-    {
-        #if MODE_ == Emulation
-            this->ui->cbTemp->setCurrentText("20");
-            this->ui->cbBoxTestTime->setCurrentText("90");
-            this->ui->cbStandard->setCurrentIndex(0);
-            this->ui->cbMaterial->setCurrentIndex(0);
-            this->ui->cbSpecification->setCurrentIndex(0);
-            this->ui->inputDiamNormal->setValue(50);
-            this->ui->inputDiamReal->setValue(50);
-            this->ui->inputWallThickness->setValue(5);
-            this->ui->inputLenTotal->setValue(560);
-            this->ui->inputLenFree->setValue(340);
-            this->ui->inputPressure->setValue(9);
-        #endif
-    }
 }
 
 SetStation::~SetStation() {
@@ -42,7 +27,7 @@ void SetStation::on_inputWallThickness_valueChanged(int wallthickness) {
     QString conditionalPeriod = "0 h ± 0 min";
     if(this->listCondPeriods.count() > 0) {
         for(auto myCP : this->listCondPeriods) {
-            if((uint)(wallthickness) > myCP->getMinWall() && (uint)(wallthickness) <= myCP->getMaxWall()) {
+            if((uint)(wallthickness) >= myCP->getMinWall() && (uint)(wallthickness) < myCP->getMaxWall()) {
                 conditionalPeriod = myCP->getConditionalPeriod();
                 break;
             }
@@ -223,7 +208,7 @@ void SetStation::on_cbSpecification_currentIndexChanged(int index) {
             QStringList tempList, timeList;
             for(auto mySetting : this->listSettings) {
                 tempList << QString::number(mySetting->getTemperature());
-                timeList << QString::number(mySetting->getTimes());
+                timeList << QString::number(mySetting->getTime());
             }
             this->ui->cbTemp->addItems(tempList);
             this->ui->cbBoxTestTime->addItems(timeList);
@@ -269,6 +254,14 @@ void SetStation::on_cbBoxTestType_currentIndexChanged(int index) { if(index > -1
 void SetStation::on_cbBoxEnviroment_currentIndexChanged(int index) {
     if(index > -1) {
         this->selectedEnviroment = this->listEnviroments[index];
+    }
+}
+
+void SetStation::on_cbBoxTestTime_currentIndexChanged(int index) {
+    if(index > -1) {
+        this->selectedSetting = this->listSettings[index];
+        if(this->selectedSetting->getTimeType() == "h")      { this->ui->radHours->setChecked(true); }
+        else if(this->selectedSetting->getTimeType() == "s") { this->ui->radSeconds->setChecked(true); }
     }
 }
 

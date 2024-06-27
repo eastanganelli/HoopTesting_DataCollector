@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['serialconfig_0',['serialConfig',['../classserial_config.html',1,'']]],
+  ['serialconfig_0',['serialConfig',['../classserial_config.html',1,'serialConfig'],['../class_ui_1_1serial_config.html',1,'Ui::serialConfig']]],
   ['serialportreader_1',['SerialPortReader',['../class_serial_port_reader.html',1,'']]],
-  ['setstation_2',['SetStation',['../class_set_station.html',1,'']]],
+  ['setstation_2',['SetStation',['../class_set_station.html',1,'SetStation'],['../class_ui_1_1_set_station.html',1,'Ui::SetStation']]],
   ['shareddata_3',['SharedData',['../class_shared_data.html',1,'']]],
   ['sharedstations_4',['sharedStations',['../classshared_stations.html',1,'']]],
   ['simplecrypt_5',['SimpleCrypt',['../class_simple_crypt.html',1,'']]],

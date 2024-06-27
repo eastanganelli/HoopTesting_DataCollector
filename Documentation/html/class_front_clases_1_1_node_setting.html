@@ -28,7 +28,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">DataCollector<span id="projectnumber">&#160;1.0</span>
+   <div id="projectname">DataCollector<span id="projectnumber">&#160;1.0.2</span>
    </div>
    <div id="projectbrief">Data Collector Documentation</div>
   </td>
@@ -110,12 +110,14 @@ $(function(){initNavTree('class_front_clases_1_1_node_setting.html',''); initRes
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a3a152e1ef72347c262493ba72f89d4a1" id="r_a3a152e1ef72347c262493ba72f89d4a1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3a152e1ef72347c262493ba72f89d4a1">NodeSetting</a> (const uint id_, const uint times_, const uint temperature_)</td></tr>
-<tr class="separator:a3a152e1ef72347c262493ba72f89d4a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac85ceddf5cdeca34088ff00c47fbf007" id="r_ac85ceddf5cdeca34088ff00c47fbf007"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac85ceddf5cdeca34088ff00c47fbf007">NodeSetting</a> (const uint id_, const uint time_, const QString timeType_, const uint temperature_)</td></tr>
+<tr class="separator:ac85ceddf5cdeca34088ff00c47fbf007"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2817a4c43e4046a3f4e00b07f5301f35" id="r_a2817a4c43e4046a3f4e00b07f5301f35"><td class="memItemLeft" align="right" valign="top">uint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2817a4c43e4046a3f4e00b07f5301f35">getID</a> () const</td></tr>
 <tr class="separator:a2817a4c43e4046a3f4e00b07f5301f35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4fe610971d109f33c77ece2c18daa204" id="r_a4fe610971d109f33c77ece2c18daa204"><td class="memItemLeft" align="right" valign="top">uint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4fe610971d109f33c77ece2c18daa204">getTimes</a> () const</td></tr>
-<tr class="separator:a4fe610971d109f33c77ece2c18daa204"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abdc47d7dd14f4db1ac66f5f4f0ca1a59" id="r_abdc47d7dd14f4db1ac66f5f4f0ca1a59"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abdc47d7dd14f4db1ac66f5f4f0ca1a59">getTimeType</a> () const</td></tr>
+<tr class="separator:abdc47d7dd14f4db1ac66f5f4f0ca1a59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61f547f0940a2bc5d03811c4275ddb05" id="r_a61f547f0940a2bc5d03811c4275ddb05"><td class="memItemLeft" align="right" valign="top">uint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a61f547f0940a2bc5d03811c4275ddb05">getTime</a> () const</td></tr>
+<tr class="separator:a61f547f0940a2bc5d03811c4275ddb05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abca12fe18f3861a28fa5ac975d0839df" id="r_abca12fe18f3861a28fa5ac975d0839df"><td class="memItemLeft" align="right" valign="top">uint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abca12fe18f3861a28fa5ac975d0839df">getTemperature</a> () const</td></tr>
 <tr class="separator:abca12fe18f3861a28fa5ac975d0839df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -128,8 +130,8 @@ Static Public Member Functions</h2></td></tr>
 <div class="textblock">
 <p class="definition">Definition at line <a class="el" href="schema_front_8h_source.html#l00008">8</a> of file <a class="el" href="schema_front_8h_source.html">schemaFront.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a3a152e1ef72347c262493ba72f89d4a1" name="a3a152e1ef72347c262493ba72f89d4a1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3a152e1ef72347c262493ba72f89d4a1">&#9670;&#160;</a></span>NodeSetting()</h2>
+<a id="ac85ceddf5cdeca34088ff00c47fbf007" name="ac85ceddf5cdeca34088ff00c47fbf007"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac85ceddf5cdeca34088ff00c47fbf007">&#9670;&#160;</a></span>NodeSetting()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -142,7 +144,12 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const uint</td>          <td class="paramname"><span class="paramname"><em>times_</em></span>, </td>
+          <td class="paramtype">const uint</td>          <td class="paramname"><span class="paramname"><em>time_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const QString</td>          <td class="paramname"><span class="paramname"><em>timeType_</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -180,7 +187,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="schema_front_8cpp_source.html#l00009">9</a> of file <a class="el" href="schema_front_8cpp_source.html">schemaFront.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="schema_front_8cpp_source.html#l00010">10</a> of file <a class="el" href="schema_front_8cpp_source.html">schemaFront.cpp</a>.</p>
 
 </div>
 </div>
@@ -199,7 +206,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="schema_front_8cpp_source.html#l00025">25</a> of file <a class="el" href="schema_front_8cpp_source.html">schemaFront.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="schema_front_8cpp_source.html#l00026">26</a> of file <a class="el" href="schema_front_8cpp_source.html">schemaFront.cpp</a>.</p>
 
 </div>
 </div>
@@ -218,18 +225,18 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="schema_front_8cpp_source.html#l00029">29</a> of file <a class="el" href="schema_front_8cpp_source.html">schemaFront.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="schema_front_8cpp_source.html#l00032">32</a> of file <a class="el" href="schema_front_8cpp_source.html">schemaFront.cpp</a>.</p>
 
 </div>
 </div>
-<a id="a4fe610971d109f33c77ece2c18daa204" name="a4fe610971d109f33c77ece2c18daa204"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4fe610971d109f33c77ece2c18daa204">&#9670;&#160;</a></span>getTimes()</h2>
+<a id="a61f547f0940a2bc5d03811c4275ddb05" name="a61f547f0940a2bc5d03811c4275ddb05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61f547f0940a2bc5d03811c4275ddb05">&#9670;&#160;</a></span>getTime()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint FrontClases::NodeSetting::getTimes </td>
+          <td class="memname">uint FrontClases::NodeSetting::getTime </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
@@ -237,7 +244,26 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="schema_front_8cpp_source.html#l00027">27</a> of file <a class="el" href="schema_front_8cpp_source.html">schemaFront.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="schema_front_8cpp_source.html#l00028">28</a> of file <a class="el" href="schema_front_8cpp_source.html">schemaFront.cpp</a>.</p>
+
+</div>
+</div>
+<a id="abdc47d7dd14f4db1ac66f5f4f0ca1a59" name="abdc47d7dd14f4db1ac66f5f4f0ca1a59"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abdc47d7dd14f4db1ac66f5f4f0ca1a59">&#9670;&#160;</a></span>getTimeType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString FrontClases::NodeSetting::getTimeType </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="schema_front_8cpp_source.html#l00030">30</a> of file <a class="el" href="schema_front_8cpp_source.html">schemaFront.cpp</a>.</p>
 
 </div>
 </div>

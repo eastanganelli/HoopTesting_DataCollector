@@ -1,0 +1,4 @@
+var dir_41ca5c3ddb59b1e8c5939090debe979e =
+[
+    [ "qrc_Icons.cpp", "_desktop___qt__6__7__2___m_s_v_c2019__64bit-_release_2_data_collector__autogen_2_e_w_i_e_g_a46_w_w_2qrc___icons_8cpp.html", "_desktop___qt__6__7__2___m_s_v_c2019__64bit-_release_2_data_collector__autogen_2_e_w_i_e_g_a46_w_w_2qrc___icons_8cpp" ]
+];
