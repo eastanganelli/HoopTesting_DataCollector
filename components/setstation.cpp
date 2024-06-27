@@ -1,5 +1,5 @@
 #include "setstation.h"
-#include "ui_setstation.h"
+#include "components/ui_setstation.h"
 #include "../defines.h"
 
 SetStation::SetStation(QWidget *parent) : QDialog(parent) , ui(new Ui::SetStation) {

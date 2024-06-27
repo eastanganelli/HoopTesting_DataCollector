@@ -24,7 +24,7 @@ void Station::ini(QSharedPointer<Data::NodeSample> inSample, QSharedPointer<Data
     this->mySample     = inSample;
     this->mySpecimen   = inSpecimen;
     this->testDuration = time_;
-    this->myUI.graphMaxYAxis(this->mySample->getTargetPressure() + OFFSET_UPPER, this->mySample->getTargetTemperature() + OFFSET_UPPER);
+    // this->myUI.graphMaxYAxis(this->mySample->getTargetPressure() + OFFSET_UPPER, this->mySample->getTargetTemperature() + OFFSET_UPPER);
     this->myUI.waiting();
 }
 
@@ -34,7 +34,7 @@ void Station::ini(QSharedPointer<Data::NodeSample> inSample, QSharedPointer<Data
     this->mySpecimen = inSpecimen;
     this->initTest   = initTime;
     this->finishTest = finisTime;
-    this->myUI.graphMaxYAxis(this->mySample->getTargetPressure() + OFFSET_UPPER, this->mySample->getTargetTemperature() + OFFSET_UPPER);
+    // this->myUI.graphMaxYAxis(this->mySample->getTargetPressure() + OFFSET_UPPER, this->mySample->getTargetTemperature() + OFFSET_UPPER);
     this->myUI.waiting();
 }
 
@@ -73,7 +73,7 @@ void Station::stop() {
 
 void Station::set(QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeLabel, QPushButton* configBtn, QPushButton* runBtn, QTabWidget* myTab, PressureTempGraph* myGraph) {
     this->myUI.startUI(pressureLabel, temperatureLabel, timeLabel, configBtn, runBtn, myTab, myGraph);
-    this->myUI.graphMaxYAxis(this->MaxPressure, 80);
+    // this->myUI.graphMaxYAxis(this->MaxPressure, 80);
 }
 
 bool Station::updateStatus(const float pressureInput, const float temperatureInput) {
@@ -107,7 +107,7 @@ bool Station::updateStatus(const float pressureInput, const float temperatureInp
     return true;
 }
 
-void Station::setMax() { this->myUI.graphMaxYAxis(this->getTargetPressure() + OFFSET_UPPER, this->getTargetTemperature() + OFFSET_UPPER); }
+// void Station::setMax() { this->myUI.graphMaxYAxis(this->getTargetPressure() + OFFSET_UPPER, this->getTargetTemperature() + OFFSET_UPPER); }
 
 void Station::setVisibleGraph(uint index) { this->myUI.selectGraph(index); }
 
@@ -194,7 +194,7 @@ void Station::set(Station &myStation) {
 
 void Station::set(QSharedPointer<Station> selectedStation, QSharedPointer<Data::NodeSample> mySample, QSharedPointer<Data::NodeSpecimen> mySpecimen, const uint time_) {
     selectedStation->ini(mySample, mySpecimen, time_);
-    selectedStation->setMax();
+    // selectedStation->setMax();
     selectedStation->setVisibleGraph(selectedStation->getID());
 }
 
@@ -247,10 +247,10 @@ void StationUI::resetUI() {
     this->myGraph->reset();
 }
 
-void StationUI::graphMaxYAxis(const uint maxPressure, const uint maxTemperature) {
-    this->myGraph->maxPressure(maxPressure);
-    this->myGraph->maxtemperature(maxTemperature);
-}
+// void StationUI::graphMaxYAxis(const uint maxPressure, const uint maxTemperature) {
+//     this->myGraph->maxPressure(maxPressure);
+//     this->myGraph->maxtemperature(maxTemperature);
+// }
 
 void StationUI::selectGraph(uint index) { this->myTab->setCurrentIndex(index - 1); }
 

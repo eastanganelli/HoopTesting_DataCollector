@@ -176,7 +176,7 @@ QList<QSharedPointer<FrontClases::NodeEnviroment> > FrontClases::NodeEnviroment:
     try {
         QSqlQuery myStandardsQuery(myDB);
         myStandardsQuery.exec(Script);
-        while(myStandardsQuery.next()) { auxList.append(QSharedPointer<FrontClases::NodeEnviroment>(new FrontClases::NodeEnviroment(myStandardsQuery.value(0).toUInt(), myStandardsQuery.value(1).toString(), myStandardsQuery.value(2).toString()))); }
+        while(myStandardsQuery.next()) { auxList.append(QSharedPointer<FrontClases::NodeEnviroment>(new FrontClases::NodeEnviroment(myStandardsQuery.value(0).toUInt(), myStandardsQuery.value(1).toString(), ""))); }
     }
     catch(DatabaseError::QuerySelectError* ex) { qDebug() << ex->what(); }
     return auxList;
@@ -184,7 +184,7 @@ QList<QSharedPointer<FrontClases::NodeEnviroment> > FrontClases::NodeEnviroment:
 
 uint FrontClases::NodeEnviroment::getID() const { return this->id; }
 
-QString FrontClases::NodeEnviroment::getEnviroment() const { return this->insertFluid + " en " + this->outFluid; }
+QString FrontClases::NodeEnviroment::getEnviroment() const { return this->insertFluid/* + " en " + this->outFluid*/; }
 
 FrontClases::NodeTestType::NodeTestType(const uint id_, const QString testType_) : id(id_) { this->testType = testType_; }
 

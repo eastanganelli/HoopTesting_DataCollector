@@ -20,7 +20,7 @@ public:
     void startUI(QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeLabel, QPushButton* configBtn, QPushButton *runBtn, QTabWidget* myTab, PressureTempGraph* myGraph);
     void updateUI(QString txtPre = "", QString txtTemp = "", QString txtTime = "", int key = -1, float Pressure = -1, float Temperature = -1);
     void resetUI();
-    void graphMaxYAxis(const uint maxPressure = -1, const uint maxTemperature = -1);
+    // void graphMaxYAxis(const uint maxPressure = -1, const uint maxTemperature = -1);
     void selectGraph(uint index);
     void waiting();
     void running();
@@ -34,7 +34,7 @@ private:
 };
 
 class Station {
-    void setMax();
+    // void setMax();
     void setVisibleGraph(uint index);
     void saveCache();
     void clearCache();
