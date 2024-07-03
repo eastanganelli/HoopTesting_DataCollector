@@ -1,5 +1,4 @@
 #include "../services/global.h"
-#include "../defines.h"
 #include "station.h"
 
 unsigned int Station::stations = 0;
@@ -12,6 +11,7 @@ Station::Station() : ID(++Station::stations), MaxPressure(Station::autoMaxPressu
     this->finishTest   = QDateTime(QDate(1970, 1, 1), QTime(0,0,0,0));
     this->timer        = QDateTime(QDate(1970, 1, 1), QTime(0,0,0,0));
     this->testDuration = 0;
+    this->pressureDesviation = 0.00;
 }
 
 Station::~Station() {
@@ -38,7 +38,7 @@ void Station::ini(QSharedPointer<Data::NodeSample> inSample, QSharedPointer<Data
 
 void Station::start() {
     QString myMessage = "start," + QString::number(this->ID) + "," + QString::number(this->getTargetPressure()) + "," + QString::number(this->getTargetTemperature()) + "\n";
-    this->status     = StationStatus::RUNNING;
+    this->status         = StationStatus::RUNNING;
     this->myUI.running();
     if(this->initTest == DEFAULT_DATETIME && this->finishTest == DEFAULT_DATETIME) {
         this->initTest   = QDateTime::currentDateTime();
@@ -63,9 +63,7 @@ void Station::stop() {
     this->clearCache();
 }
 
-void Station::set(QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeLabel, QPushButton* configBtn, QPushButton* runBtn, QTabWidget* myTab, PressureTempGraph* myGraph) {
-    this->myUI.startUI(pressureLabel, temperatureLabel, timeLabel, configBtn, runBtn, myTab, myGraph);
-}
+void Station::set(QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeLabel, QPushButton* configBtn, QPushButton* runBtn, QTabWidget* myTab, PressureTempGraph* myGraph) { this->myUI.startUI(pressureLabel, temperatureLabel, timeLabel, configBtn, runBtn, myTab, myGraph); }
 
 bool Station::updateStatus(const float pressureInput, const float temperatureInput) {
     QDateTime actualTime = QDateTime::currentDateTime();
@@ -74,19 +72,34 @@ bool Station::updateStatus(const float pressureInput, const float temperatureInp
         uint key = this->initTest.msecsTo(actualTime);
         QDateTime lblText = this->timer.addMSecs(key);
 
-        QString time_ = QString::number((lblText.date().day() - 1) * 24 + lblText.time().hour()) + ":" + lblText.toString("mm:ss");
-        this->myUI.updateUI(QString::number(pressureInput, 'f', 2) + " bar", QString::number(temperatureInput, 'f', 2) + " C", time_, key, pressureInput, temperatureInput);
-        Data::NodeData myData(this->getIDSpecimen(), pressureInput, temperatureInput);
-        Data::NodeData::insert(myData);
-        return false;
+        if(pressureInput < this->getPressureMinimal()) { this->pressurePoints.push_back({ key, pressureInput }); }
+        else if(pressureInput > this->getPressureMinimal()) { this->pressurePoints.clear(); }
+
+        try {
+            this->slope();
+            QString time_ = QString::number((lblText.date().day() - 1) * 24 + lblText.time().hour()) + ":" + lblText.toString("mm:ss");
+            this->myUI.updateUI(QString::number(pressureInput, 'f', 2) + " bar", QString::number(temperatureInput, 'f', 2) + " C", time_, key, pressureInput, temperatureInput);
+            Data::NodeData myData(this->getIDSpecimen(), pressureInput, temperatureInput);
+            Data::NodeData::insert(myData);
+            return false;
+        } catch(...) {
+            qDebug() << "Hoop breaked";
+            this->stop();
+            return true;
+        }
     }
     this->stop();
     return true;
 }
 
+void Station::refresh(const float &pressureDesviation, const double &yAxisDesviation, const QString &pressureColor, const QString &temperatureColor)  {
+    this->pressureDesviation = pressureDesviation;
+    this->myUI.refreshPlot(yAxisDesviation, pressureColor, temperatureColor);
+}
+
 void Station::setVisibleGraph(uint index) { this->myUI.selectGraph(index); }
 
-uint Station::getID() { return this->ID; }
+uint Station::getID()          { return this->ID; }
 
 uint Station::getIDSample()   { return this->mySample->getID(); }
 
@@ -108,7 +121,7 @@ uint Station::getTargetPressure()    { return this->mySample->getTargetPressure(
 
 uint Station::getTargetTemperature() { return this->mySample->getTargetTemperature(); }
 
-StationStatus Station::getStatus()   { return this->status; }
+StationStatus Station::getStatus()    { return this->status; }
 
 void Station::saveCache() {
     QSettings mySettings(QApplication::applicationDirPath() + "/cachedStations.ini", QSettings::IniFormat);
@@ -126,6 +139,17 @@ void Station::clearCache() {
     mySettings.remove("");
     mySettings.endGroup();
     mySettings.sync();
+}
+
+float Station::getPressureMinimal() { return (1.00) * this->getTargetPressure() - this->pressureDesviation; }
+
+void Station::slope() {
+    if(this->pressurePoints.length() > 2) {
+        pressurePoint init = this->pressurePoints.first(), end = this->pressurePoints.last();
+        double slope = ((end.pressure - init.pressure)/(end.key - init.key));
+        if(slope < 0) { throw "Hoop Break"; }
+    }
+
 }
 
 void Station::read(Station& myStation) {
@@ -152,7 +176,7 @@ void Station::set(Station &myStation) {
         auxSample = myStation.getSample();
     }
     const uint idSpecimen = Data::NodeSpecimen::insert(auxSpecimen, idSample);
-    myStation.setIDSpecimen(idSpecimen, idSample);
+    // myStation.setIDSpecimen(idSpecimen, idSample);
 }
 
 void Station::set(QSharedPointer<Station> selectedStation, QSharedPointer<Data::NodeSample> mySample, QSharedPointer<Data::NodeSpecimen> mySpecimen, const uint time_) {
@@ -208,6 +232,8 @@ void StationUI::resetUI() {
     this->runBtn->setText("Iniciar");
     this->myGraph->reset();
 }
+
+void StationUI::refreshPlot(const double &yAxisDesviation, const QString &pressureColor, const QString &temperatureColor) { this->myGraph->refresh(yAxisDesviation, pressureColor, temperatureColor); }
 
 void StationUI::selectGraph(uint index) { this->myTab->setCurrentIndex(index - 1); }
 

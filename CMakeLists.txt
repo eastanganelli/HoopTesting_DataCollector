@@ -27,6 +27,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         components/setdb.cpp components/setdb.h components/setdb.ui
         components/setserial.cpp components/setserial.h components/setserial.ui
         components/setstation.cpp components/setstation.h components/setstation.ui
+        components/plotsettings.cpp components/plotsettings.h components/plotsettings.ui
 
         services/schemas/schemaData.cpp services/schemas/schemaData.h
         services/schemas/schemaFront.cpp services/schemas/schemaFront.h
@@ -42,6 +43,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         utils/simplecrypt.cpp utils/simplecrypt.h
         utils/station.cpp utils/station.h
         utils/stationlist.cpp utils/stationlist.h
+
         myresources.rc
     )
 # Define target properties for Android with Qt 6 as:

@@ -1,6 +1,7 @@
 #include "datavisualizer.h"
 #include "ui_datavisualizer.h"
 #include "../services/global.h"
+#include "../components/plotsettings.h"
 #include "setserial.h"
 #include "setdb.h"
 
@@ -152,3 +153,15 @@ void DataVisualizerWindow::statusConnections() {
 }
 
 void DataVisualizerWindow::on_close_triggered() { this->close(); }
+
+void DataVisualizerWindow::on_actionAdministrador_de_Base_de_Datos_triggered() {
+
+}
+
+void DataVisualizerWindow::on_actionGr_fico_triggered() {
+    plotSettings* myPlotSettings = new plotSettings();
+    myPlotSettings->setModal(true);
+    myPlotSettings->exec();
+    delete myPlotSettings;
+}
+

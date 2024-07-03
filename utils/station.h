@@ -13,6 +13,11 @@ const QDateTime DEFAULT_DATETIME = QDateTime(QDate(1970, 1, 1), QTime(0,0,0,0));
 
 enum class StationStatus { WAITING, RUNNING, READY };
 
+typedef struct {
+    uint key;
+    float pressure;
+} pressurePoint;
+
 class StationUI {
 public:
     StationUI();
@@ -20,7 +25,7 @@ public:
     void startUI(QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeLabel, QPushButton* configBtn, QPushButton *runBtn, QTabWidget* myTab, PressureTempGraph* myGraph);
     void updateUI(QString txtPre = "", QString txtTemp = "", QString txtTime = "", int key = -1, float Pressure = -1, float Temperature = -1);
     void resetUI();
-    // void graphMaxYAxis(const uint maxPressure = -1, const uint maxTemperature = -1);
+    void refreshPlot(const double &yAxisDesviation, const QString &pressureColor, const QString &temperatureColor);
     void selectGraph(uint index);
     void waiting();
     void running();
@@ -34,10 +39,11 @@ private:
 };
 
 class Station {
-    // void setMax();
     void setVisibleGraph(uint index);
     void saveCache();
     void clearCache();
+    float getPressureMinimal();
+    void slope();
 
     static uint autoMaxPressure();
     static bool IsFinished(const QDateTime actual, const QDateTime end);
@@ -47,8 +53,10 @@ class Station {
     StationStatus status;
     const uint ID;
     const float MaxPressure;
+    float pressureDesviation;
     uint testDuration;
     QDateTime timer, initTest, finishTest;
+    QVector<pressurePoint> pressurePoints;
     QSharedPointer<Data::NodeSample>   mySample;
     QSharedPointer<Data::NodeSpecimen> mySpecimen;
 
@@ -67,6 +75,7 @@ public:
     void start();
     void stop();
     bool updateStatus(const float pressureInput, const float temperatureInput);
+    void refresh(const float& pressureDesviation, const double &yAxisDesviation, const QString &pressureColor, const QString &temperatureColor);
     uint getID();
     uint getIDSample();
     uint getIDSpecimen();

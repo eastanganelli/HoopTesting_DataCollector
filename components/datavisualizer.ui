@@ -1418,6 +1418,7 @@
     </property>
     <addaction name="separator"/>
     <addaction name="close"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuOpciones">
     <property name="title">
@@ -1439,6 +1440,7 @@
     </widget>
     <addaction name="menuBase_de_Datos"/>
     <addaction name="menuPuerto_Serial"/>
+    <addaction name="actionGr_fico"/>
    </widget>
    <addaction name="menuMenu"/>
    <addaction name="menuOpciones"/>
@@ -1467,6 +1469,21 @@
   <action name="dbConnect">
    <property name="text">
     <string>Conectar</string>
+   </property>
+  </action>
+  <action name="actionAdministrador_de_Base_de_Datos">
+   <property name="text">
+    <string>Administrador de Base de Datos</string>
+   </property>
+  </action>
+  <action name="actionGenerador_de_Reportes">
+   <property name="text">
+    <string>Generador de Reportes</string>
+   </property>
+  </action>
+  <action name="actionGr_fico">
+   <property name="text">
+    <string>Configuración General</string>
    </property>
   </action>
  </widget>

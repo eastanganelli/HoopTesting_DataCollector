@@ -5,14 +5,13 @@
 
 class PressureTempGraph : public QCustomPlot {
     Q_OBJECT
-    double minPressureVal, maxPressureVal, minTempVal, maxTempVal;
+    double yAxisDesviation, minPressureVal, maxPressureVal, minTempVal, maxTempVal;
     void changeRanges(const float actualPressure, const float actualTemp);
+    void loadSettings();
 
 public:
     PressureTempGraph(QWidget* parent = nullptr);
-    // void maxRanges(const unsigned int pressure, const unsigned int temp);
-    // void maxPressure(const unsigned int pressure);
-    // void maxtemperature(const unsigned int temperature);
+    void refresh(const double &yAxisDesviation, const QString &pressureColor, const QString &temperatureColor);
     void insertData(const double key, const float _pressure, const float _temp);
     void reset();
 };

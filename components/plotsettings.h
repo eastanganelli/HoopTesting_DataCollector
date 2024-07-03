@@ -1,0 +1,35 @@
+#ifndef PLOTSETTINGS_H
+#define PLOTSETTINGS_H
+
+#include <QDialog>
+
+namespace Ui { class plotSettings; }
+
+class plotSettings : public QDialog {
+    Q_OBJECT
+
+public:
+    static void loadSettings(double &pressureDesviation, double &yaxisDesviation, QString &pressureColor, QString &temperatureColor);
+
+    explicit plotSettings(QWidget *parent = nullptr);
+    ~plotSettings();
+
+private slots:
+    void on_btnPressureColor_clicked();
+    void on_btnTemperatureColor_clicked();
+    void on_btnSave_clicked();
+    void on_btnCancel_clicked();
+    void on_inputPressureColor_textChanged(const QString &arg1);
+    void on_inputTemperatureColor_textChanged(const QString &arg1);
+    void on_btnDefaultValues_clicked();
+
+private:
+    static void saveSettings(const double pressureDesviation, const double yaxisDesviation, const QString &pressureColor, const QString &temperatureColor);
+
+    void isComplete();
+    void setDefault();
+
+    Ui::plotSettings *ui;
+};
+
+#endif // PLOTSETTINGS_H
