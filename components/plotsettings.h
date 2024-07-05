@@ -9,7 +9,7 @@ class plotSettings : public QDialog {
     Q_OBJECT
 
 public:
-    static void loadSettings(double &pressureDesviation, double &yaxisDesviation, QString &pressureColor, QString &temperatureColor);
+    static void loadSettings(bool &activeDesviation, double &pressureDesviation, uint &minValuesDesviation, double &yaxisDesviation, QString &pressureColor, QString &temperatureColor);
 
     explicit plotSettings(QWidget *parent = nullptr);
     ~plotSettings();
@@ -24,7 +24,7 @@ private slots:
     void on_btnDefaultValues_clicked();
 
 private:
-    static void saveSettings(const double pressureDesviation, const double yaxisDesviation, const QString &pressureColor, const QString &temperatureColor);
+    static void saveSettings(const bool activeDesviation, const double pressureDesviation, const uint minValuesDesviation, const double yaxisDesviation, const QString &pressureColor, const QString &temperatureColor);
 
     void isComplete();
     void setDefault();

@@ -6,16 +6,13 @@
 #include "setdb.h"
 
 DataVisualizerWindow::DataVisualizerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::DataVisualizerWindow) {
-    ui->setupUi(this);
-    {
+    ui->setupUi(this); {
         this->dialogStation = nullptr;
         this->initStatusBar();
         this->myActivePort = QSharedPointer<SerialPortReader>(new SerialPortReader(this->PortStatus, this->ConnectionPort, this->ui->serialConnect));
         this->mStatusTimer = QSharedPointer<QTimer>(new QTimer(this));
         this->myDataDB     = QSharedPointer<Schemas::Data>(new Schemas::Data(this->ConnectionDataBase, this->ui->dbConnect));
-    }
-
-    {
+    } {
         this->myDataDB->open();
         this->myActivePort->openPort();
         this->setStationsUI();
@@ -42,13 +39,16 @@ void DataVisualizerWindow::setStationsUI() {
         PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(myStation->getID()));
         QTabWidget* myTabs     = this->ui->tabWidget;
         btnRun->setVisible(false);
-        myStation->set(pressurelbl, temperaturelbl, timelbl, btnConfig, btnRun, myTabs, mygraph);
         {
-            double pressureDesviationRead = 0.00, dummy;
-            QString dummyStr;
-            plotSettings::loadSettings(pressureDesviationRead, dummy, dummyStr, dummyStr);
+            bool activeDesviationRead = false;
+            uint minValuesDesviationRaed = 0;
+            double pressureDesviationRead = 0.00, yAxisDesviationRead = 0.00;
+            QString pressureColor, temperatureColor;
+            plotSettings::loadSettings(activeDesviationRead, pressureDesviationRead, minValuesDesviationRaed, yAxisDesviationRead, pressureColor, temperatureColor);
             myStation->setPressureDesviation(pressureDesviationRead);
+            mygraph->refresh(yAxisDesviationRead, pressureColor, temperatureColor);
         }
+        myStation->set(pressurelbl, temperaturelbl, timelbl, btnConfig, btnRun, myTabs, mygraph);
         Station::read(*myStation.get());
     }
 }

@@ -4,16 +4,18 @@
 unsigned int Station::stations = 0;
 
 Station::Station() : ID(++Station::stations), MaxPressure(Station::autoMaxPressure()) {
-    this->status        = StationStatus::READY;
-    this->mySample      = nullptr;
-    this->mySpecimen    = nullptr;
-    this->initTest      = QDateTime(QDate(1970, 1, 1), QTime(0,0,0,0));
-    this->finishTest    = QDateTime(QDate(1970, 1, 1), QTime(0,0,0,0));
-    this->timer         = QDateTime(QDate(1970, 1, 1), QTime(0,0,0,0));
-    this->testDuration  = 0;
-    this->countPressure = 0;
-    this->sumPressure   = 0;
-    this->pressureDesviation = 0.2;
+    this->status              = StationStatus::READY;
+    this->mySample            = nullptr;
+    this->mySpecimen          = nullptr;
+    this->initTest            = QDateTime(QDate(1970, 1, 1), QTime(0,0,0,0));
+    this->finishTest          = QDateTime(QDate(1970, 1, 1), QTime(0,0,0,0));
+    this->timer               = QDateTime(QDate(1970, 1, 1), QTime(0,0,0,0));
+    this->testDuration        = 0;
+    this->countPressure       = 0;
+    this->sumPressure         = 0;
+    this->pressureDesviation  = 0.2;
+    this->autoStopDesviation  = false;
+    this->desviationMinValues = 4;
 }
 
 Station::~Station() {
@@ -47,13 +49,11 @@ void Station::start() {
         this->finishTest = QDateTime::currentDateTime().addSecs(this->testDuration);
     }
     this->saveCache();
-    qDebug() << myMessage.toUtf8();
     myData.pushMessageSendPort(myMessage.toUtf8());
 }
 
 void Station::stop() {
     QString msg = "stop," + QString::number(this->ID) + "\n";
-    qDebug() << msg.toUtf8();
     myData.pushMessageSendPort(msg.toUtf8());
 
     this->myUI.resetUI();
@@ -82,7 +82,11 @@ void Station::updateStatus(const float pressureInput, const float temperatureInp
         if(pressureInput < this->getPressureMinimal()) { this->pressurePoints.push_back({ key, pressureInput }); }
         else if(pressureInput > this->getPressureMinimal()) { this->pressurePoints.clear(); }
 
-        this->slope();
+        if(this->autoStopDesviation) {
+            try {
+                this->slope();
+            } catch(StationError::HoopPressureLoose& ex) { throw ex; }
+        }
         QString time_ = QString::number((lblText.date().day() - 1) * 24 + lblText.time().hour()) + ":" + lblText.toString("mm:ss");
         this->myUI.updateUI(QString::number(pressureInput, 'f', 2) + " bar", QString::number(temperatureInput, 'f', 2) + " C", time_, key, pressureInput, temperatureInput);
         Data::NodeData myData(this->getIDSpecimen(), pressureInput, temperatureInput);
@@ -90,8 +94,10 @@ void Station::updateStatus(const float pressureInput, const float temperatureInp
     } else { throw StationError::TestOverTime(); }
 }
 
-void Station::refresh(const float &pressureDesviation, const double &yAxisDesviation, const QString &pressureColor, const QString &temperatureColor)  {
-    this->pressureDesviation = pressureDesviation;
+void Station::refresh(const bool& activeDesviation, const float& pressureDesviation, const uint& minValuesDeviation, const double &yAxisDesviation, const QString &pressureColor, const QString &temperatureColor)  {
+    this->autoStopDesviation  = activeDesviation;
+    this->pressureDesviation  = pressureDesviation;
+    this->desviationMinValues = minValuesDeviation;
     this->myUI.refreshPlot(yAxisDesviation, pressureColor, temperatureColor);
 }
 
@@ -144,9 +150,10 @@ void Station::clearCache() {
 float Station::getPressureMinimal() { return (float)((this->sumPressure/this->countPressure) - this->pressureDesviation); }
 
 void Station::slope() {
-    if(this->pressurePoints.length() > 2) {
+    if(this->pressurePoints.length() > this->desviationMinValues) {
         pressurePoint init = this->pressurePoints.first(), end = this->pressurePoints.last();
         double slope = ((end.pressure - init.pressure)/(end.key - init.key));
+        qDebug() << "Slope value: " << slope;
         if(slope <= -1) { throw StationError::HoopPressureLoose(); }
     }
 }

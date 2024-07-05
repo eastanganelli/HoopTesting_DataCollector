@@ -39,7 +39,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 
         utils/qcustomplot.cpp utils/qcustomplot.h
         utils/shareddata.cpp utils/shareddata.h
-        utils/sharedstations.cpp utils/sharedstations.h
+
         utils/simplecrypt.cpp utils/simplecrypt.h
         utils/station.cpp utils/station.h
         utils/stationlist.cpp utils/stationlist.h

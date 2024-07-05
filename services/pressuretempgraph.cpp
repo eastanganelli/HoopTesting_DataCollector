@@ -1,4 +1,3 @@
-#include "../components/plotsettings.h"
 #include "../services/pressuretempgraph.h"
 
 PressureTempGraph::PressureTempGraph(QWidget* parent) : QCustomPlot(parent) {
@@ -17,7 +16,6 @@ PressureTempGraph::PressureTempGraph(QWidget* parent) : QCustomPlot(parent) {
     this->xAxis->setRange(0.00, 0.00);
     this->yAxis->setRange(0.00, 0.00);
     this->yAxis2->setRange(0.00, 0.00);
-    this->loadSettings();
     this->replot();
 
     connect(this->xAxis,  SIGNAL(rangeChanged(QCPRange)), this->xAxis2, SLOT(setRange(QCPRange)));
@@ -33,18 +31,6 @@ void PressureTempGraph::refresh(const double &yAxisDesviation, const QString &pr
     this->graph(1)->setPen(QPen(temperature));
     this->yAxis2->setLabelColor(temperature);
     this->replot();
-}
-
-void PressureTempGraph::loadSettings() {
-    double dummy, yaxisDesviation = 0.00;
-    QString pressureColor, temperatureColor;
-    plotSettings::loadSettings(dummy, yaxisDesviation, pressureColor, temperatureColor);
-    QColor pressure(pressureColor.isEmpty() ? QColor(Qt::green) : pressureColor), temperature(temperatureColor.isEmpty() ? QColor(Qt::red) : temperatureColor);
-    this->yAxisDesviation = yaxisDesviation;
-    this->graph(0)->setPen(QPen(pressure));
-    this->yAxis->setLabelColor(pressure);
-    this->graph(1)->setPen(QPen(temperature));
-    this->yAxis2->setLabelColor(temperature);
 }
 
 void PressureTempGraph::changeRanges(const float actualPressure, const float actualTemp) {
@@ -89,6 +75,5 @@ void PressureTempGraph::reset() {
     this->xAxis->setRange(0.00, 0.00);
     this->yAxis->setRange(0.00, 0.00);
     this->yAxis2->setRange(0.00, 0.00);
-    this->loadSettings();
     this->replot();
 }

@@ -3,7 +3,6 @@
 #include <QList>
 #include <QSharedPointer>
 #include <QStack>
-#include "../defines.h"
 #include "stationlist.h"
 
 class SharedData {

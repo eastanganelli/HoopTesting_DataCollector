@@ -8,9 +8,13 @@
 
 plotSettings::plotSettings(QWidget *parent) : QDialog(parent), ui(new Ui::plotSettings) {
     ui->setupUi(this);
+    bool activeDesviation = false;
+    uint minValuesDesviation = 0;
     double pressureDesviation = 0.00, yaxisDesviation = 0.00;
     QString pressureColor, temperatureColor;
-    this->loadSettings(pressureDesviation, yaxisDesviation, pressureColor, temperatureColor);
+    this->loadSettings(activeDesviation, pressureDesviation, minValuesDesviation, yaxisDesviation, pressureColor, temperatureColor);
+    this->ui->cbActiveDesviation->setChecked(activeDesviation);
+    this->ui->sboxMinValuesDesviation->setValue(minValuesDesviation);
     this->ui->sboxPressureDesviation->setValue(pressureDesviation);
     this->ui->sboxDesviationYAxis->setValue(yaxisDesviation);
     this->ui->inputPressureColor->setText(pressureColor.isEmpty() ? QColor(Qt::green).name() : pressureColor);
@@ -21,10 +25,12 @@ plotSettings::plotSettings(QWidget *parent) : QDialog(parent), ui(new Ui::plotSe
 
 plotSettings::~plotSettings() { delete ui; }
 
-void plotSettings::saveSettings(const double pressureDesviation, const double yaxisDesviation, const QString &pressureColor, const QString &temperatureColor) {
+void plotSettings::saveSettings(const bool activeDesviation, const double pressureDesviation, const uint minValuesDesviation, const double yaxisDesviation, const QString &pressureColor, const QString &temperatureColor) {
     QSettings mySettings(QApplication::applicationDirPath() + "/settings.ini", QSettings::IniFormat);
     mySettings.beginGroup("PlotSettings");
+    mySettings.setValue("ActiveDesviation",    activeDesviation);
     mySettings.setValue("PressureDesviations", pressureDesviation);
+    mySettings.setValue("MinValuesDesviation", minValuesDesviation);
     mySettings.setValue("YAxisDesviations",    yaxisDesviation);
     mySettings.setValue("PressureColor",       pressureColor);
     mySettings.setValue("TemperatureColor",    temperatureColor);
@@ -44,10 +50,12 @@ void plotSettings::setDefault() {
     this->ui->colorBoxTemperature->setStyleSheet("background-color: " + QColor(Qt::red).name() + ";");
 }
 
-void plotSettings::loadSettings(double& pressureDesviation, double& yaxisDesviation, QString& pressureColor, QString& temperatureColor) {
+void plotSettings::loadSettings(bool& activeDesviation, double& pressureDesviation, uint& minValuesDesviation,  double& yaxisDesviation, QString& pressureColor, QString& temperatureColor) {
     QSettings mySettings(QApplication::applicationDirPath() + "/settings.ini", QSettings::IniFormat);
     mySettings.beginGroup("PlotSettings"); {
+        pressureDesviation = mySettings.value("ActiveDesviation",    QString()).toBool();
         pressureDesviation = mySettings.value("PressureDesviations", QString()).toDouble();
+        pressureDesviation = mySettings.value("MinValuesDesviation", QString()).toUInt();
         yaxisDesviation    = mySettings.value("YAxisDesviations",    QString()).toDouble();
         pressureColor      = mySettings.value("PressureColor",       QString()).toString();
         temperatureColor   = mySettings.value("TemperatureColor",    QString()).toString();
@@ -77,8 +85,8 @@ void plotSettings::on_btnSave_clicked() {
     msgBox.addButton(QMessageBox::No)->setText(tr("No"));
     switch(msgBox.exec()) {
     case QMessageBox::Yes : {
-        for(QSharedPointer<Station> myStation: myData.getStations()) { myStation->refresh(this->ui->sboxPressureDesviation->value(), this->ui->sboxDesviationYAxis->value(), this->ui->inputPressureColor->text(), this->ui->inputTemperatureColor->text()); }
-        plotSettings::saveSettings(this->ui->sboxPressureDesviation->value(), this->ui->sboxDesviationYAxis->value(), this->ui->inputPressureColor->text(), this->ui->inputTemperatureColor->text());
+        for(QSharedPointer<Station> myStation: myData.getStations()) { myStation->refresh(this->ui->cbActiveDesviation->isChecked(), this->ui->sboxPressureDesviation->value(), this->ui->sboxMinValuesDesviation->value(), this->ui->sboxDesviationYAxis->value(), this->ui->inputPressureColor->text(), this->ui->inputTemperatureColor->text()); }
+        plotSettings::saveSettings(this->ui->cbActiveDesviation->isChecked(), this->ui->sboxPressureDesviation->value(), this->ui->sboxMinValuesDesviation->value(), this->ui->sboxDesviationYAxis->value(), this->ui->inputPressureColor->text(), this->ui->inputTemperatureColor->text());
         this->close();
         break;
     }

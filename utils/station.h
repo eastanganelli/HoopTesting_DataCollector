@@ -54,6 +54,8 @@ class Station {
     StationStatus status;
     const uint ID;
     const float MaxPressure;
+    bool autoStopDesviation;
+    uint desviationMinValues;
     float pressureDesviation, sumPressure;
     uint testDuration, countPressure;
     QDateTime timer, initTest, finishTest;
@@ -76,7 +78,7 @@ public:
     void start();
     void stop();
     void updateStatus(const float pressureInput, const float temperatureInput);
-    void refresh(const float& pressureDesviation, const double &yAxisDesviation, const QString &pressureColor, const QString &temperatureColor);
+    void refresh(const bool& activeDesviation, const float& pressureDesviation, const uint& minValuesDeviation, const double &yAxisDesviation, const QString &pressureColor, const QString &temperatureColor);
     uint getID();
     uint getIDSample();
     uint getIDSpecimen();
