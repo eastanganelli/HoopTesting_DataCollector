@@ -43,6 +43,12 @@ void DataVisualizerWindow::setStationsUI() {
         QTabWidget* myTabs     = this->ui->tabWidget;
         btnRun->setVisible(false);
         myStation->set(pressurelbl, temperaturelbl, timelbl, btnConfig, btnRun, myTabs, mygraph);
+        {
+            double pressureDesviationRead = 0.00, dummy;
+            QString dummyStr;
+            plotSettings::loadSettings(pressureDesviationRead, dummy, dummyStr, dummyStr);
+            myStation->setPressureDesviation(pressureDesviationRead);
+        }
         Station::read(*myStation.get());
     }
 }

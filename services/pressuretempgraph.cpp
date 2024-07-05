@@ -15,8 +15,8 @@ PressureTempGraph::PressureTempGraph(QWidget* parent) : QCustomPlot(parent) {
     this->yAxis2->setLabel("Temperatura");
     this->yAxis2->setVisible(true);
     this->xAxis->setRange(0.00, 0.00);
-    this->yAxis->setRange(this->minPressureVal, this->maxPressureVal);
-    this->yAxis2->setRange(this->minTempVal,    this->maxTempVal);
+    this->yAxis->setRange(0.00, 0.00);
+    this->yAxis2->setRange(0.00, 0.00);
     this->loadSettings();
     this->replot();
 

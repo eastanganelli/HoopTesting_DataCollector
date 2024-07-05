@@ -8,7 +8,7 @@ FrontClases::NodeSetting::NodeSetting(const uint id_, const uint time_, const QS
 }
 
 QList<QSharedPointer<FrontClases::NodeSetting>> FrontClases::NodeSetting::get(const uint idSpecification) {
-    const QString Script = "CALL selectSettingsSpecification(" + QString::number(idSpecification) + ");";
+    const QString Script = QString("CALL selectSettingsSpecification(%1);").arg(idSpecification);
     QSqlDatabase myDB = QSqlDatabase::database(STATIC_SCHEMA_NAME);
     if(!myDB.isOpen()) {
         throw "Ho hay conexión a la base de datos.";
@@ -19,7 +19,10 @@ QList<QSharedPointer<FrontClases::NodeSetting>> FrontClases::NodeSetting::get(co
         mySettingsQuery.exec(Script);
         while(mySettingsQuery.next()) { auxList.append(QSharedPointer<FrontClases::NodeSetting>(new FrontClases::NodeSetting(mySettingsQuery.value("idSetting").toUInt(), mySettingsQuery.value("time").toUInt(), mySettingsQuery.value("timeType").toString(), mySettingsQuery.value("temperature").toUInt()))); }
     }
-    catch(DatabaseError::QuerySelectError* ex) { qDebug() << ex->what(); }
+    catch(DatabaseError::QuerySelectError* ex) {
+        /*qDebug() << ex->what();*/
+        delete ex;
+    }
     return auxList;
 }
 
@@ -37,7 +40,7 @@ FrontClases::NodeSpecification::NodeSpecification(const uint id_, const QString 
 }
 
 QList<QSharedPointer<FrontClases::NodeSpecification>> FrontClases::NodeSpecification::get(const uint idMaterial) {
-    const QString Script = "CALL selectSpecifications(" + QString::number(idMaterial) + ");";
+    const QString Script = QString("CALL selectSpecifications(%1);").arg(idMaterial);
     QSqlDatabase myDB = QSqlDatabase::database(STATIC_SCHEMA_NAME);
     if(!myDB.isOpen()) {
         throw "Ho hay conexión a la base de datos.";
@@ -48,7 +51,10 @@ QList<QSharedPointer<FrontClases::NodeSpecification>> FrontClases::NodeSpecifica
         mySpecificationsQuery.exec(Script);
         while(mySpecificationsQuery.next()) { auxList.append(QSharedPointer<FrontClases::NodeSpecification>(new FrontClases::NodeSpecification(mySpecificationsQuery.value(0).toUInt(), mySpecificationsQuery.value(1).toString(), mySpecificationsQuery.value(2).toString()))); }
     }
-    catch(DatabaseError::QuerySelectError* ex) { qDebug() << ex->what(); }
+    catch(DatabaseError::QuerySelectError* ex) {
+        /*qDebug() << ex->what();*/
+        delete ex;
+    }
     return auxList;
 }
 
@@ -63,7 +69,7 @@ FrontClases::NodeMaterial::NodeMaterial(const uint id_, const QString material_,
 }
 
 QList<QSharedPointer<FrontClases::NodeMaterial>> FrontClases::NodeMaterial::get(const uint idStandard) {
-    const QString Script = "CALL selectMaterials(" + QString::number(idStandard) + ");";
+    const QString Script = QString("CALL selectMaterials(%1);").arg(idStandard);
     QSqlDatabase myDB = QSqlDatabase::database(STATIC_SCHEMA_NAME);
     if(!myDB.isOpen()) {
         throw "Ho hay conexión a la base de datos.";
@@ -75,7 +81,7 @@ QList<QSharedPointer<FrontClases::NodeMaterial>> FrontClases::NodeMaterial::get(
         while(myMaterialsQuery.next()) { auxList.append(QSharedPointer<FrontClases::NodeMaterial>(new FrontClases::NodeMaterial(myMaterialsQuery.value(0).toUInt(), myMaterialsQuery.value(1).toString(), myMaterialsQuery.value(2).toString(), myMaterialsQuery.value(3).toString()))); }
     }
     catch(DatabaseError::QuerySelectError* ex) {
-        qDebug() << "Database: " << ex->what();
+        // qDebug() << "Database: " << ex->what();
         delete ex;
     }
     return auxList;
@@ -94,18 +100,21 @@ FrontClases::NodeConditionalPeriod::NodeConditionalPeriod(const uint id_, const 
 }
 
 QList<QSharedPointer<FrontClases::NodeConditionalPeriod>> FrontClases::NodeConditionalPeriod::get(const uint idStandard) {
-    const QString Script = "CALL selectConditionalPeriods(" + QString::number(idStandard) + ")";
+    const QString Script = QString("CALL selectConditionalPeriods(%1)").arg(idStandard);
     QSqlDatabase myDB = QSqlDatabase::database(STATIC_SCHEMA_NAME);
     if(!myDB.isOpen()) {
-        throw "Ho hay conexión a la base de datos.";
+        throw "No hay conexión a la base de datos.";
     }
     QList<QSharedPointer<FrontClases::NodeConditionalPeriod>> auxList;
     try {
         QSqlQuery myCondPeriods(myDB);
         myCondPeriods.exec(Script);
-        while(myCondPeriods.next()) { auxList.append(QSharedPointer<FrontClases::NodeConditionalPeriod>(new FrontClases::NodeConditionalPeriod(myCondPeriods.value(0).toUInt(), myCondPeriods.value(1).toUInt(), myCondPeriods.value(2).toUInt(), myCondPeriods.value(3).toString()))); }
+        while(myCondPeriods.next()) { auxList.append(QSharedPointer<FrontClases::NodeConditionalPeriod>(new FrontClases::NodeConditionalPeriod(myCondPeriods.value("id").toUInt(), myCondPeriods.value(1).toUInt(), myCondPeriods.value(2).toUInt(), myCondPeriods.value(3).toString()))); }
     }
     catch(DatabaseError::QuerySelectError* ex) { qDebug() << ex->what(); }
+    std::sort(auxList.begin(), auxList.end(), [](const QSharedPointer<FrontClases::NodeConditionalPeriod>& a, const QSharedPointer<FrontClases::NodeConditionalPeriod>& b) {
+        return a->getMinWall() < b->getMinWall();
+    });
     return auxList;
 }
 
@@ -131,7 +140,10 @@ QList<QSharedPointer<FrontClases::NodeStandard>> FrontClases::NodeStandard::get(
         myStandardsQuery.exec(Script);
         while(myStandardsQuery.next()) { auxList.append(QSharedPointer<FrontClases::NodeStandard>(new FrontClases::NodeStandard(myStandardsQuery.value(0).toUInt(), myStandardsQuery.value(1).toString()))); }
     }
-    catch(DatabaseError::QuerySelectError* ex) { qDebug() << ex->what(); }
+    catch(DatabaseError::QuerySelectError* ex) {
+        /*qDebug() << ex->what();*/
+        delete ex;
+    }
     return auxList;
 }
 
@@ -156,7 +168,10 @@ QList<QSharedPointer<FrontClases::NodeOperator> > FrontClases::NodeOperator::get
         myOperatorQuery.exec(Script);
         while(myOperatorQuery.next()) { auxList.append(QSharedPointer<FrontClases::NodeOperator>(new FrontClases::NodeOperator(myOperatorQuery.value("dni").toUInt(), myOperatorQuery.value("name").toString(), myOperatorQuery.value("familyname").toString()))); }
     }
-    catch(DatabaseError::QuerySelectError* ex) { qDebug() << ex->what(); }
+    catch(DatabaseError::QuerySelectError* ex) {
+        /*qDebug() << ex->what();*/
+        delete ex;
+    }
     return auxList;
 }
 
@@ -170,7 +185,7 @@ FrontClases::NodeEnviroment::NodeEnviroment(const uint id_, const QString insert
 }
 
 QList<QSharedPointer<FrontClases::NodeEnviroment> > FrontClases::NodeEnviroment::get(const uint idStandard) {
-    const QString Script = "CALL selectEnviroment(" + QString::number(idStandard) + ");";
+    const QString Script = QString("CALL selectEnviroment(%1);").arg(idStandard);
     QSqlDatabase myDB = QSqlDatabase::database(STATIC_SCHEMA_NAME);
     if(!myDB.isOpen()) {
         throw "Ho hay conexión a la base de datos.";
@@ -181,7 +196,10 @@ QList<QSharedPointer<FrontClases::NodeEnviroment> > FrontClases::NodeEnviroment:
         myStandardsQuery.exec(Script);
         while(myStandardsQuery.next()) { auxList.append(QSharedPointer<FrontClases::NodeEnviroment>(new FrontClases::NodeEnviroment(myStandardsQuery.value(0).toUInt(), myStandardsQuery.value(1).toString(), ""))); }
     }
-    catch(DatabaseError::QuerySelectError* ex) { qDebug() << ex->what(); }
+    catch(DatabaseError::QuerySelectError* ex) {
+        /*qDebug() << ex->what();*/
+        delete ex;
+    }
     return auxList;
 }
 
@@ -192,7 +210,7 @@ QString FrontClases::NodeEnviroment::getEnviroment() const { return this->insert
 FrontClases::NodeTestType::NodeTestType(const uint id_, const QString testType_) : id(id_) { this->testType = testType_; }
 
 QList<QSharedPointer<FrontClases::NodeTestType> > FrontClases::NodeTestType::get(const uint idStandard) {
-    const QString Script = "CALL selectTestType(" + QString::number(idStandard) + ");";
+    const QString Script = QString("CALL selectTestType(%1);").arg(idStandard);
     QSqlDatabase myDB = QSqlDatabase::database(STATIC_SCHEMA_NAME);
     if(!myDB.isOpen()) {
         throw "Ho hay conexión a la base de datos.";
@@ -203,7 +221,10 @@ QList<QSharedPointer<FrontClases::NodeTestType> > FrontClases::NodeTestType::get
         myTestTypeQuery.exec(Script);
         while(myTestTypeQuery.next()) { auxList.append(QSharedPointer<FrontClases::NodeTestType>(new FrontClases::NodeTestType(myTestTypeQuery.value(0).toUInt(), myTestTypeQuery.value(1).toString()))); }
     }
-    catch(DatabaseError::QuerySelectError* ex) { qDebug() << ex->what(); }
+    catch(DatabaseError::QuerySelectError* ex) {
+        /*qDebug() << ex->what();*/
+        delete ex;
+    }
     return auxList;
 }
 
@@ -215,7 +236,7 @@ QString FrontClases::NodeTestType::getTestType() const { return this->testType; 
 FrontClases::NodeEndCap::NodeEndCap(const uint id_, const QString endCap_) : id(id_) { this->endCap = endCap_; }
 
 QList<QSharedPointer<FrontClases::NodeEndCap> > FrontClases::NodeEndCap::get(const uint idStandard) {
-    const QString Script = "CALL selectEndCaps(" + QString::number(idStandard) + ");";
+    const QString Script = QString("CALL selectEndCaps(%1);").arg(idStandard);
     QSqlDatabase myDB = QSqlDatabase::database(STATIC_SCHEMA_NAME);
     if(!myDB.isOpen()) {
         throw "Ho hay conexión a la base de datos.";
@@ -226,7 +247,10 @@ QList<QSharedPointer<FrontClases::NodeEndCap> > FrontClases::NodeEndCap::get(con
         myTestTypeQuery.exec(Script);
         while(myTestTypeQuery.next()) { auxList.append(QSharedPointer<FrontClases::NodeEndCap>(new FrontClases::NodeEndCap(myTestTypeQuery.value("id").toUInt(), myTestTypeQuery.value("endCap").toString()))); }
     }
-    catch(DatabaseError::QuerySelectError* ex) { qDebug() << ex->what(); }
+    catch(DatabaseError::QuerySelectError* ex) {
+        /*qDebug() << ex->what();*/
+        delete ex;
+    }
     return auxList;
 }
 

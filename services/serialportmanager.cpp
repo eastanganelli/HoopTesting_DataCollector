@@ -106,8 +106,6 @@ void SerialPortReader::sendMessage(const QByteArray &message) {
     this->waitForBytesWritten(-1);
 }
 
-void SerialPortReader::stationStop(QSharedPointer<Station> auxStation) { auxStation->stop(); }
-
 bool SerialPortReader::openPort() {
     QString serialName;
     uint baudRate;
@@ -183,7 +181,19 @@ void SerialPortReader::serialToStation() {
             QSharedPointer<Station> auxStation = myData.getStation(substring.at(0).toUInt());
             float bar  = substring.at(1).toFloat(),
                   temp = substring.at(2).toFloat();
-            if(auxStation->getStatus() == StationStatus::RUNNING && auxStation->updateStatus(bar, temp)) { this->stationStop(auxStation); }
+            try {
+                if(auxStation->getStatus() == StationStatus::RUNNING) {
+                    auxStation->updateStatus(bar, temp);
+                }
+            }
+            catch(StationError::TestOverTime& ex) {
+                qDebug() << ex.what();
+                auxStation->stop();
+            }
+            catch(StationError::HoopPressureLoose& ex) {
+                qDebug() << ex.what();
+                auxStation->stop();
+            }
         }
     }
 }

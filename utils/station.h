@@ -4,6 +4,7 @@
 #include <QTimer>
 #include <QLabel>
 #include <QDateTime>
+#include <QException>
 #include "../services/schemas/schemaData.h"
 #include "../services/pressuretempgraph.h"
 
@@ -53,8 +54,8 @@ class Station {
     StationStatus status;
     const uint ID;
     const float MaxPressure;
-    float pressureDesviation;
-    uint testDuration;
+    float pressureDesviation, sumPressure;
+    uint testDuration, countPressure;
     QDateTime timer, initTest, finishTest;
     QVector<pressurePoint> pressurePoints;
     QSharedPointer<Data::NodeSample>   mySample;
@@ -74,13 +75,14 @@ public:
     void ini(QSharedPointer<Data::NodeSample> inSample = nullptr, QSharedPointer<Data::NodeSpecimen> inSpecimen = nullptr, const QDateTime initTime = DEFAULT_DATETIME, const QDateTime finisTime = DEFAULT_DATETIME);
     void start();
     void stop();
-    bool updateStatus(const float pressureInput, const float temperatureInput);
+    void updateStatus(const float pressureInput, const float temperatureInput);
     void refresh(const float& pressureDesviation, const double &yAxisDesviation, const QString &pressureColor, const QString &temperatureColor);
     uint getID();
     uint getIDSample();
     uint getIDSpecimen();
     void setIDSample(const uint id);
     void setIDSpecimen(const uint id, const uint idSample);
+    void setPressureDesviation(const float pressure);
     QSharedPointer<Data::NodeSample>   getSample();
     QSharedPointer<Data::NodeSpecimen> getSpecimen();
     const QDateTime getInitDateTime();
@@ -88,5 +90,24 @@ public:
     uint getTargetPressure();
     uint getTargetTemperature();
     StationStatus getStatus();
+};
+
+namespace StationError {
+    class TestOverTime : public QException {
+        QString error;
+    public:
+        TestOverTime() { this->error = "Over Time"; }
+        const QString what() { return this->error; }
+        void raise() const override { throw *this; }
+        TestOverTime *clone() const override { return new TestOverTime(*this); }
+    };
+    class HoopPressureLoose : public QException {
+        QString error;
+    public:
+        HoopPressureLoose() { this->error = "Hoop Break"; }
+        const QString what() { return this->error; }
+        void raise() const override { throw *this; }
+        HoopPressureLoose *clone() const override { return new HoopPressureLoose(*this); }
+    };
 };
 #endif // STATION_H

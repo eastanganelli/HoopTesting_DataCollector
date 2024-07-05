@@ -4,14 +4,16 @@
 unsigned int Station::stations = 0;
 
 Station::Station() : ID(++Station::stations), MaxPressure(Station::autoMaxPressure()) {
-    this->status       = StationStatus::READY;
-    this->mySample     = nullptr;
-    this->mySpecimen   = nullptr;
-    this->initTest     = QDateTime(QDate(1970, 1, 1), QTime(0,0,0,0));
-    this->finishTest   = QDateTime(QDate(1970, 1, 1), QTime(0,0,0,0));
-    this->timer        = QDateTime(QDate(1970, 1, 1), QTime(0,0,0,0));
-    this->testDuration = 0;
-    this->pressureDesviation = 0.00;
+    this->status        = StationStatus::READY;
+    this->mySample      = nullptr;
+    this->mySpecimen    = nullptr;
+    this->initTest      = QDateTime(QDate(1970, 1, 1), QTime(0,0,0,0));
+    this->finishTest    = QDateTime(QDate(1970, 1, 1), QTime(0,0,0,0));
+    this->timer         = QDateTime(QDate(1970, 1, 1), QTime(0,0,0,0));
+    this->testDuration  = 0;
+    this->countPressure = 0;
+    this->sumPressure   = 0;
+    this->pressureDesviation = 0.2;
 }
 
 Station::~Station() {
@@ -45,11 +47,13 @@ void Station::start() {
         this->finishTest = QDateTime::currentDateTime().addSecs(this->testDuration);
     }
     this->saveCache();
+    qDebug() << myMessage.toUtf8();
     myData.pushMessageSendPort(myMessage.toUtf8());
 }
 
 void Station::stop() {
     QString msg = "stop," + QString::number(this->ID) + "\n";
+    qDebug() << msg.toUtf8();
     myData.pushMessageSendPort(msg.toUtf8());
 
     this->myUI.resetUI();
@@ -65,31 +69,25 @@ void Station::stop() {
 
 void Station::set(QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeLabel, QPushButton* configBtn, QPushButton* runBtn, QTabWidget* myTab, PressureTempGraph* myGraph) { this->myUI.startUI(pressureLabel, temperatureLabel, timeLabel, configBtn, runBtn, myTab, myGraph); }
 
-bool Station::updateStatus(const float pressureInput, const float temperatureInput) {
+void Station::updateStatus(const float pressureInput, const float temperatureInput) {
     QDateTime actualTime = QDateTime::currentDateTime();
 
     if(actualTime <= this->finishTest.addSecs(1)) {
-        uint key = this->initTest.msecsTo(actualTime);
+        uint key          = this->initTest.msecsTo(actualTime);
         QDateTime lblText = this->timer.addMSecs(key);
+
+        this->sumPressure  += pressureInput;
+        this->countPressure++;
 
         if(pressureInput < this->getPressureMinimal()) { this->pressurePoints.push_back({ key, pressureInput }); }
         else if(pressureInput > this->getPressureMinimal()) { this->pressurePoints.clear(); }
 
-        try {
-            this->slope();
-            QString time_ = QString::number((lblText.date().day() - 1) * 24 + lblText.time().hour()) + ":" + lblText.toString("mm:ss");
-            this->myUI.updateUI(QString::number(pressureInput, 'f', 2) + " bar", QString::number(temperatureInput, 'f', 2) + " C", time_, key, pressureInput, temperatureInput);
-            Data::NodeData myData(this->getIDSpecimen(), pressureInput, temperatureInput);
-            Data::NodeData::insert(myData);
-            return false;
-        } catch(...) {
-            qDebug() << "Hoop breaked";
-            this->stop();
-            return true;
-        }
-    }
-    this->stop();
-    return true;
+        this->slope();
+        QString time_ = QString::number((lblText.date().day() - 1) * 24 + lblText.time().hour()) + ":" + lblText.toString("mm:ss");
+        this->myUI.updateUI(QString::number(pressureInput, 'f', 2) + " bar", QString::number(temperatureInput, 'f', 2) + " C", time_, key, pressureInput, temperatureInput);
+        Data::NodeData myData(this->getIDSpecimen(), pressureInput, temperatureInput);
+        Data::NodeData::insert(myData);
+    } else { throw StationError::TestOverTime(); }
 }
 
 void Station::refresh(const float &pressureDesviation, const double &yAxisDesviation, const QString &pressureColor, const QString &temperatureColor)  {
@@ -105,9 +103,11 @@ uint Station::getIDSample()   { return this->mySample->getID(); }
 
 uint Station::getIDSpecimen() { return this->mySpecimen->getID(); }
 
-void Station::setIDSample(const uint id)                         { this->mySample = QSharedPointer<Data::NodeSample>(new Data::NodeSample(*this->getSample().get(), id)); }
+void Station::setIDSample(const uint id)                         { this->mySample   = QSharedPointer<Data::NodeSample>(new Data::NodeSample(*this->getSample().get(), id)); }
 
 void Station::setIDSpecimen(const uint id, const uint idSample) { this->mySpecimen = QSharedPointer<Data::NodeSpecimen>(new Data::NodeSpecimen(*this->getSpecimen().get(), id, idSample));}
+
+void Station::setPressureDesviation(const float pressure) { this->pressureDesviation = pressure; }
 
 QSharedPointer<Data::NodeSample> Station::getSample()     { return this->mySample; }
 
@@ -117,9 +117,9 @@ const QDateTime Station::getInitDateTime()   { return this->initTest; }
 
 const QDateTime Station::getFinishDateTime() { return this->finishTest; }
 
-uint Station::getTargetPressure()    { return this->mySample->getTargetPressure(); }
+uint Station::getTargetPressure()    { return this->mySpecimen->getTargetPressure(); }
 
-uint Station::getTargetTemperature() { return this->mySample->getTargetTemperature(); }
+uint Station::getTargetTemperature() { return this->mySpecimen->getTargetTemperature(); }
 
 StationStatus Station::getStatus()    { return this->status; }
 
@@ -141,15 +141,14 @@ void Station::clearCache() {
     mySettings.sync();
 }
 
-float Station::getPressureMinimal() { return (1.00) * this->getTargetPressure() - this->pressureDesviation; }
+float Station::getPressureMinimal() { return (float)((this->sumPressure/this->countPressure) - this->pressureDesviation); }
 
 void Station::slope() {
     if(this->pressurePoints.length() > 2) {
         pressurePoint init = this->pressurePoints.first(), end = this->pressurePoints.last();
         double slope = ((end.pressure - init.pressure)/(end.key - init.key));
-        if(slope < 0) { throw "Hoop Break"; }
+        if(slope <= -1) { throw StationError::HoopPressureLoose(); }
     }
-
 }
 
 void Station::read(Station& myStation) {
@@ -176,7 +175,7 @@ void Station::set(Station &myStation) {
         auxSample = myStation.getSample();
     }
     const uint idSpecimen = Data::NodeSpecimen::insert(auxSpecimen, idSample);
-    // myStation.setIDSpecimen(idSpecimen, idSample);
+    myStation.setIDSpecimen(idSpecimen, idSample);
 }
 
 void Station::set(QSharedPointer<Station> selectedStation, QSharedPointer<Data::NodeSample> mySample, QSharedPointer<Data::NodeSpecimen> mySpecimen, const uint time_) {

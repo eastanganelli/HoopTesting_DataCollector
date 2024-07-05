@@ -11,12 +11,10 @@ Data::NodeSample::NodeSample(const NodeSample &me, const uint id_) : id(id_) {
     this->wallthick      = me.wallthick;
     this->lenFree        = me.lenFree;
     this->lenTotal       = me.lenTotal;
-    this->targetPressure = me.targetPressure;
-    this->targetTemp     = me.targetTemp;
     this->condPeriod     = me.condPeriod;
 }
 
-Data::NodeSample::NodeSample(const uint id_, const QString standard, const QString material, const QString specification, const uint diamNom, const uint diamReal, const uint wallthick, const uint lenFree, const uint lenTotal, const int targetPressure, const int targetTemp, const QString condPeriod) : id(id_) {
+Data::NodeSample::NodeSample(const uint id_, const QString standard, const QString material, const QString specification, const uint diamNom, const uint diamReal, const uint wallthick, const uint lenFree, const uint lenTotal, const QString condPeriod) : id(id_) {
     this->standard       = standard;
     this->material       = material;
     this->specification  = specification;
@@ -25,15 +23,13 @@ Data::NodeSample::NodeSample(const uint id_, const QString standard, const QStri
     this->wallthick      = wallthick;
     this->lenFree        = lenFree;
     this->lenTotal       = lenTotal;
-    this->targetPressure = targetPressure;
-    this->targetTemp     = targetTemp;
     this->condPeriod     = condPeriod;
 }
 
 Data::NodeSample::~NodeSample() { }
 
 QSharedPointer<Data::NodeSample> Data::NodeSample::get(const uint idSample) {
-    const QString Script = "CALL selectSample(" + QString::number(idSample) + ");";
+    const QString Script = QString("CALL selectSample(%1);").arg(idSample);
     QSqlDatabase myDB = QSqlDatabase::database(DATA_SCHEMA_NAME);
     if(!myDB.isOpen()) {
         throw "no esta abierto";
@@ -49,14 +45,12 @@ QSharedPointer<Data::NodeSample> Data::NodeSample::get(const uint idSample) {
         diamReal       = getSample.value("diamreal").toUInt(),
         wallthick      = getSample.value("wallthickness").toUInt(),
         lenFree        = getSample.value("lenfree").toUInt(),
-        lenTotal       = getSample.value("lentotal").toUInt(),
-        targetPressure = getSample.value("targetpressure").toUInt(),
-        targetTemp     = getSample.value("targettemp").toUInt();
-    return QSharedPointer<Data::NodeSample>(new Data::NodeSample(idSample, standard, material, specification, diamNom, diamReal, wallthick, lenFree, lenTotal, targetPressure, targetTemp, condPeriod));
+        lenTotal       = getSample.value("lentotal").toUInt();
+    return QSharedPointer<Data::NodeSample>(new Data::NodeSample(idSample, standard, material, specification, diamNom, diamReal, wallthick, lenFree, lenTotal, condPeriod));
 }
 
 uint Data::NodeSample::insert(QSharedPointer<Data::NodeSample> sample) {
-    const QString Script = "CALL insertSample('" + sample->standard + "','" + sample->material + "','" + sample->specification + "'," + QString::number(sample->diamNom) + "," + QString::number(sample->diamReal) + "," + QString::number(sample->wallthick)  + "," + QString::number(sample->lenFree) + "," + QString::number(sample->lenTotal) + "," + QString::number(sample->targetPressure) + "," + QString::number(sample->targetTemp) + ",'" + sample->condPeriod + "');";
+    const QString Script = QString("CALL insertSample('%1','%2','%3',%4,%5,%6,%7,%8,'%9')").arg(sample->standard).arg(sample->material).arg(sample->specification).arg(sample->diamNom).arg(sample->diamReal).arg(sample->wallthick).arg(sample->lenFree).arg(sample->lenTotal).arg(sample->condPeriod);
     QSqlDatabase myDB = QSqlDatabase::database(DATA_SCHEMA_NAME);
     if(!myDB.isOpen()) {
         throw "no esta abierto";
@@ -67,8 +61,8 @@ uint Data::NodeSample::insert(QSharedPointer<Data::NodeSample> sample) {
     return newSample.value("idSample").toUInt();
 }
 
-uint Data::NodeSample::exists(const QString standard, const QString material, const QString specification, const uint diamNom, const uint diamReal, const uint wallthick, const uint lenFree, const uint lenTotal, const int targetPressure, const int targetTemp) {
-    const QString Script = "CALL selectSampleID('" + standard + "','" + material + "','" + specification + "'," + QString::number(diamNom) + "," + QString::number(diamReal) + "," + QString::number(wallthick)  + "," + QString::number(lenFree) + "," + QString::number(lenTotal) + "," + QString::number(targetPressure) + "," + QString::number(targetTemp) + ");";
+uint Data::NodeSample::exists(const QString standard, const QString material, const QString specification, const uint diamNom, const uint diamReal, const uint wallthick, const uint lenFree, const uint lenTotal) {
+    const QString Script = QString("CALL selectSampleID('%1','%2','%3',%4,%5,%6,%7,%8)").arg(standard).arg(material).arg(specification).arg(diamNom).arg(diamReal).arg(wallthick).arg(lenFree).arg(lenTotal);
     QSqlDatabase myDB = QSqlDatabase::database(DATA_SCHEMA_NAME);
     if(!myDB.isOpen()) {
         throw "no esta abierto";
@@ -103,18 +97,18 @@ uint    Data::NodeSample::getLenTotal()      { return this->lenTotal; }
 
 QString Data::NodeSample::getCondPeriod()    { return this->condPeriod; }
 
-int     Data::NodeSample::getTargetPressure()    { return this->targetPressure; }
-
-int     Data::NodeSample::getTargetTemperature() { return this->targetTemp; }
-
 Data::NodeSpecimen::NodeSpecimen(const NodeSpecimen &me, const uint id, const uint idSample) : id(id), idSample(idSample) {
-    this->operatorName = me.operatorName;
-    this->enviroment   = me.enviroment;
-    this->testName     = me.testName;
-    this->endCap       = me.endCap;
+    this->operatorName   = me.operatorName;
+    this->targetPressure = me.targetPressure;
+    this->targetTemp     = me.targetTemp;
+    this->enviroment     = me.enviroment;
+    this->testName       = me.testName;
+    this->endCap         = me.endCap;
 }
 
-Data::NodeSpecimen::NodeSpecimen(const uint id, const uint idSample, const QString operatorName, const QString enviroment, const QString testName, const QString endCap) : id(id), idSample(idSample), operatorName(operatorName) {
+Data::NodeSpecimen::NodeSpecimen(const uint id, const uint idSample, const int targetPressure, const int targetTemp, const QString &operatorName, const QString &enviroment, const QString &testName, const QString &endCap) : id(id), idSample(idSample), operatorName(operatorName) {
+    this->targetPressure = targetPressure;
+    this->targetTemp     = targetTemp;
     this->enviroment = enviroment;
     this->testName   = testName;
     this->endCap     = endCap;
@@ -123,7 +117,7 @@ Data::NodeSpecimen::NodeSpecimen(const uint id, const uint idSample, const QStri
 Data::NodeSpecimen::~NodeSpecimen() { }
 
 QSharedPointer<Data::NodeSpecimen> Data::NodeSpecimen::get(const uint idSpecimen) {
-    const QString Script = "CALL selectSpecimen(" + QString::number(idSpecimen) + ");";
+    const QString Script = QString("CALL selectSpecimen(%1);").arg(idSpecimen);
     QSqlDatabase myDB = QSqlDatabase::database(DATA_SCHEMA_NAME);
     if(!myDB.isOpen()) { throw "no esta abierto"; }
     QSqlQuery getSpecimen(myDB);
@@ -135,11 +129,13 @@ QSharedPointer<Data::NodeSpecimen> Data::NodeSpecimen::get(const uint idSpecimen
         operatorName = getSpecimen.value("operator").toString(),
         testName     = getSpecimen.value("testName").toString(),
         endCap       = getSpecimen.value("endCap").toString();
-    return QSharedPointer<Data::NodeSpecimen>(new Data::NodeSpecimen(idSpecimen, idSample, operatorName, enviromental, testName, endCap));
+    const int targetPressure = getSpecimen.value("pressure").toInt(),
+              targetTemp      = getSpecimen.value("temperature").toInt();
+    return QSharedPointer<Data::NodeSpecimen>(new Data::NodeSpecimen(idSpecimen, idSample, targetPressure, targetTemp, operatorName, enviromental, testName, endCap));
 }
 
 uint Data::NodeSpecimen::insert(QSharedPointer<Data::NodeSpecimen> specimen) {
-    const QString Script = "CALL insertSpecimen(" + QString::number(specimen->idSample) + ",'" +specimen->operatorName + "','" + specimen->enviroment + "','" + specimen->testName + "','" + specimen->endCap + "');";
+    const QString Script = QString("CALL insertSpecimen(%1,%2,%3,'%4','%5','%6','%7');").arg(specimen->idSample).arg(specimen->targetPressure).arg(specimen->targetTemp).arg(specimen->operatorName).arg(specimen->enviroment).arg(specimen->testName).arg(specimen->endCap);
     QSqlDatabase myDB = QSqlDatabase::database(DATA_SCHEMA_NAME);
     if(!myDB.isOpen()) {
         throw "no esta abierto";
@@ -151,7 +147,7 @@ uint Data::NodeSpecimen::insert(QSharedPointer<Data::NodeSpecimen> specimen) {
 }
 
 uint Data::NodeSpecimen::insert(QSharedPointer<NodeSpecimen> specimen, const uint idSample) {
-    const QString Script = "CALL insertSpecimen(" + QString::number(idSample) + ",'" +specimen->operatorName + "','" + specimen->enviroment + "','" + specimen->testName + "','" + specimen->endCap + "');";
+    const QString Script = QString("CALL insertSpecimen(%1,%2,%3,'%4','%5','%6','%7');").arg(idSample).arg(specimen->targetPressure).arg(specimen->targetTemp).arg(specimen->operatorName).arg(specimen->enviroment).arg(specimen->testName).arg(specimen->endCap);
     QSqlDatabase myDB = QSqlDatabase::database(DATA_SCHEMA_NAME);
     if(!myDB.isOpen()) {
         throw "no esta abierto";
@@ -163,7 +159,7 @@ uint Data::NodeSpecimen::insert(QSharedPointer<NodeSpecimen> specimen, const uin
 }
 
 uint Data::NodeSpecimen::count(const uint idSample) {
-    const QString Script = "CALL countSpecimens(" + QString::number(idSample) + ");";
+    const QString Script = QString("CALL countSpecimens(%1);").arg(idSample);
     QSqlDatabase myDB = QSqlDatabase::database(DATA_SCHEMA_NAME);
     if(!myDB.isOpen()) {
         throw "no esta abierto";
@@ -180,6 +176,10 @@ uint Data::NodeSpecimen::count(const uint idSample) {
 uint Data::NodeSpecimen::getID()                    { return this->id; }
 
 uint Data::NodeSpecimen::getIDSample()              { return this->idSample; }
+
+int Data::NodeSpecimen::getTargetPressure()       { return this->targetPressure; }
+
+int Data::NodeSpecimen::getTargetTemperature()    { return this->targetTemp; }
 
 const QString Data::NodeSpecimen::getEnviroment()   { return this->enviroment; }
 
@@ -203,7 +203,7 @@ double Data::NodeData::getTemperature() { return this->temperature; }
 double Data::NodeData::getPressure() { return this->pressure; }
 
 void Data::NodeData::insert(Data::NodeData &myData) {
-    const QString Script = "CALL insertData(" + QString::number(myData.getIDSpecimen()) + "," + QString::number(myData.getPressure()) + "," + QString::number(myData.getTemperature()) + ");";
+    const QString Script = QString("CALL insertData(%1,%2,%3);").arg(myData.idSpecimen).arg(myData.pressure).arg(myData.temperature);
     QSqlDatabase myDB = QSqlDatabase::database(DATA_SCHEMA_NAME);
     if(!myDB.isOpen()) {
         throw "no esta abierto";

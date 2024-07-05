@@ -74,7 +74,7 @@ void SetStation::setConnectionSignals() {
 }
 
 void SetStation::checkSpecimen() {
-    this->idSample = Data::NodeSample::exists(this->ui->cbStandard->currentText(), this->ui->cbMaterial->currentText(), this->ui->cbSpecification->currentText(), this->ui->inputDiamNormal->value(), this->ui->inputDiamReal->value(), this->ui->inputWallThickness->value(),  this->ui->inputLenFree->value(), this->ui->inputLenTotal->value(), this->ui->inputPressure->value(), this->ui->cbTemp->currentText().toUInt());
+    this->idSample = Data::NodeSample::exists(this->ui->cbStandard->currentText(), this->ui->cbMaterial->currentText(), this->ui->cbSpecification->currentText(), this->ui->inputDiamNormal->value(), this->ui->inputDiamReal->value(), this->ui->inputWallThickness->value(),  this->ui->inputLenFree->value(), this->ui->inputLenTotal->value());
     this->ui->lblSpecimen->setText("Prueba Nro.: " + QString::number(Data::NodeSpecimen::count(this->idSample) + 1));
 }
 
@@ -98,8 +98,8 @@ void SetStation::isPopulated() {
         this->ui->inputWallThickness->setValue(this->selectedStation->getSample()->getWallThick());
         this->ui->inputLenFree->setValue(this->selectedStation->getSample()->getLenFree());
         this->ui->inputLenTotal->setValue(this->selectedStation->getSample()->getLenTotal());
-        this->ui->inputPressure->setValue(this->selectedStation->getSample()->getTargetPressure());
-        this->ui->cbTemp->setCurrentText(QString::number(this->selectedStation->getSample()->getTargetTemperature()));
+        this->ui->inputPressure->setValue(this->selectedStation->getSpecimen()->getTargetPressure());
+        this->ui->cbTemp->setCurrentText(QString::number(this->selectedStation->getSpecimen()->getTargetTemperature()));
     }
 }
 
@@ -122,17 +122,18 @@ void SetStation::configureStation() {
                targetTemperature = this->ui->cbTemp->currentText().toUInt(),
                targetPressure    = this->ui->inputPressure->value();
 
-    QSharedPointer<Data::NodeSample>   SampleData   = QSharedPointer<Data::NodeSample>(new Data::NodeSample(this->idSample, standard, material, specification, diameterNormal, diameterReal, wallthickness, lengthFree, lengthTotal, targetPressure, targetTemperature, conditionalPeriod));
-    QSharedPointer<Data::NodeSpecimen> SpecimenData = QSharedPointer<Data::NodeSpecimen>(new Data::NodeSpecimen(0, this->idSample, operatorName, enviroment, typeTest, endCap));
+    QSharedPointer<Data::NodeSample>   SampleData   = QSharedPointer<Data::NodeSample>(new Data::NodeSample(this->idSample, standard, material, specification, diameterNormal, diameterReal, wallthickness, lengthFree, lengthTotal, conditionalPeriod));
+    QSharedPointer<Data::NodeSpecimen> SpecimenData = QSharedPointer<Data::NodeSpecimen>(new Data::NodeSpecimen(0, this->idSample, targetPressure, targetTemperature, operatorName, enviroment, typeTest, endCap));
 
     Station::set(this->selectedStation, SampleData, SpecimenData, time_);
 }
 
 void SetStation::checkFieldsCompletetion() {
     if((this->ui->inputDiamReal->value() != 0 && this->ui->inputDiamNormal->value() != 0 && this->ui->inputWallThickness->value() != 0) &&
-        (this->ui->inputLenFree->value() != 0 && this->ui->inputLenTotal->value() != 0) && (!this->ui->cbTemp->currentText().isEmpty() && this->ui->inputPressure->value() != 0) &&
-            (!this->ui->cbBoxTestTime->currentText().isEmpty() && (this->ui->radSeconds->isChecked() || this->ui->radHours->isChecked()))) {
-        this->ui->btnSave->setEnabled(true);
+        (this->ui->inputLenFree->value() != 0 && this->ui->inputLenTotal->value() != 0) &&
+        (!this->ui->cbBoxTestTime->currentText().isEmpty() && (this->ui->radSeconds->isChecked() || this->ui->radHours->isChecked()))) {
+
+        if(!this->ui->cbTemp->currentText().isEmpty() && this->ui->inputPressure->value() != 0) { this->ui->btnSave->setEnabled(true); }
         this->checkSpecimen();
     } else { this->ui->btnSave->setEnabled(false); }
 }
@@ -140,13 +141,13 @@ void SetStation::checkFieldsCompletetion() {
 void SetStation::on_inputLenFree_valueChanged(int value_) { if(this->ui->inputLenTotal->value() <= value_) { this->ui->inputLenFree->setValue(this->ui->inputLenTotal->value() - 1); } }
 
 void SetStation::on_cbStandard_currentIndexChanged(int index) {
-    SetStation::clearComboBox(this->ui->cbMaterial, "Material", true);
+    SetStation::clearComboBox(this->ui->cbMaterial,      "Material",       true);
     SetStation::clearComboBox(this->ui->cbSpecification, "Especificación", false);
-    SetStation::clearComboBox(this->ui->cbTemp, " ", true);
-    SetStation::clearComboBox(this->ui->cbBoxTestTime, " ", true);
-    SetStation::clearComboBox(this->ui->cbBoxEndCap, " ", true);
-    SetStation::clearComboBox(this->ui->cbBoxTestType, " ", true);
-    SetStation::clearComboBox(this->ui->cbBoxEnviroment, " ", true);
+    SetStation::clearComboBox(this->ui->cbTemp,          " ",              true);
+    SetStation::clearComboBox(this->ui->cbBoxTestTime,   " ",              true);
+    SetStation::clearComboBox(this->ui->cbBoxEndCap,     " ",              true);
+    SetStation::clearComboBox(this->ui->cbBoxTestType,   " ",              true);
+    SetStation::clearComboBox(this->ui->cbBoxEnviroment, " ",              true);
 
     if(index > -1) {
         this->selectedStandard = this->listStandards[index];
@@ -221,7 +222,6 @@ void SetStation::on_btnSave_clicked() {
     msgBox.setWindowIcon(QIcon(":/icon/logo"));
     msgBox.addButton(QMessageBox::Yes)->setText("Si");
     msgBox.addButton(QMessageBox::No)->setText("No");
-
     switch(msgBox.exec()) {
         case QMessageBox::Yes: {
             this->configureStation();
@@ -237,7 +237,6 @@ void SetStation::on_btnCancel_clicked() {
     msgBox.setWindowIcon(QIcon(":/icon/logo"));
     msgBox.addButton(QMessageBox::Yes)->setText("Si");
     msgBox.addButton(QMessageBox::No)->setText("No");
-
     switch(msgBox.exec()) {
         case QMessageBox::Yes: {
             this->close();
@@ -264,4 +263,3 @@ void SetStation::on_cbBoxTestTime_currentIndexChanged(int index) {
         else if(this->selectedSetting->getTimeType() == "s") { this->ui->radSeconds->setChecked(true); }
     }
 }
-

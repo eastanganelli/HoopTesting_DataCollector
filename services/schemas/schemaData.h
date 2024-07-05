@@ -9,16 +9,15 @@ namespace Data {
         const uint id;
         QString standard, material, specification, condPeriod;
         uint diamNom, diamReal, wallthick, lenFree, lenTotal;
-        int targetPressure, targetTemp;
 
     public:
         NodeSample(const NodeSample& me, const uint id_);
-        NodeSample(const uint id_, const QString standard, const QString material, const QString specification, const uint diamNom, const uint diamReal, const uint wallthick, const uint lenFree, const uint lenTotal, const int targetPressure, const int targetTemp, const QString condPeriod);
+        NodeSample(const uint id_, const QString standard, const QString material, const QString specification, const uint diamNom, const uint diamReal, const uint wallthick, const uint lenFree, const uint lenTotal, const QString condPeriod);
         ~NodeSample();
 
         static QSharedPointer<NodeSample> get(const uint idSample);
         static uint insert(QSharedPointer<NodeSample> sample);
-        static uint exists(const QString standard, const QString material, const QString specification, const uint diamNom, const uint diamReal, const uint wallthick, const uint lenFree, const uint lenTotal, const int targetPressure, const int targetTemp);
+        static uint exists(const QString standard, const QString material, const QString specification, const uint diamNom, const uint diamReal, const uint wallthick, const uint lenFree, const uint lenTotal);
 
         uint getID();
         QString getStandard();
@@ -30,8 +29,6 @@ namespace Data {
         uint  getWallThick();
         uint  getLenFree();
         uint  getLenTotal();
-        int  getTargetPressure();
-        int  getTargetTemperature();
     };
 
     class NodeSpecimen {
@@ -40,10 +37,11 @@ namespace Data {
             operatorName,
             testName,
             endCap;
+        int targetPressure, targetTemp;
 
     public:
         NodeSpecimen(const NodeSpecimen& me, const uint id, const uint idSample);
-        NodeSpecimen(const uint id, const uint idSample, const QString operatorName, const QString enviroment, const QString testName, const QString endCap);
+        NodeSpecimen(const uint id, const uint idSample, const int targetPressure, const int targetTemp,  const QString& operatorName, const QString& enviroment, const QString& testName, const QString& endCap);
         ~NodeSpecimen();
 
         static QSharedPointer<NodeSpecimen> get(const uint idSpecimen);
@@ -53,6 +51,8 @@ namespace Data {
 
         uint getID();
         uint getIDSample();
+        int  getTargetPressure();
+        int  getTargetTemperature();
         const QString getEnviroment();
         const QString getTestName();
         const QString getEndCap();

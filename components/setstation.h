@@ -62,7 +62,6 @@ private slots:
     void on_cbBoxEnviroment_currentIndexChanged(int index);
     void on_btnSave_clicked();
     void on_btnCancel_clicked();
-
     void on_cbBoxTestTime_currentIndexChanged(int index);
 
 public:
