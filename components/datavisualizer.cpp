@@ -39,16 +39,15 @@ void DataVisualizerWindow::setStationsUI() {
         PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(myStation->getID()));
         QTabWidget* myTabs     = this->ui->tabWidget;
         btnRun->setVisible(false);
+        myStation->set(pressurelbl, temperaturelbl, timelbl, btnConfig, btnRun, myTabs, mygraph);
         {
             bool activeDesviationRead = false;
             uint minValuesDesviationRaed = 0;
             double pressureDesviationRead = 0.00, yAxisDesviationRead = 0.00;
             QString pressureColor, temperatureColor;
             plotSettings::loadSettings(activeDesviationRead, pressureDesviationRead, minValuesDesviationRaed, yAxisDesviationRead, pressureColor, temperatureColor);
-            myStation->setPressureDesviation(pressureDesviationRead);
-            mygraph->refresh(yAxisDesviationRead, pressureColor, temperatureColor);
+            myStation->refresh(activeDesviationRead, pressureDesviationRead, minValuesDesviationRaed, yAxisDesviationRead, pressureColor, temperatureColor);
         }
-        myStation->set(pressurelbl, temperaturelbl, timelbl, btnConfig, btnRun, myTabs, mygraph);
         Station::read(*myStation.get());
     }
 }
@@ -138,12 +137,8 @@ void DataVisualizerWindow::on_dbConfig_triggered() {
 }
 
 void DataVisualizerWindow::on_dbConnect_triggered() {
-    if(this->myDataDB->isOpen()) {
-        this->myDataDB->close();
-    }
-    else {
-        this->myDataDB->open();
-    }
+    if(this->myDataDB->isOpen()) { this->myDataDB->close(); return; }
+    this->myDataDB->open();
 }
 
 void DataVisualizerWindow::statusConnections() {
@@ -159,10 +154,6 @@ void DataVisualizerWindow::statusConnections() {
 }
 
 void DataVisualizerWindow::on_close_triggered() { this->close(); }
-
-void DataVisualizerWindow::on_actionAdministrador_de_Base_de_Datos_triggered() {
-
-}
 
 void DataVisualizerWindow::on_actionGr_fico_triggered() {
     plotSettings* myPlotSettings = new plotSettings();

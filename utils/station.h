@@ -84,7 +84,6 @@ public:
     uint getIDSpecimen();
     void setIDSample(const uint id);
     void setIDSpecimen(const uint id, const uint idSample);
-    void setPressureDesviation(const float pressure);
     QSharedPointer<Data::NodeSample>   getSample();
     QSharedPointer<Data::NodeSpecimen> getSpecimen();
     const QDateTime getInitDateTime();

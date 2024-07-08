@@ -53,9 +53,9 @@ void plotSettings::setDefault() {
 void plotSettings::loadSettings(bool& activeDesviation, double& pressureDesviation, uint& minValuesDesviation,  double& yaxisDesviation, QString& pressureColor, QString& temperatureColor) {
     QSettings mySettings(QApplication::applicationDirPath() + "/settings.ini", QSettings::IniFormat);
     mySettings.beginGroup("PlotSettings"); {
-        pressureDesviation = mySettings.value("ActiveDesviation",    QString()).toBool();
+        activeDesviation = mySettings.value("ActiveDesviation",    QString()).toBool();
         pressureDesviation = mySettings.value("PressureDesviations", QString()).toDouble();
-        pressureDesviation = mySettings.value("MinValuesDesviation", QString()).toUInt();
+        minValuesDesviation = mySettings.value("MinValuesDesviation", QString()).toUInt();
         yaxisDesviation    = mySettings.value("YAxisDesviations",    QString()).toDouble();
         pressureColor      = mySettings.value("PressureColor",       QString()).toString();
         temperatureColor   = mySettings.value("TemperatureColor",    QString()).toString();

@@ -51,9 +51,6 @@ private slots:
     void on_dbConfig_triggered();
     void statusConnections();
     void on_dbConnect_triggered();
-
-    void on_actionAdministrador_de_Base_de_Datos_triggered();
-
     void on_actionGr_fico_triggered();
 
 public:

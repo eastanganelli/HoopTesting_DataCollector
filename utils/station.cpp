@@ -44,11 +44,6 @@ void Station::start() {
     QString myMessage = "start," + QString::number(this->ID) + "," + QString::number(this->getTargetPressure()) + "," + QString::number(this->getTargetTemperature()) + "\n";
     this->status         = StationStatus::RUNNING;
     this->myUI.running();
-    if(this->initTest == DEFAULT_DATETIME && this->finishTest == DEFAULT_DATETIME) {
-        this->initTest   = QDateTime::currentDateTime();
-        this->finishTest = QDateTime::currentDateTime().addSecs(this->testDuration);
-    }
-    this->saveCache();
     myData.pushMessageSendPort(myMessage.toUtf8());
 }
 
@@ -72,20 +67,26 @@ void Station::set(QLabel* pressureLabel, QLabel* temperatureLabel, QLabel* timeL
 void Station::updateStatus(const float pressureInput, const float temperatureInput) {
     QDateTime actualTime = QDateTime::currentDateTime();
 
+    if(this->initTest == DEFAULT_DATETIME && this->finishTest == DEFAULT_DATETIME) {
+        this->initTest   = actualTime;
+        this->finishTest = QDateTime::currentDateTime().addSecs(this->testDuration);
+        this->saveCache();
+    }
     if(actualTime <= this->finishTest.addSecs(1)) {
         uint key          = this->initTest.msecsTo(actualTime);
         QDateTime lblText = this->timer.addMSecs(key);
 
-        this->sumPressure  += pressureInput;
-        this->countPressure++;
-
-        if(pressureInput < this->getPressureMinimal()) { this->pressurePoints.push_back({ key, pressureInput }); }
-        else if(pressureInput > this->getPressureMinimal()) { this->pressurePoints.clear(); }
-
+        // qDebug() << "State of Auto Desviation -> " << this->autoStopDesviation;
         if(this->autoStopDesviation) {
-            try {
+            // qDebug() << "Check if Hoop did break";
+            // try {
+                this->sumPressure  += pressureInput;
+                this->countPressure++;
+                // qDebug() << "Pressure under avg -> " << pressureInput << " < " << this->getPressureMinimal();
+                if(pressureInput < this->getPressureMinimal()) { this->pressurePoints.push_back({ key, pressureInput }); }
+                else if(pressureInput > this->getPressureMinimal()) { this->pressurePoints.clear(); }
                 this->slope();
-            } catch(StationError::HoopPressureLoose& ex) { throw ex; }
+            // } catch(StationError::HoopPressureLoose& ex) { qDebug() << "Hoop is broken"; throw ex; }
         }
         QString time_ = QString::number((lblText.date().day() - 1) * 24 + lblText.time().hour()) + ":" + lblText.toString("mm:ss");
         this->myUI.updateUI(QString::number(pressureInput, 'f', 2) + " bar", QString::number(temperatureInput, 'f', 2) + " C", time_, key, pressureInput, temperatureInput);
@@ -112,8 +113,6 @@ uint Station::getIDSpecimen() { return this->mySpecimen->getID(); }
 void Station::setIDSample(const uint id)                         { this->mySample   = QSharedPointer<Data::NodeSample>(new Data::NodeSample(*this->getSample().get(), id)); }
 
 void Station::setIDSpecimen(const uint id, const uint idSample) { this->mySpecimen = QSharedPointer<Data::NodeSpecimen>(new Data::NodeSpecimen(*this->getSpecimen().get(), id, idSample));}
-
-void Station::setPressureDesviation(const float pressure) { this->pressureDesviation = pressure; }
 
 QSharedPointer<Data::NodeSample> Station::getSample()     { return this->mySample; }
 
@@ -153,8 +152,11 @@ void Station::slope() {
     if(this->pressurePoints.length() > this->desviationMinValues) {
         pressurePoint init = this->pressurePoints.first(), end = this->pressurePoints.last();
         double slope = ((end.pressure - init.pressure)/(end.key - init.key));
-        qDebug() << "Slope value: " << slope;
-        if(slope <= -1) { throw StationError::HoopPressureLoose(); }
+        // qDebug() << "Slope value: " << slope;
+        if(slope < 0) {
+            qDebug() << "Hoop is broken";
+            throw StationError::HoopPressureLoose();
+        }
     }
 }
 
