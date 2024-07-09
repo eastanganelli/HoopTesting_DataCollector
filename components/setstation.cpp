@@ -27,7 +27,7 @@ void SetStation::on_inputWallThickness_valueChanged(int wallthickness) {
     QString conditionalPeriod = "0 h ± 0 min";
     if(this->listCondPeriods.count() > 0) {
         for(auto myCP : this->listCondPeriods) {
-            if((uint)(wallthickness) >= myCP->getMinWall() && (uint)(wallthickness) < myCP->getMaxWall()) {
+            if(wallthickness >= myCP->getMinWall() && wallthickness < myCP->getMaxWall()) {
                 conditionalPeriod = myCP->getConditionalPeriod();
                 break;
             }
