@@ -39,16 +39,13 @@ void DataVisualizerWindow::setStationsUI() {
         PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(myStation->getID()));
         QTabWidget* myTabs     = this->ui->tabWidget;
         btnRun->setVisible(false);
-        myStation->set(pressurelbl, temperaturelbl, timelbl, btnConfig, btnRun, myTabs, mygraph);
         {
             bool activeDesviationRead = false;
             uint minValuesDesviationRaed = 0;
             double pressureDesviationRead = 0.00, yAxisDesviationRead = 0.00;
             QString pressureColor, temperatureColor;
             plotSettings::loadSettings(activeDesviationRead, pressureDesviationRead, minValuesDesviationRaed, yAxisDesviationRead, pressureColor, temperatureColor);
-            myStation->refresh(activeDesviationRead, pressureDesviationRead, minValuesDesviationRaed, yAxisDesviationRead, pressureColor, temperatureColor);
         }
-        Station::read(*myStation.get());
     }
 }
 
@@ -85,39 +82,39 @@ void DataVisualizerWindow::btnStationsDialog(const uint id_) {
     this->dialogStation = nullptr;
 }
 
-void DataVisualizerWindow::btnStationStartStop(const uint id_) {
-    QSharedPointer<Station> myAuxStation = myData.getStation(id_);
-    if(myAuxStation->getStatus() == StationStatus::WAITING) {
-        Station::set(*myAuxStation.get());
-        myAuxStation->start();
-    } else if(myAuxStation->getStatus() == StationStatus::RUNNING) {
-        myAuxStation->stop();
-    }
-}
+// void DataVisualizerWindow::btnStationStartStop(const uint id_) {
+//     QSharedPointer<Station> myAuxStation = myData.getStation(id_);
+//     if(myAuxStation->getStatus() == StationStatus::WAITING) {
+//         Station::set(*myAuxStation.get());
+//         myAuxStation->start();
+//     } else if(myAuxStation->getStatus() == StationStatus::RUNNING) {
+//         myAuxStation->stop();
+//     }
+// }
 
-void DataVisualizerWindow::on_btnEstConfig_1_clicked() { this->btnStationsDialog(1); }
+// void DataVisualizerWindow::on_btnEstConfig_1_clicked() { this->btnStationsDialog(1); }
 
-void DataVisualizerWindow::on_btnEstConfig_2_clicked() { this->btnStationsDialog(2); }
+// void DataVisualizerWindow::on_btnEstConfig_2_clicked() { this->btnStationsDialog(2); }
 
-void DataVisualizerWindow::on_btnEstConfig_3_clicked() { this->btnStationsDialog(3); }
+// void DataVisualizerWindow::on_btnEstConfig_3_clicked() { this->btnStationsDialog(3); }
 
-void DataVisualizerWindow::on_btnEstConfig_4_clicked() { this->btnStationsDialog(4); }
+// void DataVisualizerWindow::on_btnEstConfig_4_clicked() { this->btnStationsDialog(4); }
 
-void DataVisualizerWindow::on_btnEstConfig_5_clicked() { this->btnStationsDialog(5); }
+// void DataVisualizerWindow::on_btnEstConfig_5_clicked() { this->btnStationsDialog(5); }
 
-void DataVisualizerWindow::on_btnEstConfig_6_clicked() { this->btnStationsDialog(6); }
+// void DataVisualizerWindow::on_btnEstConfig_6_clicked() { this->btnStationsDialog(6); }
 
-void DataVisualizerWindow::on_btnEstRun_1_clicked()    { this->btnStationStartStop(1); }
+// void DataVisualizerWindow::on_btnEstRun_1_clicked()    { this->btnStationStartStop(1); }
 
-void DataVisualizerWindow::on_btnEstRun_2_clicked()    { this->btnStationStartStop(2); }
+// void DataVisualizerWindow::on_btnEstRun_2_clicked()    { this->btnStationStartStop(2); }
 
-void DataVisualizerWindow::on_btnEstRun_3_clicked()    { this->btnStationStartStop(3); }
+// void DataVisualizerWindow::on_btnEstRun_3_clicked()    { this->btnStationStartStop(3); }
 
-void DataVisualizerWindow::on_btnEstRun_4_clicked()    { this->btnStationStartStop(4); }
+// void DataVisualizerWindow::on_btnEstRun_4_clicked()    { this->btnStationStartStop(4); }
 
-void DataVisualizerWindow::on_btnEstRun_5_clicked()    { this->btnStationStartStop(5); }
+// void DataVisualizerWindow::on_btnEstRun_5_clicked()    { this->btnStationStartStop(5); }
 
-void DataVisualizerWindow::on_btnEstRun_6_clicked()    { this->btnStationStartStop(6); }
+// void DataVisualizerWindow::on_btnEstRun_6_clicked()    { this->btnStationStartStop(6); }
 
 void DataVisualizerWindow::on_serialConnect_triggered() {
     if(this->myActivePort->isOpen()) { this->myActivePort->closePort(); }

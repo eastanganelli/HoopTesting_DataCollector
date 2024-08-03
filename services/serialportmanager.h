@@ -9,8 +9,8 @@
 
 #include "../utils/station.h"
 
-#define ms_ 10              // In miliseconds
-#define timeoutConnection 3 // In seconds
+#define ms_ 10                 // In miliseconds
+#define timeoutConnection 30 // In seconds
 
 class SerialPortReader : public QSerialPort {
     Q_OBJECT
@@ -31,6 +31,8 @@ class SerialPortReader : public QSerialPort {
     QAction* btnConnect;
     QTime timeStatus;
 
+    static QQueue<QString> portMessages;
+
 public slots:
     void onSerialPortReadyRead();
 
@@ -50,3 +52,5 @@ public:
     bool statusPort();
 };
 #endif // SERIALPORTMANAGER_H
+
+// QQueue<QString> SerialPortReader::portMessages = QQueue<QString>();

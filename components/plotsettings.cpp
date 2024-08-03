@@ -85,7 +85,7 @@ void plotSettings::on_btnSave_clicked() {
     msgBox.addButton(QMessageBox::No)->setText(tr("No"));
     switch(msgBox.exec()) {
     case QMessageBox::Yes : {
-        for(QSharedPointer<Station> myStation: myData.getStations()) { myStation->refresh(this->ui->cbActiveDesviation->isChecked(), this->ui->sboxPressureDesviation->value(), this->ui->sboxMinValuesDesviation->value(), this->ui->sboxDesviationYAxis->value(), this->ui->inputPressureColor->text(), this->ui->inputTemperatureColor->text()); }
+        // for(QSharedPointer<Station> myStation: myData.getStations()) { myStation->refresh(this->ui->cbActiveDesviation->isChecked(), this->ui->sboxPressureDesviation->value(), this->ui->sboxMinValuesDesviation->value(), this->ui->sboxDesviationYAxis->value(), this->ui->inputPressureColor->text(), this->ui->inputTemperatureColor->text()); }
         plotSettings::saveSettings(this->ui->cbActiveDesviation->isChecked(), this->ui->sboxPressureDesviation->value(), this->ui->sboxMinValuesDesviation->value(), this->ui->sboxDesviationYAxis->value(), this->ui->inputPressureColor->text(), this->ui->inputTemperatureColor->text());
         this->close();
         break;

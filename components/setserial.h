@@ -13,14 +13,11 @@ class serialConfig : public QDialog {
     Q_OBJECT
 
     void loadSaveData();
-
     Ui::serialConfig *ui;
 
 private slots:
     void on_btnTest_clicked();
-
     void on_btnSave_clicked();
-
     void on_btnCancel_clicked();
 
 public:

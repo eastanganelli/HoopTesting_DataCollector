@@ -45,6 +45,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         utils/stationlist.cpp utils/stationlist.h
 
         myresources.rc
+        utils/cachedstation.h utils/cachedstation.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET HoopTesting_DataCollector APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
