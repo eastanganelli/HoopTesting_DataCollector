@@ -3,19 +3,22 @@
 #include <QSerialPort>
 #include <QByteArray>
 #include <QSharedPointer>
+#include <QRegularExpression>
 #include <QStack>
 #include <QAction>
 #include <QLabel>
+#include <QMap>
 
 #include "../utils/station.h"
 
-#define ms_ 10                 // In miliseconds
 #define timeoutConnection 30 // In seconds
+#define ms_ 250                // In miliseconds
 
 class SerialPortReader : public QSerialPort {
     Q_OBJECT
 
-    void serialToStation();
+    void initialize();
+    void serialToStation(QByteArray& data);
     void sendMessage(const QByteArray& message);
     void autoMessageSender();
     void changingLblConnectionState(const QString state_, const QString color_);
@@ -30,6 +33,7 @@ class SerialPortReader : public QSerialPort {
           * lblPortStatus;
     QAction* btnConnect;
     QTime timeStatus;
+    QMap<QString, QRegularExpression> serialParsing;
 
     static QQueue<QString> portMessages;
 

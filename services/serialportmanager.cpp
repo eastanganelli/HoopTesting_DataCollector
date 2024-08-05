@@ -1,42 +1,46 @@
 #include "../defines.h"
 #include "global.h"
 #include "serialportmanager.h"
+#include "../components/datavisualizer.h"
+
+class DataVisualizerWindow;
 
 SerialPortReader::SerialPortReader(const QString portName, const QString baudRate) {
-    this->setDataBits(QSerialPort::Data8);
-    this->setParity(QSerialPort::NoParity);
-    this->setStopBits(QSerialPort::OneStop);
-    this->timeStatus = QTime(0, 0, 12, 0);
+    this->initialize();
     this->setPortName(portName);
     this->setBaudRate(baudRate.toUInt());
     this->lblConnectionStatus = nullptr;
     this->lblPortStatus       = nullptr;
     this->btnConnect          = nullptr;
-    this->connectionState     = false;
-    this->mSerialTimer        = QSharedPointer<QTimer>(new QTimer());
-    connect(this->mSerialTimer.get(), &QTimer::timeout, this, &SerialPortReader::onSerialPortReadyRead);
 }
 
 SerialPortReader::SerialPortReader(QLabel *portStatus, QLabel *connectionStatus, QAction *acConnection) {
+    this->initialize();
+    this->lblConnectionStatus = connectionStatus;
+    this->lblPortStatus       = portStatus;
+    this->btnConnect          = acConnection;
+}
+
+SerialPortReader::SerialPortReader(QSerialPort* serialPortPort, QLabel *portStatus, QLabel *connectionStatus, QAction *acConnection) : QSerialPort(serialPortPort) {
+    this->initialize();
+    this->lblConnectionStatus = connectionStatus;
+    this->lblPortStatus       = portStatus;
+    this->btnConnect          = acConnection;
+}
+
+void SerialPortReader::initialize() {
     this->setDataBits(QSerialPort::Data8);
     this->setParity(QSerialPort::NoParity);
     this->setStopBits(QSerialPort::OneStop);
     this->timeStatus = QTime(0, 0, 12, 0);
-    this->lblConnectionStatus = connectionStatus;
-    this->lblPortStatus       = portStatus;
-    this->btnConnect          = acConnection;
-    this->connectionState     = false;
-    this->mSerialTimer        = QSharedPointer<QTimer>(new QTimer());
+    this->connectionState = false;
+    this->mSerialTimer    = QSharedPointer<QTimer>(new QTimer());
     connect(this->mSerialTimer.get(), &QTimer::timeout, this, &SerialPortReader::onSerialPortReadyRead);
-}
 
-SerialPortReader::SerialPortReader(QSerialPort* serialPortPort, QLabel *portStatus, QLabel *connectionStatus, QAction *acConnection) : QSerialPort(serialPortPort) {
-    this->lblConnectionStatus = connectionStatus;
-    this->lblPortStatus       = portStatus;
-    this->btnConnect          = acConnection;
-    this->connectionState     = false;
-    this->mSerialTimer        = QSharedPointer<QTimer>(new QTimer());
-    connect(this->mSerialTimer.get(), &QTimer::timeout, this, &SerialPortReader::onSerialPortReadyRead);
+    this->serialParsing.insert("Dummy",    QRegularExpression("^[$]\\/n\\/r"));
+    this->serialParsing.insert("StartPLC", QRegularExpression("^#(?<station>[1-6])\\|(?<state>Run)\\|(?<pressure>\\d{1,3}.\\d{1,4})\\|(?<timediff>\\d{1,2}[0-9]:\\d{1,2}[0-9])\\|(?<temperature>\\d{1,2}.\\d{1,2})\\|(?<ambient>\\d{1,2}.\\d{1,2})\\/n\\/r"));
+    this->serialParsing.insert("StopPLC",  QRegularExpression("^#(?<station>[1-6])\\|(?<state>Stop)\\|(?<pressure>\\d{1,3}.\\d{1,4})\\|(?<timediff>\\d{1,2}[0-9]:\\d{1,2}[0-9])\\|(?<temperature>\\d{1,2}.\\d{1,2})\\|(?<ambient>\\d{1,2}.\\d{1,2})\\/n\\/r"));
+    this->serialParsing.insert("ErrorPLC", QRegularExpression("^!(?<station>[1-6])\\|(?<state>Run)\\|ERR:(?<code_err>[1-6](?<status_code>[1-3]))"));
 }
 
 void SerialPortReader::save(const QString portName, const QString baudRate) {
@@ -71,12 +75,10 @@ void SerialPortReader::onSerialPortReadyRead() {
     this->status(/*data*/);
     if (!data.isEmpty()) {
         this->timeStatus = QTime(0, 0, 0, 0);
-        this->buffer.append(data);
-        this->serialToStation();
+        this->serialToStation(data);
         this->clear();
     } else { this->timeStatus = this->timeStatus.addMSecs(ms_); }
     this->autoMessageSender();
-    this->buffer.clear();
 }
 
 bool SerialPortReader::statusPort() {
@@ -168,33 +170,40 @@ void SerialPortReader::changingLblPortState(const QString state_, const QString 
     this->lblConnectionStatus->setStyleSheet("color:" + color_ +";");
 }
 
-void SerialPortReader::serialToStation() {
-    QList<QByteArray> msgs = this->buffer.split('\n');
-    if(msgs.length() < 1) {
-        this->buffer.clear();
+void SerialPortReader::serialToStation(QByteArray& msg) {
+    if(this->serialParsing["Dummy"].match(msg).hasMatch()) {
+        qDebug() << "Dummy";
         return;
     }
-
-    for(QByteArray& msg : msgs) {
-        QList<QByteArray> substring = msg.split(',');
-        if(substring.length() == 3) {
-            QSharedPointer<Station> auxStation = myData.getStation(substring.at(0).toUInt());
-            float bar  = substring.at(1).toFloat(),
-                  temp = substring.at(2).toFloat();
-            // try {
-            //     if(auxStation->getStatus() == StationStatus::RUNNING) {
-            //         auxStation->updateStatus(bar, temp);
-            //     }
-            // }
-            // catch(StationError::TestOverTime& ex) {
-            //     qDebug() << ex.what();
-            //     auxStation->stop();
-            // }
-            // catch(StationError::HoopPressureLoose& ex) {
-            //     qDebug() << ex.what();
-            //     auxStation->stop();
-            // }
-        }
+    else if(this->serialParsing["StartPLC"].match(msg).hasMatch()) {
+        QRegularExpressionMatch resultMatch = this->serialParsing["StartPLC"].match(msg);
+        // myData.setStartPLC(msg);
+        // qDebug() << (QString("Station[%1] -> Pressure[%2] -> Time[%3] -> Temp[%4] -> Humidity[%5]")
+        //              .arg(resultMatch.captured("station"))
+        //              .arg(resultMatch.captured("pressure"))
+        //              .arg(resultMatch.captured("timediff"))
+        //              .arg(resultMatch.captured("temperature"))
+        //              .arg(resultMatch.captured("ambient")));
+        QSharedPointer<Station> myStation = DataVisualizerWindow::myStations[resultMatch.captured("station").toInt()];
+        myStation->refresh(resultMatch.captured("pressure").toFloat(), resultMatch.captured("temperature").toFloat(), resultMatch.captured("ambient").toFloat());
+        return;
+    } else if(this->serialParsing["StopPLC"].match(msg).hasMatch()) {
+        QRegularExpressionMatch resultMatch = this->serialParsing["StopPLC"].match(msg);
+        // myData.setStopPLC(msg);
+        qDebug() << (QString("Station[%1] -> Pressure[%2] -> Time[%3] -> Temp[%4] -> Humidity[%5]")
+                         .arg(resultMatch.captured("station"))
+                         .arg(resultMatch.captured("pressure"))
+                         .arg(resultMatch.captured("timediff"))
+                         .arg(resultMatch.captured("temperature"))
+                         .arg(resultMatch.captured("ambient")));
+        return;
+    } else if(this->serialParsing["ErrorPLC"].match(msg).hasMatch()) {
+        QRegularExpressionMatch resultMatch = this->serialParsing["ErrorPLC"].match(msg);
+        // myData.setError
+        qDebug() << (QString("Station[%1] -> Error Code: %2")
+                         .arg(resultMatch.captured("station"))
+                         .arg(resultMatch.captured("status_code")));
+        return;
     }
 }
 

@@ -13,8 +13,6 @@ Station::Station(QLabel *pressure, QLabel *temperature, QLabel *time, QPushButto
     this->graph          = graph;
     activeStation++;
 
-    QObject::connect(this->btnConfig, SIGNAL(clicked()), this->btnConfig, SLOT(setDisabled(true)));
-
     /**
      * Check if the station is active in the SQLite DB
      * If was load the id of the test and the started time
@@ -22,8 +20,31 @@ Station::Station(QLabel *pressure, QLabel *temperature, QLabel *time, QPushButto
      */
 }
 
-Station::~Station() {
+Station::~Station() { }
+
+uint Station::getID() { return this->ID; }
+
+void Station::refresh(float pressure, float temperature, float ambient) {
+    qDebug() << "Station::refresh(float pressure, float temperature, float ambient)";
+}
+
+void Station::refreshPlot()
+{
 
 }
 
-uint Station::getID() { return this->ID; }
+void Station::refreshLabels()
+{
+
+}
+
+void Station::setHoopParameters()
+{
+
+}
+
+void Station::openMyHelp() {
+    QMessageBox msgBox;
+    msgBox.setText("Configuración de la estación " + QString::number(this->ID));
+    msgBox.exec();
+}

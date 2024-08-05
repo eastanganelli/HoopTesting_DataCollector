@@ -38,7 +38,8 @@ public:
     void refresh(float pressure, float temperature, float ambient);
     void refresh();
     void hasStoped();
-
+public slots:
+    void openMyHelp();
 };
 
 namespace StationError {

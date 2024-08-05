@@ -7,6 +7,8 @@ serialConfig::serialConfig(QWidget *parent) : QDialog(parent), ui(new Ui::serial
     Q_FOREACH(QSerialPortInfo port, QSerialPortInfo::availablePorts()) { if(SerialPortReader::test(port.portName(), QString::number(9600))) { this->ui->cboxSerialSelector->addItem(port.portName()); } }
     Q_FOREACH(qint32 baudRate, QSerialPortInfo::standardBaudRates())   { this->ui->cboxBaudRate->addItem(QString::number(baudRate)); }
     this->loadSaveData();
+
+
 }
 
 serialConfig::~serialConfig() { delete ui; }

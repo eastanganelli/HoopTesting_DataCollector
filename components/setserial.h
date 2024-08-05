@@ -3,17 +3,18 @@
 #include <QDialog>
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include <QString>
 #include <QSettings>
 #include <QMessageBox>
-#include <QString>
 
 namespace Ui { class serialConfig; }
 
 class serialConfig : public QDialog {
     Q_OBJECT
 
-    void loadSaveData();
     Ui::serialConfig *ui;
+
+    void loadSaveData();
 
 private slots:
     void on_btnTest_clicked();

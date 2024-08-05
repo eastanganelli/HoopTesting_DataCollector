@@ -1,6 +1,9 @@
 #include "setstation.h"
+#include "datavisualizer.h"
 #include "components/ui_setstation.h"
 #include "../defines.h"
+
+class DataVisualizerWindow;
 
 SetStation::SetStation(QWidget *parent) : QDialog(parent) , ui(new Ui::SetStation) {
     ui->setupUi(this);
@@ -16,12 +19,7 @@ SetStation::~SetStation() {
     delete ui;
 }
 
-void SetStation::sharePointer(QSharedPointer<Station> selectedStation) {
-    this->selectedStation = selectedStation;
-    this->ui->gpParameters->setTitle("Estación: " + QString::number(selectedStation->getID()));
-    if(selectedStation->getID() < 4) { this->ui->inputPressure->setMaximum(30); }
-    this->isPopulated();
-}
+void SetStation::setSelectStation(QSharedPointer<Station> selectedStation) { this->selectedStation = selectedStation; }
 
 void SetStation::on_inputWallThickness_valueChanged(int wallthickness) {
     QString conditionalPeriod = "0 h ± 0 min";

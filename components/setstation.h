@@ -1,6 +1,7 @@
 #ifndef SETSTATION_H
 #define SETSTATION_H
 #include <QDialog>
+#include <QJsonObject>
 #include <QScopedPointer>
 #include <QSharedPointer>
 #include <QMessageBox>
@@ -28,9 +29,9 @@ class SetStation : public QDialog {
     static void clearComboBox(QComboBox* myWidget, QString text, bool state);
 
     Ui::SetStation *ui;
+    uint idSample;
     QSharedPointer<Schemas::Static> normsDB;
     QSharedPointer<Station> selectedStation;
-    uint idSample;
     QSharedPointer<NodeStandard>      selectedStandard;
     QSharedPointer<NodeMaterial>      selectedMaterial;
     QSharedPointer<NodeSpecification> selectedSpecification;
@@ -67,6 +68,7 @@ private slots:
 public:
     explicit SetStation(QWidget *parent = nullptr);
     ~SetStation();
-    void sharePointer(QSharedPointer<Station> selectedStation = nullptr);
+
+    void setSelectStation(QSharedPointer<Station> selectedStation);
 };
 #endif // SETSTATION_H
