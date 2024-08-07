@@ -1,4 +1,3 @@
-#include "../services/global.h"
 #include <QObject>
 #include "station.h"
 
@@ -11,6 +10,8 @@ Station::Station(QLabel *pressure, QLabel *temperature, QLabel *time, QPushButto
     this->btnConfig      = config;
     this->btnStartStop   = startStop;
     this->graph          = graph;
+    this->started        = DEFAULT_DATETIME;
+    this->timer          = DEFAULT_DATETIME;
     activeStation++;
 
     /**
@@ -24,27 +25,29 @@ Station::~Station() { }
 
 uint Station::getID() { return this->ID; }
 
-void Station::refresh(float pressure, float temperature, float ambient) {
-    qDebug() << "Station::refresh(float pressure, float temperature, float ambient)";
+void Station::reloadPlotSettings() { PressureTempGraph::plotRangeConfigurations(this->graph); }
+
+void Station::refresh(double pressure, double temperature, double ambient) {
+    QDateTime actualTime = QDateTime::currentDateTime();
+    if(this->started == DEFAULT_DATETIME) {
+        this->started = actualTime;
+    }
+    uint key  = this->started.secsTo(actualTime);
+    this->refreshPlot(key, pressure, temperature);
+    this->refreshLabels(key, pressure, temperature);
 }
 
-void Station::refreshPlot()
-{
+void Station::refreshPlot(const uint key, const double pressure, const double temperature) { this->graph->insert(key, pressure, temperature); }
 
+void Station::refreshLabels(const uint key, const double pressure, const double temperature) {
+    QDateTime lblText = this->timer.addSecs(key);
+    // QString::number(pressureInput, 'f', 2) + " bar", QString::number(temperatureInput, 'f', 2) + " C"
+    // qDebug() << "Station[" << this->ID << "] -> Pressure[" << pressure << "] -> Time[" << lblText.toString("hh:mm:ss") << "] -> Temp[" << temperature << "]";
+    this->lblPressure->setText(QString("%1 Bar").arg(QString::number(pressure, 'f', 2)));
+    this->lblTemperature->setText(QString("%1 °C").arg(QString::number(temperature, 'f', 2)));
+    this->lblTime->setText(QString::number((lblText.date().day() - 1) * 24 + lblText.time().hour()) + ":" + lblText.toString("mm:ss"));
 }
 
-void Station::refreshLabels()
-{
+void Station::setHoopParameters() {
 
-}
-
-void Station::setHoopParameters()
-{
-
-}
-
-void Station::openMyHelp() {
-    QMessageBox msgBox;
-    msgBox.setText("Configuración de la estación " + QString::number(this->ID));
-    msgBox.exec();
 }

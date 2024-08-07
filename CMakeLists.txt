@@ -33,12 +33,12 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         services/schemas/schemaFront.cpp services/schemas/schemaFront.h
         services/schemas/schemas.cpp services/schemas/schemas.h
         services/database.cpp services/database.h
-        services/global.cpp services/global.h
+
         services/pressuretempgraph.cpp services/pressuretempgraph.h
         services/serialportmanager.cpp services/serialportmanager.h
 
         utils/qcustomplot.cpp utils/qcustomplot.h
-        utils/shareddata.cpp utils/shareddata.h
+
 
         utils/simplecrypt.cpp utils/simplecrypt.h
         utils/station.cpp utils/station.h

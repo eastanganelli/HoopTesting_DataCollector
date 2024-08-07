@@ -3,10 +3,9 @@
 #include <QWidget>
 #include <QTimer>
 #include <QLabel>
-#include <QPushButton>
 #include <QDateTime>
 #include <QException>
-#include "../services/schemas/schemaData.h"
+#include <QPushButton>
 #include "../services/pressuretempgraph.h"
 
 #define OFFSET_UPPER 1
@@ -23,23 +22,23 @@ class Station {
     PressureTempGraph* graph;
 
     uint idTest;
-    QDateTime started;
+    QDateTime timer, started;
 
     static uint activeStation;
 
-    void refreshPlot();
-    void refreshLabels();
+    void checkIfStationPopulated();
+    void refreshPlot(const uint key, const double pressure, const double temperature);
+    void refreshLabels(const uint key, const double pressure, const double temperature);
     void setHoopParameters();
 
 public:
     Station(QLabel* pressure, QLabel* temperature, QLabel* time, QPushButton* config, QPushButton* startStop, QTabWidget* tabs, PressureTempGraph* graph);
     ~Station();
     uint getID();
-    void refresh(float pressure, float temperature, float ambient);
+    void reloadPlotSettings();
+    void refresh(double pressure, double temperature, double ambient);
     void refresh();
     void hasStoped();
-public slots:
-    void openMyHelp();
 };
 
 namespace StationError {

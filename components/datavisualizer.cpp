@@ -1,6 +1,5 @@
 #include "datavisualizer.h"
 #include "ui_datavisualizer.h"
-#include "../services/global.h"
 #include "../components/plotsettings.h"
 #include "setserial.h"
 #include "setdb.h"
@@ -41,11 +40,11 @@ void DataVisualizerWindow::setStationsUI() {
         PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(i));
         QTabWidget* myTabs = this->ui->tabWidget;
         btnRun->setVisible(false); {
-            bool activeDesviationRead = false;
-            uint minValuesDesviationRaed = 0;
-            double pressureDesviationRead = 0.00, yAxisDesviationRead = 0.00;
+            // bool activeDesviationRead = false;
+            // uint minValuesDesviationRaed = 0;
+            double /*pressureDesviationRead = 0.00,*/ yAxisDesviationRead = 0.00;
             QString pressureColor, temperatureColor;
-            plotSettings::loadSettings(activeDesviationRead, pressureDesviationRead, minValuesDesviationRaed, yAxisDesviationRead, pressureColor, temperatureColor);
+            plotSettings::loadSettings(yAxisDesviationRead, pressureColor, temperatureColor);
         }
         QSharedPointer<Station> auxStation = QSharedPointer<Station>(new Station(pressurelbl, temperaturelbl, timelbl, btnConfig, btnRun, myTabs, mygraph));
         DataVisualizerWindow::myStations.insert(i, auxStation);

@@ -23,7 +23,7 @@ class SerialPortReader : public QSerialPort {
     void autoMessageSender();
     void changingLblConnectionState(const QString state_, const QString color_);
     void changingLblPortState(const QString state_, const QString color_);
-    void status();
+    void status(const QByteArray& data);
     void stationStop(QSharedPointer<Station> auxStation);
 
     QSharedPointer<QTimer> mSerialTimer;
@@ -56,5 +56,3 @@ public:
     bool statusPort();
 };
 #endif // SERIALPORTMANAGER_H
-
-// QQueue<QString> SerialPortReader::portMessages = QQueue<QString>();

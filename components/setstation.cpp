@@ -1,7 +1,5 @@
 #include "setstation.h"
-#include "datavisualizer.h"
 #include "components/ui_setstation.h"
-#include "../defines.h"
 
 class DataVisualizerWindow;
 
@@ -25,7 +23,7 @@ void SetStation::on_inputWallThickness_valueChanged(int wallthickness) {
     QString conditionalPeriod = "0 h ± 0 min";
     if(this->listCondPeriods.count() > 0) {
         for(auto myCP : this->listCondPeriods) {
-            if(wallthickness >= myCP->getMinWall() && wallthickness < myCP->getMaxWall()) {
+            if(wallthickness >= (int)myCP->getMinWall() && wallthickness < (int)myCP->getMaxWall()) {
                 conditionalPeriod = myCP->getConditionalPeriod();
                 break;
             }
@@ -72,8 +70,8 @@ void SetStation::setConnectionSignals() {
 }
 
 void SetStation::checkSpecimen() {
-    this->idSample = Data::NodeSample::exists(this->ui->cbStandard->currentText(), this->ui->cbMaterial->currentText(), this->ui->cbSpecification->currentText(), this->ui->inputDiamNormal->value(), this->ui->inputDiamReal->value(), this->ui->inputWallThickness->value(),  this->ui->inputLenFree->value(), this->ui->inputLenTotal->value());
-    this->ui->lblSpecimen->setText("Prueba Nro.: " + QString::number(Data::NodeSpecimen::count(this->idSample) + 1));
+    // this->idSample = Data::NodeSample::exists(this->ui->cbStandard->currentText(), this->ui->cbMaterial->currentText(), this->ui->cbSpecification->currentText(), this->ui->inputDiamNormal->value(), this->ui->inputDiamReal->value(), this->ui->inputWallThickness->value(),  this->ui->inputLenFree->value(), this->ui->inputLenTotal->value());
+    // this->ui->lblSpecimen->setText("Prueba Nro.: " + QString::number(Data::NodeSpecimen::count(this->idSample) + 1));
 }
 
 void SetStation::isPopulated() {

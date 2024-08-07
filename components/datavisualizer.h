@@ -62,6 +62,7 @@ public:
 private:
     friend class SerialPortReader;
     friend class SetStation;
+    friend class plotSettings;
     static QMap<uint, QSharedPointer<Station>> myStations;
 };
 #endif // DATAVISUALIZER_H

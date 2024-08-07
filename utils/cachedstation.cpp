@@ -10,3 +10,12 @@ void cachedStation::initialize() {
         qDebug() << "Database: connection ok";
     }
 }
+
+cachedStation::cachedStation() {
+    this->myCachedDB = QSqlDatabase::addDatabase("QSQLITE");
+    this->myCachedDB.setDatabaseName(QDir::currentPath() + "/cache_test.db");
+}
+
+bool cachedStation::open()  { return this->open(); }
+
+bool cachedStation::close() { return this->close(); }

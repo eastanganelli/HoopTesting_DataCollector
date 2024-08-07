@@ -1,9 +1,10 @@
 #include "../defines.h"
-#include "global.h"
 #include "serialportmanager.h"
 #include "../components/datavisualizer.h"
 
 class DataVisualizerWindow;
+
+QQueue<QString> SerialPortReader::portMessages = QQueue<QString>();
 
 SerialPortReader::SerialPortReader(const QString portName, const QString baudRate) {
     this->initialize();
@@ -39,7 +40,7 @@ void SerialPortReader::initialize() {
 
     this->serialParsing.insert("Dummy",    QRegularExpression("^[$]\\/n\\/r"));
     this->serialParsing.insert("StartPLC", QRegularExpression("^#(?<station>[1-6])\\|(?<state>Run)\\|(?<pressure>\\d{1,3}.\\d{1,4})\\|(?<timediff>\\d{1,2}[0-9]:\\d{1,2}[0-9])\\|(?<temperature>\\d{1,2}.\\d{1,2})\\|(?<ambient>\\d{1,2}.\\d{1,2})\\/n\\/r"));
-    this->serialParsing.insert("StopPLC",  QRegularExpression("^#(?<station>[1-6])\\|(?<state>Stop)\\|(?<pressure>\\d{1,3}.\\d{1,4})\\|(?<timediff>\\d{1,2}[0-9]:\\d{1,2}[0-9])\\|(?<temperature>\\d{1,2}.\\d{1,2})\\|(?<ambient>\\d{1,2}.\\d{1,2})\\/n\\/r"));
+    this->serialParsing.insert("StopPLC",  QRegularExpression("^#(?<station>[1-6])\\|(?<state>Stop)\\|(?<pressure>\\d{1,3}.\\d{1,4}|xx.xx)\\|(?<timediff>\\d{1,2}[0-9]:\\d{1,2}[0-9]|xx:xx)\\|(?<temperature>\\d{1,2}.\\d{1,2}|xx.xx)\\|(?<ambient>\\d{1,2}.\\d{1,2}|xx.xx)\\/n\\/r"));
     this->serialParsing.insert("ErrorPLC", QRegularExpression("^!(?<station>[1-6])\\|(?<state>Run)\\|ERR:(?<code_err>[1-6](?<status_code>[1-3]))"));
 }
 
@@ -72,7 +73,7 @@ void SerialPortReader::read(QString& serialName, uint& baudRate) {
 
 void SerialPortReader::onSerialPortReadyRead() {
     QByteArray data = this->readAll();
-    this->status(/*data*/);
+    this->status(data);
     if (!data.isEmpty()) {
         this->timeStatus = QTime(0, 0, 0, 0);
         this->serialToStation(data);
@@ -84,17 +85,10 @@ void SerialPortReader::onSerialPortReadyRead() {
 bool SerialPortReader::statusPort() {
     bool state = this->isOpen();
     if(state && !this->portState) {
-    #if CONSOLEDEBUGMODE == ConsoleConsoleDebugOn
-        qDebug() << "Puerto: Conectado";
-    #endif
         this->changingLblPortState("Conectado", StatusGreen);
         this->portState = true;
     }
     else if(!state && this->portState) {
-        #if CONSOLEDEBUGMODE == ConsoleConsoleDebugOn
-            qDebug() << "Puerto: Desconectado";
-            qDebug() << "Comunicación: Cerrado";
-        #endif
         this->changingLblPortState("Desconectado",  StatusRed);
         this->changingLblConnectionState("Cerrado", StatusRed);
         this->portState = false;
@@ -124,6 +118,7 @@ bool SerialPortReader::openPort() {
         if(!this->portState) {
             this->connectionState = false;
             this->btnConnect->setText("Desconectar");
+            this->changingLblConnectionState("Cerrado", StatusRed);
             this->mSerialTimer->start(ms_);
             return true;
         }
@@ -153,10 +148,8 @@ bool SerialPortReader::test(SerialPortReader testPort) {
 }
 
 void SerialPortReader::autoMessageSender() {
-    QByteArray aux = myData.getMessageSendPort();
-    while (!aux.isEmpty()) {
-        this->sendMessage(aux);
-        aux = myData.getMessageSendPort();
+    while(!(SerialPortReader::portMessages.isEmpty())) {
+        this->sendMessage((SerialPortReader::portMessages.dequeue()).toUtf8());
     }
 }
 
@@ -172,30 +165,23 @@ void SerialPortReader::changingLblPortState(const QString state_, const QString 
 
 void SerialPortReader::serialToStation(QByteArray& msg) {
     if(this->serialParsing["Dummy"].match(msg).hasMatch()) {
-        qDebug() << "Dummy";
         return;
     }
     else if(this->serialParsing["StartPLC"].match(msg).hasMatch()) {
         QRegularExpressionMatch resultMatch = this->serialParsing["StartPLC"].match(msg);
-        // myData.setStartPLC(msg);
-        // qDebug() << (QString("Station[%1] -> Pressure[%2] -> Time[%3] -> Temp[%4] -> Humidity[%5]")
-        //              .arg(resultMatch.captured("station"))
-        //              .arg(resultMatch.captured("pressure"))
-        //              .arg(resultMatch.captured("timediff"))
-        //              .arg(resultMatch.captured("temperature"))
-        //              .arg(resultMatch.captured("ambient")));
         QSharedPointer<Station> myStation = DataVisualizerWindow::myStations[resultMatch.captured("station").toInt()];
-        myStation->refresh(resultMatch.captured("pressure").toFloat(), resultMatch.captured("temperature").toFloat(), resultMatch.captured("ambient").toFloat());
+        myStation->refresh(resultMatch.captured("pressure").toDouble(), resultMatch.captured("temperature").toDouble(), resultMatch.captured("ambient").toDouble());
+        SerialPortReader::portMessages.enqueue((QString("start|%1|xx|xx\n").arg(resultMatch.captured("station").toInt())));
         return;
     } else if(this->serialParsing["StopPLC"].match(msg).hasMatch()) {
         QRegularExpressionMatch resultMatch = this->serialParsing["StopPLC"].match(msg);
-        // myData.setStopPLC(msg);
         qDebug() << (QString("Station[%1] -> Pressure[%2] -> Time[%3] -> Temp[%4] -> Humidity[%5]")
                          .arg(resultMatch.captured("station"))
                          .arg(resultMatch.captured("pressure"))
                          .arg(resultMatch.captured("timediff"))
                          .arg(resultMatch.captured("temperature"))
                          .arg(resultMatch.captured("ambient")));
+        SerialPortReader::portMessages.enqueue((QString("stop|%1|xx|xx\n").arg(resultMatch.captured("station").toInt())));
         return;
     } else if(this->serialParsing["ErrorPLC"].match(msg).hasMatch()) {
         QRegularExpressionMatch resultMatch = this->serialParsing["ErrorPLC"].match(msg);
@@ -207,17 +193,11 @@ void SerialPortReader::serialToStation(QByteArray& msg) {
     }
 }
 
-void SerialPortReader::status(/*const QByteArray data*/) {
-    if(this->timeStatus.second() >= timeoutConnection && this->connectionState) {
-        #if CONSOLEDEBUGMODE == ConsoleConsoleDebugOn
-            qDebug() << "Comunicación: Cerrado";
-        #endif
+void SerialPortReader::status(const QByteArray& data) {
+    if(this->timeStatus.second() >= timeoutConnection && data.isEmpty()/*this->connectionState*/) {
         this->connectionState = false;
         this->changingLblConnectionState("Cerrado", StatusRed);
-    } else if(this->timeStatus.second() < timeoutConnection && !this->connectionState) {
-        #if CONSOLEDEBUGMODE == ConsoleConsoleDebugOn
-            qDebug() << "Comunicación: Abierta";
-        #endif
+    } else if(this->timeStatus.second() < timeoutConnection && !data.isEmpty()/* && !this->connectionState*/) {
         this->connectionState = true;
         this->changingLblConnectionState("Abierto", StatusGreen);
     }
