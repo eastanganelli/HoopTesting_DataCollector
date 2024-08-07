@@ -12,9 +12,9 @@ DataVisualizerWindow::DataVisualizerWindow(QWidget *parent) : QMainWindow(parent
         this->initStatusBar();
         this->myActivePort = QSharedPointer<SerialPortReader>(new SerialPortReader(this->PortStatus, this->ConnectionPort, this->ui->serialConnect));
         this->mStatusTimer = QSharedPointer<QTimer>(new QTimer(this));
-        this->myDataDB     = QSharedPointer<Schemas::Data>(new Schemas::Data(this->ConnectionDataBase, this->ui->dbConnect));
+        // this->myDataDB     = QSharedPointer<Schemas::Data>(new Schemas::Data(this->ConnectionDataBase, this->ui->dbConnect));
     } {
-        this->myDataDB->open();
+        // this->myDataDB->open();
         this->myActivePort->openPort();
         this->setStationsUI();
         connect(this->mStatusTimer.get(), &QTimer::timeout, this, &DataVisualizerWindow::statusConnections);
@@ -24,8 +24,8 @@ DataVisualizerWindow::DataVisualizerWindow(QWidget *parent) : QMainWindow(parent
 }
 
 DataVisualizerWindow::~DataVisualizerWindow() {
-    this->myDataDB->close();
-    this->myDataDB.clear();
+    // this->myDataDB->close();
+    // this->myDataDB.clear();
     this->myActivePort.clear();
     delete ui;
 }
@@ -143,17 +143,17 @@ void DataVisualizerWindow::on_dbConfig_triggered() {
 }
 
 void DataVisualizerWindow::on_dbConnect_triggered() {
-    if(this->myDataDB->isOpen()) { this->myDataDB->close(); return; }
-    this->myDataDB->open();
+    // if(this->myDataDB->isOpen()) { this->myDataDB->close(); return; }
+    // this->myDataDB->open();
 }
 
 void DataVisualizerWindow::statusConnections() {
-    bool portState = this->myActivePort->statusPort(),
-         DbState   = this->myDataDB->status();
-    if(portState && DbState) {
+    bool portState = this->myActivePort->statusPort()/*,
+         DbState   = this->myDataDB->status()*/;
+    if(portState /*&& DbState*/) {
         this->myBtnsStates = true;
         this->btnsStates(this->myBtnsStates);
-    } else if(!portState || !DbState) {
+    } else if(!portState /*|| !DbState*/) {
         this->myBtnsStates = false;
         this->btnsStates(this->myBtnsStates);
     }

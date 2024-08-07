@@ -6,30 +6,32 @@ class DataVisualizerWindow;
 SetStation::SetStation(QWidget *parent) : QDialog(parent) , ui(new Ui::SetStation) {
     ui->setupUi(this);
     this->setWindowFlags(Qt::Dialog | Qt::Desktop);
-    this->normsDB = QSharedPointer<Schemas::Static>(new Schemas::Static());
-    if(this->normsDB->open()) { this->preLoadData(); }
+    // this->normsDB = QSharedPointer<Schemas::Static>(new Schemas::Static());
+    // if(this->normsDB->open()) { this->preLoadData(); }
     this->setConnectionSignals();
     this->ui->lblSpecimen->setText("Prueba Nro.: 0");
 }
 
 SetStation::~SetStation() {
-    this->normsDB->close();
+    // this->normsDB->close();
     delete ui;
 }
 
-void SetStation::setSelectStation(QSharedPointer<Station> selectedStation) { this->selectedStation = selectedStation; }
+void SetStation::setSelectStation(QSharedPointer<Station> selectedStation) {
+    // this->selectedStation = selectedStation;
+}
 
 void SetStation::on_inputWallThickness_valueChanged(int wallthickness) {
-    QString conditionalPeriod = "0 h ± 0 min";
-    if(this->listCondPeriods.count() > 0) {
-        for(auto myCP : this->listCondPeriods) {
-            if(wallthickness >= (int)myCP->getMinWall() && wallthickness < (int)myCP->getMaxWall()) {
-                conditionalPeriod = myCP->getConditionalPeriod();
-                break;
-            }
-        }
-    }
-    this->ui->txtCondPeriod->setText(conditionalPeriod);
+    // QString conditionalPeriod = "0 h ± 0 min";
+    // if(this->listCondPeriods.count() > 0) {
+    //     for(auto myCP : this->listCondPeriods) {
+    //         if(wallthickness >= (int)myCP->getMinWall() && wallthickness < (int)myCP->getMaxWall()) {
+    //             conditionalPeriod = myCP->getConditionalPeriod();
+    //             break;
+    //         }
+    //     }
+    // }
+    // this->ui->txtCondPeriod->setText(conditionalPeriod);
 }
 
 void SetStation::on_inputPressure_valueChanged(int Pressure) { if(Pressure > 0 && this->ui->inputDiamReal->value() > 0) { this->ui->inputHoopStress->setValue(this->hooppressure()); } }
@@ -45,11 +47,11 @@ void SetStation::clearComboBox(QComboBox* myWidget, QString text, bool state) {
 }
 
 void SetStation::preLoadData() {
-    this->listStandards = NodeStandard::get();
-    for(auto myStandard : this->listStandards) { this->ui->cbStandard->addItem(myStandard->getStandard()); }
+    // this->listStandards = NodeStandard::get();
+    // for(auto myStandard : this->listStandards) { this->ui->cbStandard->addItem(myStandard->getStandard()); }
 
-    this->listOperators = NodeOperator::get();
-    for(auto myOperator : this->listOperators) { this->ui->cbBoxOperator->addItem(myOperator->getFullName()); }
+    // this->listOperators = NodeOperator::get();
+    // for(auto myOperator : this->listOperators) { this->ui->cbBoxOperator->addItem(myOperator->getFullName()); }
 }
 
 void SetStation::setConnectionSignals() {
@@ -146,33 +148,33 @@ void SetStation::on_cbStandard_currentIndexChanged(int index) {
     SetStation::clearComboBox(this->ui->cbBoxEnviroment, " ",              true);
 
     if(index > -1) {
-        this->selectedStandard = this->listStandards[index];
-        const uint idStandard = this->selectedStandard->getID();
+        // this->selectedStandard = this->listStandards[index];
+        // const uint idStandard = this->selectedStandard->getID();
 
-        this->listCondPeriods = NodeConditionalPeriod::get(idStandard);
-        this->listEnviroments = NodeEnviroment::get(       idStandard);
-        this->listEndCap      = NodeEndCap::get(           idStandard);
-        this->listTestTypes   = NodeTestType::get(         idStandard);
-        this->listMaterials   = NodeMaterial::get(         idStandard);
+        // this->listCondPeriods = NodeConditionalPeriod::get(idStandard);
+        // this->listEnviroments = NodeEnviroment::get(       idStandard);
+        // this->listEndCap      = NodeEndCap::get(           idStandard);
+        // this->listTestTypes   = NodeTestType::get(         idStandard);
+        // this->listMaterials   = NodeMaterial::get(         idStandard);
 
-        QStringList testEndCapsList;
-        for(auto myEndCap : this->listEndCap) { testEndCapsList << myEndCap->getEndCap(); }
-        this->ui->cbBoxEndCap->addItems(testEndCapsList);
-        this->ui->cbBoxEndCap->setEnabled(true);
+        // QStringList testEndCapsList;
+        // for(auto myEndCap : this->listEndCap) { testEndCapsList << myEndCap->getEndCap(); }
+        // this->ui->cbBoxEndCap->addItems(testEndCapsList);
+        // this->ui->cbBoxEndCap->setEnabled(true);
 
-        QStringList testTypesList;
-        for(auto myTestType : this->listTestTypes) { testTypesList << myTestType->getTestType(); }
-        this->ui->cbBoxTestType->addItems(testTypesList);
-        this->ui->cbBoxTestType->setEnabled(true);
+        // QStringList testTypesList;
+        // for(auto myTestType : this->listTestTypes) { testTypesList << myTestType->getTestType(); }
+        // this->ui->cbBoxTestType->addItems(testTypesList);
+        // this->ui->cbBoxTestType->setEnabled(true);
 
-        QStringList enviromentsList;
-        for(auto myEnviroment : this->listEnviroments) { enviromentsList << myEnviroment->getEnviroment(); }
-        this->ui->cbBoxEnviroment->addItems(enviromentsList);
-        this->ui->cbBoxEnviroment->setEnabled(true);
+        // QStringList enviromentsList;
+        // for(auto myEnviroment : this->listEnviroments) { enviromentsList << myEnviroment->getEnviroment(); }
+        // this->ui->cbBoxEnviroment->addItems(enviromentsList);
+        // this->ui->cbBoxEnviroment->setEnabled(true);
 
-        QStringList materialList;
-        for(auto myMaterial : this->listMaterials) { materialList << myMaterial->getMaterial(); }
-        this->ui->cbMaterial->addItems(materialList);
+        // QStringList materialList;
+        // for(auto myMaterial : this->listMaterials) { materialList << myMaterial->getMaterial(); }
+        // this->ui->cbMaterial->addItems(materialList);
     }
 }
 
@@ -182,14 +184,14 @@ void SetStation::on_cbMaterial_currentIndexChanged(int index) {
     SetStation::clearComboBox(this->ui->cbBoxTestTime, " ", true);
 
     if(index > -1) {
-        this->selectedMaterial = this->listMaterials[index];
+        // this->selectedMaterial = this->listMaterials[index];
 
-        this->listSpecifications = NodeSpecification::get(this->selectedMaterial->getID());
-        if(this->listSpecifications.length() > 0) {
-            QStringList specificationsList;
-            for(auto mySpec : this->listSpecifications) { specificationsList << mySpec->getSpecification(); }
-            this->ui->cbSpecification->addItems(specificationsList);
-        }
+        // this->listSpecifications = NodeSpecification::get(this->selectedMaterial->getID());
+        // if(this->listSpecifications.length() > 0) {
+        //     QStringList specificationsList;
+        //     for(auto mySpec : this->listSpecifications) { specificationsList << mySpec->getSpecification(); }
+        //     this->ui->cbSpecification->addItems(specificationsList);
+        // }
     }
 }
 
@@ -198,18 +200,18 @@ void SetStation::on_cbSpecification_currentIndexChanged(int index) {
     SetStation::clearComboBox(this->ui->cbBoxTestTime, " ", true);
 
     if(index > -1) {
-        this->selectedSpecification = this->listSpecifications[index];
+        // this->selectedSpecification = this->listSpecifications[index];
 
-        this->listSettings = NodeSetting::get(this->selectedSpecification->getID());
-        if(this->listSettings.length() > 0) {
-            QStringList tempList, timeList;
-            for(auto mySetting : this->listSettings) {
-                tempList << QString::number(mySetting->getTemperature());
-                timeList << QString::number(mySetting->getTime());
-            }
-            this->ui->cbTemp->addItems(tempList);
-            this->ui->cbBoxTestTime->addItems(timeList);
-        }
+        // this->listSettings = NodeSetting::get(this->selectedSpecification->getID());
+        // if(this->listSettings.length() > 0) {
+        //     QStringList tempList, timeList;
+        //     for(auto mySetting : this->listSettings) {
+        //         tempList << QString::number(mySetting->getTemperature());
+        //         timeList << QString::number(mySetting->getTime());
+        //     }
+        //     this->ui->cbTemp->addItems(tempList);
+        //     this->ui->cbBoxTestTime->addItems(timeList);
+        // }
     }
 }
 
@@ -242,20 +244,22 @@ void SetStation::on_btnCancel_clicked() {
     // }
 }
 
-void SetStation::on_cbBoxOperator_currentIndexChanged(int index) { if(index > -1) { this->selectedOperator = this->listOperators[index]; } }
+void SetStation::on_cbBoxOperator_currentIndexChanged(int index) {
+    // if(index > -1) { this->selectedOperator = this->listOperators[index]; }
+}
 
-void SetStation::on_cbBoxTestType_currentIndexChanged(int index) { if(index > -1) { this->selectedTestType = this->listTestTypes[index]; } }
+void SetStation::on_cbBoxTestType_currentIndexChanged(int index) {
+    // if(index > -1) { this->selectedTestType = this->listTestTypes[index]; }
+}
 
 void SetStation::on_cbBoxEnviroment_currentIndexChanged(int index) {
-    if(index > -1) {
-        this->selectedEnviroment = this->listEnviroments[index];
-    }
+    // if(index > -1) { this->selectedEnviroment = this->listEnviroments[index]; }
 }
 
 void SetStation::on_cbBoxTestTime_currentIndexChanged(int index) {
     if(index > -1) {
-        this->selectedSetting = this->listSettings[index];
-        if(this->selectedSetting->getTimeType() == "h")      { this->ui->radHours->setChecked(true); }
-        else if(this->selectedSetting->getTimeType() == "s") { this->ui->radSeconds->setChecked(true); }
+        // this->selectedSetting = this->listSettings[index];
+        // if(this->selectedSetting->getTimeType() == "h")      { this->ui->radHours->setChecked(true); }
+        // else if(this->selectedSetting->getTimeType() == "s") { this->ui->radSeconds->setChecked(true); }
     }
 }

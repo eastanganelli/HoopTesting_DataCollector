@@ -26,7 +26,7 @@ class DataVisualizerWindow : public QMainWindow {
 
     Ui::DataVisualizerWindow *ui;
     QSharedPointer<QTimer> mStatusTimer;
-    QSharedPointer<Schemas::Data> myDataDB;
+    // QSharedPointer<Schemas::Data> myDataDB;
     QSharedPointer<SerialPortReader> myActivePort;
     SetStation* dialogStation;
     QLabel* ConnectionDataBase,

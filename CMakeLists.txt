@@ -29,9 +29,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         components/setstation.cpp components/setstation.h components/setstation.ui
         components/plotsettings.cpp components/plotsettings.h components/plotsettings.ui
 
-        services/schemas/schemaData.cpp services/schemas/schemaData.h
-        services/schemas/schemaFront.cpp services/schemas/schemaFront.h
-        services/schemas/schemas.cpp services/schemas/schemas.h
+
+
+
         services/database.cpp services/database.h
 
         services/pressuretempgraph.cpp services/pressuretempgraph.h

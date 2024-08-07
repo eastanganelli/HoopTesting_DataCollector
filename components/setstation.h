@@ -9,12 +9,10 @@
 #include <QStringList>
 
 #include "../utils/station.h"
-#include "../services/schemas/schemaFront.h"
 
 typedef enum { Save, Cancel } StationResponse;
 namespace Ui { class SetStation; }
 
-using namespace FrontClases;
 class SetStation : public QDialog {
     Q_OBJECT
 
@@ -30,25 +28,25 @@ class SetStation : public QDialog {
 
     Ui::SetStation *ui;
     uint idSample;
-    QSharedPointer<Schemas::Static> normsDB;
-    QSharedPointer<Station> selectedStation;
-    QSharedPointer<NodeStandard>      selectedStandard;
-    QSharedPointer<NodeMaterial>      selectedMaterial;
-    QSharedPointer<NodeSpecification> selectedSpecification;
-    QSharedPointer<NodeSetting>       selectedSetting;
-    QSharedPointer<NodeEndCap>        selectedEndCap;
-    QSharedPointer<NodeTestType>      selectedTestType;
-    QSharedPointer<NodeOperator>      selectedOperator;
-    QSharedPointer<NodeEnviroment>    selectedEnviroment;
-    QList<QSharedPointer<NodeStandard>>          listStandards;
-    QList<QSharedPointer<NodeMaterial>>          listMaterials;
-    QList<QSharedPointer<NodeSpecification>>     listSpecifications;
-    QList<QSharedPointer<NodeConditionalPeriod>> listCondPeriods;
-    QList<QSharedPointer<NodeSetting>>           listSettings;
-    QList<QSharedPointer<NodeEndCap>>            listEndCap;
-    QList<QSharedPointer<NodeTestType>>          listTestTypes;
-    QList<QSharedPointer<NodeOperator>>          listOperators;
-    QList<QSharedPointer<NodeEnviroment>>        listEnviroments;
+    // QSharedPointer<Schemas::Static> normsDB;
+    // QSharedPointer<Station> selectedStation;
+    // QSharedPointer<NodeStandard>      selectedStandard;
+    // QSharedPointer<NodeMaterial>      selectedMaterial;
+    // QSharedPointer<NodeSpecification> selectedSpecification;
+    // QSharedPointer<NodeSetting>       selectedSetting;
+    // QSharedPointer<NodeEndCap>        selectedEndCap;
+    // QSharedPointer<NodeTestType>      selectedTestType;
+    // QSharedPointer<NodeOperator>      selectedOperator;
+    // QSharedPointer<NodeEnviroment>    selectedEnviroment;
+    // QList<QSharedPointer<NodeStandard>>          listStandards;
+    // QList<QSharedPointer<NodeMaterial>>          listMaterials;
+    // QList<QSharedPointer<NodeSpecification>>     listSpecifications;
+    // QList<QSharedPointer<NodeConditionalPeriod>> listCondPeriods;
+    // QList<QSharedPointer<NodeSetting>>           listSettings;
+    // QList<QSharedPointer<NodeEndCap>>            listEndCap;
+    // QList<QSharedPointer<NodeTestType>>          listTestTypes;
+    // QList<QSharedPointer<NodeOperator>>          listOperators;
+    // QList<QSharedPointer<NodeEnviroment>>        listEnviroments;
 
 private slots:
     void checkFieldsCompletetion();

@@ -1,13 +1,14 @@
 #ifndef SERIALPORTMANAGER_H
 #define SERIALPORTMANAGER_H
-#include <QSerialPort>
-#include <QByteArray>
-#include <QSharedPointer>
-#include <QRegularExpression>
+#include <QMap>
+#include <QLabel>
 #include <QStack>
 #include <QAction>
-#include <QLabel>
-#include <QMap>
+#include <QtConcurrent/QtConcurrent>
+#include <QByteArray>
+#include <QSerialPort>
+#include <QSharedPointer>
+#include <QRegularExpression>
 
 #include "../utils/station.h"
 

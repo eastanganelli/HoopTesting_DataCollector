@@ -41,8 +41,6 @@ void Station::refreshPlot(const uint key, const double pressure, const double te
 
 void Station::refreshLabels(const uint key, const double pressure, const double temperature) {
     QDateTime lblText = this->timer.addSecs(key);
-    // QString::number(pressureInput, 'f', 2) + " bar", QString::number(temperatureInput, 'f', 2) + " C"
-    // qDebug() << "Station[" << this->ID << "] -> Pressure[" << pressure << "] -> Time[" << lblText.toString("hh:mm:ss") << "] -> Temp[" << temperature << "]";
     this->lblPressure->setText(QString("%1 Bar").arg(QString::number(pressure, 'f', 2)));
     this->lblTemperature->setText(QString("%1 °C").arg(QString::number(temperature, 'f', 2)));
     this->lblTime->setText(QString::number((lblText.date().day() - 1) * 24 + lblText.time().hour()) + ":" + lblText.toString("mm:ss"));
@@ -50,4 +48,21 @@ void Station::refreshLabels(const uint key, const double pressure, const double 
 
 void Station::setHoopParameters() {
 
+}
+
+void Station::checkErrorCode(const int codeError) {
+    switch(codeError) {
+        case (int)StationError::errorCodes::eInitPressureLoad: {
+            throw new StationError::InitPressureLoad(this->ID);
+            break;
+        }
+        case (int)StationError::errorCodes::ePressureLoose: {
+            throw new StationError::PressureLoose(this->ID);
+            break;
+        }
+        case (int)StationError::errorCodes::eRecurrentPressureLoad: {
+            throw new StationError::RecurrentPressureLoad(this->ID);
+            break;
+        }
+    }
 }

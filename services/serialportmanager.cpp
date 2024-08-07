@@ -1,5 +1,5 @@
-#include "../defines.h"
 #include "serialportmanager.h"
+#include "../defines.h"
 #include "../components/datavisualizer.h"
 
 class DataVisualizerWindow;
@@ -164,33 +164,43 @@ void SerialPortReader::changingLblPortState(const QString state_, const QString 
 }
 
 void SerialPortReader::serialToStation(QByteArray& msg) {
-    if(this->serialParsing["Dummy"].match(msg).hasMatch()) {
-        return;
+    QMessageBox* msgBox;
+    try {
+        if(this->serialParsing["Dummy"].match(msg).hasMatch()) {
+            return;
+        }
+        else if(this->serialParsing["StartPLC"].match(msg).hasMatch()) {
+            QRegularExpressionMatch resultMatch = this->serialParsing["StartPLC"].match(msg);
+            DataVisualizerWindow::myStations[resultMatch.captured("station").toInt()]->refresh(resultMatch.captured("pressure").toDouble(), resultMatch.captured("temperature").toDouble(), resultMatch.captured("ambient").toDouble());
+            SerialPortReader::portMessages.enqueue((QString("start|%1|xx|xx\n").arg(resultMatch.captured("station").toInt())));
+            return;
+        } else if(this->serialParsing["StopPLC"].match(msg).hasMatch()) {
+            QRegularExpressionMatch resultMatch = this->serialParsing["StopPLC"].match(msg);
+            try {
+                DataVisualizerWindow::myStations[resultMatch.captured("station").toInt()]->refresh(resultMatch.captured("pressure").toDouble(), resultMatch.captured("temperature").toDouble(), resultMatch.captured("ambient").toDouble());
+            } catch(...) {}
+            SerialPortReader::portMessages.enqueue((QString("stop|%1|xx|xx\n").arg(resultMatch.captured("station").toInt())));
+            return;
+        } else if(this->serialParsing["ErrorPLC"].match(msg).hasMatch()) {
+            QRegularExpressionMatch resultMatch = this->serialParsing["ErrorPLC"].match(msg);
+            DataVisualizerWindow::myStations[resultMatch.captured("station").toInt()]->checkErrorCode(resultMatch.captured("status_code").toInt());
+            msgBox = new QMessageBox();
+            msgBox->setIcon(QMessageBox::Critical);
+            msgBox->setWindowTitle(QString("Falla en estación %1!").arg(QString::number(resultMatch.captured("station").toInt())));
+            return;
+        }
+    } catch(StationError::InitPressureLoad* ex) {
+        msgBox->setText(ex->what());
+        delete ex;
+    } catch(StationError::PressureLoose* ex) {
+        msgBox->setText(ex->what());
+        delete ex;
+    } catch(StationError::RecurrentPressureLoad* ex) {
+        msgBox->setText(ex->what());
+        delete ex;
     }
-    else if(this->serialParsing["StartPLC"].match(msg).hasMatch()) {
-        QRegularExpressionMatch resultMatch = this->serialParsing["StartPLC"].match(msg);
-        QSharedPointer<Station> myStation = DataVisualizerWindow::myStations[resultMatch.captured("station").toInt()];
-        myStation->refresh(resultMatch.captured("pressure").toDouble(), resultMatch.captured("temperature").toDouble(), resultMatch.captured("ambient").toDouble());
-        SerialPortReader::portMessages.enqueue((QString("start|%1|xx|xx\n").arg(resultMatch.captured("station").toInt())));
-        return;
-    } else if(this->serialParsing["StopPLC"].match(msg).hasMatch()) {
-        QRegularExpressionMatch resultMatch = this->serialParsing["StopPLC"].match(msg);
-        qDebug() << (QString("Station[%1] -> Pressure[%2] -> Time[%3] -> Temp[%4] -> Humidity[%5]")
-                         .arg(resultMatch.captured("station"))
-                         .arg(resultMatch.captured("pressure"))
-                         .arg(resultMatch.captured("timediff"))
-                         .arg(resultMatch.captured("temperature"))
-                         .arg(resultMatch.captured("ambient")));
-        SerialPortReader::portMessages.enqueue((QString("stop|%1|xx|xx\n").arg(resultMatch.captured("station").toInt())));
-        return;
-    } else if(this->serialParsing["ErrorPLC"].match(msg).hasMatch()) {
-        QRegularExpressionMatch resultMatch = this->serialParsing["ErrorPLC"].match(msg);
-        // myData.setError
-        qDebug() << (QString("Station[%1] -> Error Code: %2")
-                         .arg(resultMatch.captured("station"))
-                         .arg(resultMatch.captured("status_code")));
-        return;
-    }
+    int result = msgBox->exec();
+    qDebug() << "Result of MsgBox: " << result;
 }
 
 void SerialPortReader::status(const QByteArray& data) {
