@@ -29,24 +29,16 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         components/setstation.cpp components/setstation.h components/setstation.ui
         components/plotsettings.cpp components/plotsettings.h components/plotsettings.ui
 
-
-
-
         services/database.cpp services/database.h
-
         services/pressuretempgraph.cpp services/pressuretempgraph.h
         services/serialportmanager.cpp services/serialportmanager.h
 
         utils/qcustomplot.cpp utils/qcustomplot.h
-
-
         utils/simplecrypt.cpp utils/simplecrypt.h
         utils/station.cpp utils/station.h
 
-
         myresources.rc
-        cachedDB.qrc
-
+        myDatabaseCached.qrc
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET HoopTesting_DataCollector APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

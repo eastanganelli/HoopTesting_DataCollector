@@ -1,3 +1,5 @@
+#include <QDir>
+#include <QSqlQuery>
 #include <QSqlError>
 #include "database.h"
 #include "../utils/simplecrypt.h"
@@ -11,23 +13,35 @@ Manager::~Manager() {
 }
 
 void Manager::initialize() {
-    this->myRemoteDB.initialize();
+    // this->myRemoteDB.initialize();
     this->myCacheDB.initialize();
 }
 
 void Manager::open() {
-    qDebug() << "Abriendo conexiones a la base de datos...";
     bool remoteIsOpen = this->myRemoteDB.open(),
          cacheIsOpen  = this->myCacheDB.open();
-    qDebug() << "Cache Is Open -> " << (cacheIsOpen ? "Yes" : "No");
     if(/*!remoteIsOpen ||*/ !cacheIsOpen) {
         throw ManagerErrors::ConnectionError("No se pudo conectar a la base de datos!");
     }
+    this->isStationActive(2);
 }
 
 void Manager::close() {
-    this->myRemoteDB.close();
+    // this->myRemoteDB.close();
     this->myCacheDB.close();
+}
+
+uint Manager::isStationActive(const uint station_ID) {
+    QSqlQuery isStationOccupy(this->myCacheDB.get());
+    isStationOccupy.prepare("SELECT s.testID AS TestID FROM station s WHERE s.id = :id_station;");
+    isStationOccupy.bindValue(":id_station", station_ID);
+    isStationOccupy.exec();
+    isStationOccupy.next();
+    const uint result = isStationOccupy.value("TestID").toUInt();
+    if(result == 0) {
+        throw ManagerErrors::QuerySelectError("Estación No ocupada!");
+    }
+    return result;
 }
 
 void Manager::loadConfiguration(QSqlDatabase &myDB) {
@@ -127,15 +141,12 @@ Manager::CacheDB::~CacheDB() {
 }
 
 void Manager::CacheDB::initialize() {
-    // this = QSqlDatabase::addDatabase("QSQLITE");
-    this->a_cacheDB.setDatabaseName(":/myCachedDatabase/myDatabase");
-    qDebug() << "CacheDB Path -> " << this->a_cacheDB.databaseName();
+    QDir databaseDir = QDir(QApplication::applicationDirPath());
+    this->a_cacheDB.setDatabaseName(QString(databaseDir.absolutePath() + "/cacheDatabase.db"));
 }
 
-bool Manager::CacheDB::open() {
-    this->a_cacheDB.open();
-    qDebug() << this->a_cacheDB.lastError().text();
-    return this->a_cacheDB.open();
-}
+bool Manager::CacheDB::open()  { return this->a_cacheDB.open(); }
 
 void Manager::CacheDB::close() { this->a_cacheDB.close(); }
+
+QSqlDatabase Manager::CacheDB::get() { return this->a_cacheDB; }

@@ -6,6 +6,8 @@
 #include <QApplication>
 #include <QSqlDatabase>
 
+#include "../utils/station.h"
+
 #define datetime_format "yyyy/MM/dd hh:mm:ss"
 
 class Manager {
@@ -30,6 +32,7 @@ class Manager {
         void initialize();
         bool open();
         void close();
+        QSqlDatabase get();
         uint stationTestID(const uint ID_Station) const;
         uint stationOccupy(const uint ID_Station);
         void stationFree(const uint ID_Station);
@@ -45,6 +48,10 @@ public:
     void initialize();
     void open();
     void close();
+    uint isStationActive(const uint station_ID);
+    void insertTest(const uint station_id);
+    void insertData(const uint testID, const double pressure, const double temperature, const double ambient);
+    void deleteTest();
 
     static void loadConfiguration(QSqlDatabase& myDB);
     static bool test(const QString hostname, const uint port, const QString username, const QString password);
