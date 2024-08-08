@@ -20,7 +20,7 @@ class DataVisualizerWindow : public QMainWindow {
     void btnsStates(const bool state_);
     bool btnsStates();
     void btnStationsDialog(const uint id_);
-    void btnStationStartStop(const uint id_);
+    void btnStationSaveClear(const uint id_);
 
     static void stationConfiguration(const uint ID_Station);
 
@@ -41,13 +41,13 @@ private slots:
     void on_btnEstConfig_4_clicked();
     void on_btnEstConfig_5_clicked();
     void on_btnEstConfig_6_clicked();
-    void on_btnEstRun_1_clicked();
-    void on_btnEstRun_2_clicked();
-    void on_btnEstRun_3_clicked();
-    void on_btnEstRun_4_clicked();
-    void on_btnEstRun_5_clicked();
-    void on_btnEstRun_6_clicked();
     void on_serialConfig_triggered();
+    void on_btnSvClr_1_clicked();
+    void on_btnSvClr_2_clicked();
+    void on_btnSvClr_3_clicked();
+    void on_btnSvClr_4_clicked();
+    void on_btnSvClr_5_clicked();
+    void on_btnSvClr_6_clicked();
     void on_serialConnect_triggered();
     void on_close_triggered();
     void on_dbConfig_triggered();
@@ -64,5 +64,6 @@ private:
     friend class SetStation;
     friend class plotSettings;
     static QMap<uint, QSharedPointer<Station>> myStations;
+    static QSharedPointer<Manager> myDatabases;
 };
 #endif // DATAVISUALIZER_H

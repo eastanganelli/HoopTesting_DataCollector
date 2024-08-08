@@ -1,24 +1,60 @@
 #ifndef DATABASE_H
 #define DATABASE_H
-#include <QApplication>
+#include <QString>
 #include <QSettings>
-#include <QSqlDatabase>
-#include <QString>
 #include <QException>
-#include <QString>
+#include <QApplication>
+#include <QSqlDatabase>
 
 #define datetime_format "yyyy/MM/dd hh:mm:ss"
 
-class DatabaseManager {
+class Manager {
+    class RemoteDB {
+        QSqlDatabase a_remoteDB;
+
+    public:
+        RemoteDB() {}
+        ~RemoteDB() {}
+        void initialize();
+        bool open();
+        void close();
+    };
+
+    class CacheDB {
+        QSqlDatabase a_cacheDB;
+        void stationIsPopulated(const uint ID_Station);
+
+    public:
+        CacheDB();
+        ~CacheDB();
+        void initialize();
+        bool open();
+        void close();
+        uint stationTestID(const uint ID_Station) const;
+        uint stationOccupy(const uint ID_Station);
+        void stationFree(const uint ID_Station);
+        void insertData(const uint ID_Test, const float pressure, const float temperature, const float ambient);
+    };
+
+    RemoteDB myRemoteDB;
+    CacheDB  myCacheDB;
+
 public:
+    Manager();
+    ~Manager();
+    void initialize();
+    void open();
+    void close();
+
     static void loadConfiguration(QSqlDatabase& myDB);
     static bool test(const QString hostname, const uint port, const QString username, const QString password);
     static bool test(QSqlDatabase testDB);
     static void save(const QString hostname, const uint port, const QString username, const QString password);
     static void save(const QSqlDatabase myDB);
+    static void CacheToRemote(RemoteDB& remote, CacheDB& cache);
 };
 
-namespace DatabaseError {
+namespace ManagerErrors {
     class ConnectionError : public QException {
         QString error;
     public:

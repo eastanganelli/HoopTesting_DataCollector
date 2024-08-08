@@ -1,12 +1,11 @@
 #ifndef SETSTATION_H
 #define SETSTATION_H
-#include <QDialog>
-#include <QJsonObject>
-#include <QScopedPointer>
-#include <QSharedPointer>
-#include <QMessageBox>
 #include <QList>
+#include <QDialog>
+#include <QMessageBox>
+#include <QJsonObject>
 #include <QStringList>
+#include <QSharedPointer>
 
 #include "../utils/station.h"
 
@@ -27,7 +26,9 @@ class SetStation : public QDialog {
     static void clearComboBox(QComboBox* myWidget, QString text, bool state);
 
     Ui::SetStation *ui;
+
     uint idSample;
+    QJsonObject StaticData;
     // QSharedPointer<Schemas::Static> normsDB;
     // QSharedPointer<Station> selectedStation;
     // QSharedPointer<NodeStandard>      selectedStandard;

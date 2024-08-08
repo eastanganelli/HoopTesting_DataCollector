@@ -1,7 +1,36 @@
-#include "../utils/simplecrypt.h"
+#include <QSqlError>
 #include "database.h"
+#include "../utils/simplecrypt.h"
 
-void DatabaseManager::loadConfiguration(QSqlDatabase &myDB) {
+Manager::Manager() {
+
+}
+
+Manager::~Manager() {
+
+}
+
+void Manager::initialize() {
+    this->myRemoteDB.initialize();
+    this->myCacheDB.initialize();
+}
+
+void Manager::open() {
+    qDebug() << "Abriendo conexiones a la base de datos...";
+    bool remoteIsOpen = this->myRemoteDB.open(),
+         cacheIsOpen  = this->myCacheDB.open();
+    qDebug() << "Cache Is Open -> " << (cacheIsOpen ? "Yes" : "No");
+    if(/*!remoteIsOpen ||*/ !cacheIsOpen) {
+        throw ManagerErrors::ConnectionError("No se pudo conectar a la base de datos!");
+    }
+}
+
+void Manager::close() {
+    this->myRemoteDB.close();
+    this->myCacheDB.close();
+}
+
+void Manager::loadConfiguration(QSqlDatabase &myDB) {
     SimpleCrypt myDecrypt;
     myDecrypt.setKey(Q_UINT64_C(0x3453049));
     QSettings mySettings(QApplication::applicationDirPath() + "/settings.ini", QSettings::IniFormat);
@@ -13,7 +42,7 @@ void DatabaseManager::loadConfiguration(QSqlDatabase &myDB) {
     mySettings.endGroup();
 
     if(hostName == "" || userName == "" || password == "" || port == 0) {
-        throw new DatabaseError::ConfigurationError("Base de datos no configurada!");
+        throw new ManagerErrors::ConfigurationError("Base de datos no configurada!");
     }
     myDB.setHostName(hostName);
     myDB.setPort(port);
@@ -21,7 +50,7 @@ void DatabaseManager::loadConfiguration(QSqlDatabase &myDB) {
     myDB.setPassword(password);
 }
 
-bool DatabaseManager::test(const QString hostname, const uint port, const QString username, const QString password) {
+bool Manager::test(const QString hostname, const uint port, const QString username, const QString password) {
     QSqlDatabase dbTest;
     {
         dbTest.setHostName(hostname);
@@ -35,13 +64,13 @@ bool DatabaseManager::test(const QString hostname, const uint port, const QStrin
     return state;
 }
 
-bool DatabaseManager::test(QSqlDatabase testDB) {
+bool Manager::test(QSqlDatabase testDB) {
     bool state = testDB.open();
     if(state) { testDB.close(); }
     return state;
 }
 
-void DatabaseManager::save(const QSqlDatabase myDB) {
+void Manager::save(const QSqlDatabase myDB) {
     SimpleCrypt myEncrypt;
     myEncrypt.setKey(Q_UINT64_C(0x3453049));
     QSettings mySettings(QApplication::applicationDirPath() + "/settings.ini", QSettings::IniFormat);
@@ -53,7 +82,7 @@ void DatabaseManager::save(const QSqlDatabase myDB) {
     mySettings.endGroup();
 }
 
-void DatabaseManager::save(const QString hostname, const uint port, const QString username, const QString password) {
+void Manager::save(const QString hostname, const uint port, const QString username, const QString password) {
     SimpleCrypt myEncrypt;
     myEncrypt.setKey(Q_UINT64_C(0x3453049));
     QSettings mySettings(QApplication::applicationDirPath() + "/settings.ini", QSettings::IniFormat);
@@ -64,3 +93,49 @@ void DatabaseManager::save(const QString hostname, const uint port, const QStrin
     mySettings.setValue("password", myEncrypt.encryptToString(password));
     mySettings.endGroup();
 }
+
+void Manager::RemoteDB::initialize() {
+    SimpleCrypt myDecrypt;
+    myDecrypt.setKey(Q_UINT64_C(0x3453049));
+    QSettings mySettings(QApplication::applicationDirPath() + "/settings.ini", QSettings::IniFormat);
+    mySettings.beginGroup("DBConfig");
+    const QString hostName = mySettings.value("hostname", QString()).toString(),
+        userName = mySettings.value("username", QString()).toString(),
+        password = myDecrypt.decryptToString(mySettings.value("password", QString()).toString());
+    const uint port = mySettings.value("port", QString()).toUInt();
+    mySettings.endGroup();
+
+    if(hostName == "" || userName == "" || password == "" || port == 0) {
+        throw new ManagerErrors::ConfigurationError("Base de datos no configurada!");
+    }
+    this->a_remoteDB.setHostName(hostName);
+    this->a_remoteDB.setPort(port);
+    this->a_remoteDB.setUserName(userName);
+    this->a_remoteDB.setPassword(password);
+}
+
+bool Manager::RemoteDB::open() { return this->a_remoteDB.open(); }
+
+void Manager::RemoteDB::close() { this->a_remoteDB.close(); }
+
+Manager::CacheDB::CacheDB() {
+    this->a_cacheDB = QSqlDatabase::addDatabase("QSQLITE", "cachedDatabase");
+}
+
+Manager::CacheDB::~CacheDB() {
+
+}
+
+void Manager::CacheDB::initialize() {
+    // this = QSqlDatabase::addDatabase("QSQLITE");
+    this->a_cacheDB.setDatabaseName(":/myCachedDatabase/myDatabase");
+    qDebug() << "CacheDB Path -> " << this->a_cacheDB.databaseName();
+}
+
+bool Manager::CacheDB::open() {
+    this->a_cacheDB.open();
+    qDebug() << this->a_cacheDB.lastError().text();
+    return this->a_cacheDB.open();
+}
+
+void Manager::CacheDB::close() { this->a_cacheDB.close(); }

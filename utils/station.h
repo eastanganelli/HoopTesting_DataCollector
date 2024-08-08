@@ -17,10 +17,9 @@ enum class StationStatus { WAITING, RUNNING, READY };
 class Station {
     const uint ID;
 
-    QLabel* lblPressure, *lblTemperature, *lblTime;
-    QPushButton* btnConfig, *btnStartStop;
+    QLabel* lblPressure, *lblTemperature, *lblTime, *lblStatusHoop;
+    QPushButton* btnConfig, *btnSaveClear;
     PressureTempGraph* graph;
-
     uint idTest;
     QDateTime timer, started;
 
@@ -29,16 +28,17 @@ class Station {
     void checkIfStationPopulated();
     void refreshPlot(const uint key, const double pressure, const double temperature);
     void refreshLabels(const uint key, const double pressure, const double temperature);
-    void setHoopParameters();
+    void checkErrorCode(const int codeError);
 
 public:
-    Station(QLabel* pressure, QLabel* temperature, QLabel* time, QPushButton* config, QPushButton* startStop, QTabWidget* tabs, PressureTempGraph* graph);
+    Station(QLabel* pressure, QLabel* temperature, QLabel* time, QLabel* statusHoop, QPushButton* config, QPushButton* saveClear, QTabWidget* tabs, PressureTempGraph* graph);
     ~Station();
     uint getID();
     void reloadPlotSettings();
+    void clear();
     void refresh(double pressure, double temperature, double ambient);
     void hasStoped();
-    void checkErrorCode(const int codeError);
+    void hoopErrorCode(const int codeError);
 };
 
 namespace StationError {
@@ -48,7 +48,7 @@ namespace StationError {
         QString v_errMsg;
     public:
         InitPressureLoad(const uint station_ID) {
-            this->v_errMsg = QString("Se produjo una falla en la estación %1 al realizar la carga de presión inicial").arg(QString::number(station_ID));
+            this->v_errMsg = QString("Se produjo una falla en la estación al realizar la carga de presión inicial");
         }
         const QString what() { return this->v_errMsg; }
         void raise() const override { throw *this; }
@@ -59,7 +59,7 @@ namespace StationError {
         QString v_errMsg;
     public:
         PressureLoose(const uint station_ID) {
-            this->v_errMsg = QString("Se produjo una falla en la estación %1 debido a una caída abrupta de presión").arg(QString::number(station_ID));
+            this->v_errMsg = QString("Se produjo una falla en la estación debido a una caída abrupta de presión");
         }
         const QString what() { return this->v_errMsg; }
         void raise() const override { throw *this; }
@@ -70,7 +70,7 @@ namespace StationError {
         QString v_errMsg;
     public:
         RecurrentPressureLoad(const uint station_ID) {
-            this->v_errMsg = QString("Se produjo una falla en la estación %1 por recargas recurrentes de presión").arg(station_ID);
+            this->v_errMsg = QString("Se produjo una falla en la estación por recargas recurrentes de presión");
         }
         const QString what() { return this->v_errMsg; }
         void raise() const override { throw *this; }

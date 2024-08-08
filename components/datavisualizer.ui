@@ -3,7 +3,7 @@
  <class>DataVisualizerWindow</class>
  <widget class="QMainWindow" name="DataVisualizerWindow">
   <property name="windowModality">
-   <enum>Qt::NonModal</enum>
+   <enum>Qt::WindowModality::NonModal</enum>
   </property>
   <property name="geometry">
    <rect>
@@ -20,7 +20,7 @@
    </size>
   </property>
   <property name="contextMenuPolicy">
-   <enum>Qt::NoContextMenu</enum>
+   <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
   </property>
   <property name="windowTitle">
    <string>Colector de Datos</string>
@@ -67,10 +67,10 @@
        <cursorShape>ArrowCursor</cursorShape>
       </property>
       <property name="contextMenuPolicy">
-       <enum>Qt::NoContextMenu</enum>
+       <enum>Qt::ContextMenuPolicy::NoContextMenu</enum>
       </property>
       <property name="layoutDirection">
-       <enum>Qt::LeftToRight</enum>
+       <enum>Qt::LayoutDirection::LeftToRight</enum>
       </property>
       <property name="autoFillBackground">
        <bool>false</bool>
@@ -88,7 +88,7 @@
       </property>
       <layout class="QGridLayout" name="glEstacionesInfo">
        <property name="sizeConstraint">
-        <enum>QLayout::SetDefaultConstraint</enum>
+        <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
        </property>
        <property name="topMargin">
         <number>0</number>
@@ -126,7 +126,7 @@
           <string>00:00:00</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -151,7 +151,7 @@
           <string>00.00 bar</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -182,7 +182,7 @@
           <string>00:00:00</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -213,7 +213,7 @@
           <string>00:00:00</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -244,7 +244,7 @@
           <string>00:00:00</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -269,7 +269,7 @@
           <string>00.00 C</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -294,7 +294,7 @@
           <string>00.00 bar</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -319,7 +319,7 @@
           <string>00.00 bar</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -344,7 +344,7 @@
           <string>Estación 2</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -369,7 +369,7 @@
           <string>00.00 C</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -394,7 +394,7 @@
           <string>00.00 bar</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -419,7 +419,7 @@
           <string>00.00 C</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -444,7 +444,7 @@
           <string>Estación 1</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -469,7 +469,7 @@
           <string>Estación 5</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -499,7 +499,7 @@
           <string>Temperatura</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -524,7 +524,7 @@
           <string>00.00 C</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -555,7 +555,7 @@
           <string>00:00:00</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -580,7 +580,7 @@
           <string>Estación 6</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -605,7 +605,7 @@
           <string>Estación 4</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -630,7 +630,7 @@
           <string>00.00 C</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -649,7 +649,7 @@
           <string>Estación 3</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -674,7 +674,7 @@
           <string>00.00 bar</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -707,7 +707,7 @@
           <string>Presión</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -737,7 +737,7 @@
           <string>Tiempo</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -762,7 +762,7 @@
           <string>00.00 C</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -787,7 +787,7 @@
           <string>00.00 bar</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
@@ -818,17 +818,17 @@
           <string>00:00:00</string>
          </property>
          <property name="textFormat">
-          <enum>Qt::PlainText</enum>
+          <enum>Qt::TextFormat::PlainText</enum>
          </property>
         </widget>
        </item>
        <item row="1" column="9" rowspan="3">
         <spacer name="horizontalSpacer_2">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Orientation::Horizontal</enum>
          </property>
          <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
+          <enum>QSizePolicy::Policy::Fixed</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -841,10 +841,10 @@
        <item row="1" column="0" rowspan="3">
         <spacer name="horizontalSpacer_3">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Orientation::Horizontal</enum>
          </property>
          <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
+          <enum>QSizePolicy::Policy::Fixed</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -869,16 +869,16 @@
        </size>
       </property>
       <property name="tabPosition">
-       <enum>QTabWidget::North</enum>
+       <enum>QTabWidget::TabPosition::North</enum>
       </property>
       <property name="tabShape">
-       <enum>QTabWidget::Rounded</enum>
+       <enum>QTabWidget::TabShape::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>5</number>
       </property>
       <property name="elideMode">
-       <enum>Qt::ElideLeft</enum>
+       <enum>Qt::TextElideMode::ElideLeft</enum>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -888,15 +888,18 @@
         <string>Estacion 1</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_7">
-        <item row="1" column="0" colspan="2">
-         <widget class="PressureTempGraph" name="GraphE_1" native="true">
-          <property name="enabled">
-           <bool>true</bool>
+        <item row="0" column="2">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
-          <property name="autoFillBackground">
-           <bool>true</bool>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
           </property>
-         </widget>
+         </spacer>
         </item>
         <item row="0" column="0">
          <widget class="QGroupBox" name="gbBtns_1">
@@ -923,7 +926,7 @@
             <number>0</number>
            </property>
            <item row="0" column="1">
-            <widget class="QPushButton" name="btnEstRun_1">
+            <widget class="QPushButton" name="btnSvClr_1">
              <property name="enabled">
               <bool>false</bool>
              </property>
@@ -934,7 +937,7 @@
               </size>
              </property>
              <property name="text">
-              <string>Iniciar</string>
+              <string>Guardar y Limpiar</string>
              </property>
              <property name="flat">
               <bool>false</bool>
@@ -960,18 +963,34 @@
           </layout>
          </widget>
         </item>
+        <item row="1" column="0" colspan="3">
+         <widget class="PressureTempGraph" name="GraphE_1" native="true">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="1">
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+         <widget class="QLabel" name="lblState_1">
+          <property name="enabled">
+           <bool>true</bool>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <bold>true</bold>
+           </font>
           </property>
-         </spacer>
+          <property name="text">
+           <string>.</string>
+          </property>
+          <property name="textFormat">
+           <enum>Qt::TextFormat::AutoText</enum>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -980,12 +999,25 @@
         <string>Estacion 2</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_6">
-        <item row="1" column="0" colspan="2">
+        <item row="1" column="0" colspan="3">
          <widget class="PressureTempGraph" name="GraphE_2" native="true">
           <property name="enabled">
            <bool>true</bool>
           </property>
          </widget>
+        </item>
+        <item row="0" column="2">
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item row="0" column="0">
          <widget class="QGroupBox" name="gbBtns_2">
@@ -1025,7 +1057,7 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QPushButton" name="btnEstRun_2">
+            <widget class="QPushButton" name="btnSvClr_2">
              <property name="enabled">
               <bool>false</bool>
              </property>
@@ -1036,7 +1068,7 @@
               </size>
              </property>
              <property name="text">
-              <string>Iniciar</string>
+              <string>Guardar y Limpiar</string>
              </property>
             </widget>
            </item>
@@ -1044,17 +1076,17 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <spacer name="horizontalSpacer_4">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+         <widget class="QLabel" name="lblState_2">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <bold>true</bold>
+           </font>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
+          <property name="text">
+           <string>.</string>
           </property>
-         </spacer>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -1063,12 +1095,25 @@
         <string>Estacion 3</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_5">
-        <item row="1" column="0" colspan="2">
+        <item row="1" column="0" colspan="3">
          <widget class="PressureTempGraph" name="GraphE_3" native="true">
           <property name="enabled">
            <bool>false</bool>
           </property>
          </widget>
+        </item>
+        <item row="0" column="2">
+         <spacer name="horizontalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item row="0" column="0">
          <widget class="QGroupBox" name="gbBtns_3">
@@ -1108,7 +1153,7 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QPushButton" name="btnEstRun_3">
+            <widget class="QPushButton" name="btnSvClr_3">
              <property name="enabled">
               <bool>false</bool>
              </property>
@@ -1119,7 +1164,7 @@
               </size>
              </property>
              <property name="text">
-              <string>Iniciar</string>
+              <string>Guardar y Limpiar</string>
              </property>
             </widget>
            </item>
@@ -1127,17 +1172,17 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <spacer name="horizontalSpacer_5">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+         <widget class="QLabel" name="lblState_3">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <bold>true</bold>
+           </font>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
+          <property name="text">
+           <string>.</string>
           </property>
-         </spacer>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -1146,7 +1191,7 @@
         <string>Estacion 4</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_4">
-        <item row="1" column="0" colspan="2">
+        <item row="1" column="0" colspan="3">
          <widget class="PressureTempGraph" name="GraphE_4" native="true">
           <property name="enabled">
            <bool>false</bool>
@@ -1191,7 +1236,7 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QPushButton" name="btnEstRun_4">
+            <widget class="QPushButton" name="btnSvClr_4">
              <property name="enabled">
               <bool>false</bool>
              </property>
@@ -1202,17 +1247,17 @@
               </size>
              </property>
              <property name="text">
-              <string>Iniciar</string>
+              <string>Guardar y Limpiar</string>
              </property>
             </widget>
            </item>
           </layout>
          </widget>
         </item>
-        <item row="0" column="1">
+        <item row="0" column="2">
          <spacer name="horizontalSpacer_6">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -1222,6 +1267,19 @@
           </property>
          </spacer>
         </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="lblState_4">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>.</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
       <widget class="QWidget" name="Station_5">
@@ -1229,12 +1287,18 @@
         <string>Estacion 5</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="1" column="0" colspan="2">
-         <widget class="PressureTempGraph" name="GraphE_5" native="true">
-          <property name="enabled">
-           <bool>false</bool>
+        <item row="0" column="2">
+         <spacer name="horizontalSpacer_7">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
-         </widget>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item row="0" column="0">
          <widget class="QGroupBox" name="gbBtns_5">
@@ -1274,7 +1338,7 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QPushButton" name="btnEstRun_5">
+            <widget class="QPushButton" name="btnSvClr_5">
              <property name="enabled">
               <bool>false</bool>
              </property>
@@ -1288,17 +1352,44 @@
               <cursorShape>ArrowCursor</cursorShape>
              </property>
              <property name="text">
-              <string>Iniciar</string>
+              <string>Guardar y Limpiar</string>
              </property>
             </widget>
            </item>
           </layout>
          </widget>
         </item>
+        <item row="1" column="0" colspan="3">
+         <widget class="PressureTempGraph" name="GraphE_5" native="true">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="1">
-         <spacer name="horizontalSpacer_7">
+         <widget class="QLabel" name="lblState_5">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>.</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="Station_6">
+       <attribute name="title">
+        <string>Estacion 6</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="2">
+         <spacer name="horizontalSpacer_8">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -1308,14 +1399,7 @@
           </property>
          </spacer>
         </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="Station_6">
-       <attribute name="title">
-        <string>Estacion 6</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="1" column="0" colspan="2">
+        <item row="1" column="0" colspan="3">
          <widget class="PressureTempGraph" name="GraphE_6" native="true">
           <property name="enabled">
            <bool>false</bool>
@@ -1360,7 +1444,7 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QPushButton" name="btnEstRun_6">
+            <widget class="QPushButton" name="btnSvClr_6">
              <property name="enabled">
               <bool>false</bool>
              </property>
@@ -1371,7 +1455,7 @@
               </size>
              </property>
              <property name="text">
-              <string>Iniciar</string>
+              <string>Guardar y Limpiar</string>
              </property>
             </widget>
            </item>
@@ -1379,17 +1463,17 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <spacer name="horizontalSpacer_8">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+         <widget class="QLabel" name="lblState_6">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <bold>true</bold>
+           </font>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
+          <property name="text">
+           <string>.</string>
           </property>
-         </spacer>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -1498,17 +1582,17 @@
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>btnEstConfig_1</tabstop>
-  <tabstop>btnEstRun_1</tabstop>
+  <tabstop>btnSvClr_1</tabstop>
   <tabstop>btnEstConfig_2</tabstop>
-  <tabstop>btnEstRun_2</tabstop>
+  <tabstop>btnSvClr_2</tabstop>
   <tabstop>btnEstConfig_3</tabstop>
-  <tabstop>btnEstRun_3</tabstop>
+  <tabstop>btnSvClr_3</tabstop>
   <tabstop>btnEstConfig_4</tabstop>
-  <tabstop>btnEstRun_4</tabstop>
+  <tabstop>btnSvClr_4</tabstop>
   <tabstop>btnEstConfig_5</tabstop>
-  <tabstop>btnEstRun_5</tabstop>
+  <tabstop>btnSvClr_5</tabstop>
   <tabstop>btnEstConfig_6</tabstop>
-  <tabstop>btnEstRun_6</tabstop>
+  <tabstop>btnSvClr_6</tabstop>
  </tabstops>
  <resources>
   <include location="../Icons.qrc"/>

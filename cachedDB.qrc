@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/myCachedDatabase">
+        <file alias="myDatabase">cachedDatabase.db</file>
+    </qresource>
+</RCC>

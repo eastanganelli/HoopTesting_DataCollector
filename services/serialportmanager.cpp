@@ -1,3 +1,4 @@
+#include <QThread>
 #include "serialportmanager.h"
 #include "../defines.h"
 #include "../components/datavisualizer.h"
@@ -38,6 +39,7 @@ void SerialPortReader::initialize() {
     this->mSerialTimer    = QSharedPointer<QTimer>(new QTimer());
     connect(this->mSerialTimer.get(), &QTimer::timeout, this, &SerialPortReader::onSerialPortReadyRead);
 
+    this->serialParsing.insert("Separator",QRegularExpression("(?=[$!#])"));
     this->serialParsing.insert("Dummy",    QRegularExpression("^[$]\\/n\\/r"));
     this->serialParsing.insert("StartPLC", QRegularExpression("^#(?<station>[1-6])\\|(?<state>Run)\\|(?<pressure>\\d{1,3}.\\d{1,4})\\|(?<timediff>\\d{1,2}[0-9]:\\d{1,2}[0-9])\\|(?<temperature>\\d{1,2}.\\d{1,2})\\|(?<ambient>\\d{1,2}.\\d{1,2})\\/n\\/r"));
     this->serialParsing.insert("StopPLC",  QRegularExpression("^#(?<station>[1-6])\\|(?<state>Stop)\\|(?<pressure>\\d{1,3}.\\d{1,4}|xx.xx)\\|(?<timediff>\\d{1,2}[0-9]:\\d{1,2}[0-9]|xx:xx)\\|(?<temperature>\\d{1,2}.\\d{1,2}|xx.xx)\\|(?<ambient>\\d{1,2}.\\d{1,2}|xx.xx)\\/n\\/r"));
@@ -164,43 +166,27 @@ void SerialPortReader::changingLblPortState(const QString state_, const QString 
 }
 
 void SerialPortReader::serialToStation(QByteArray& msg) {
-    QMessageBox* msgBox;
-    try {
-        if(this->serialParsing["Dummy"].match(msg).hasMatch()) {
-            return;
+    auto Msgs = QString(msg).split(this->serialParsing["Separator"]);
+    for(QString& serialMsg : Msgs) {
+        if(this->serialParsing["Dummy"].match(serialMsg).hasMatch()) {
+            continue;
         }
-        else if(this->serialParsing["StartPLC"].match(msg).hasMatch()) {
-            QRegularExpressionMatch resultMatch = this->serialParsing["StartPLC"].match(msg);
+        else if(this->serialParsing["StartPLC"].match(serialMsg).hasMatch()) {
+            QRegularExpressionMatch resultMatch = this->serialParsing["StartPLC"].match(serialMsg);
             DataVisualizerWindow::myStations[resultMatch.captured("station").toInt()]->refresh(resultMatch.captured("pressure").toDouble(), resultMatch.captured("temperature").toDouble(), resultMatch.captured("ambient").toDouble());
             SerialPortReader::portMessages.enqueue((QString("start|%1|xx|xx\n").arg(resultMatch.captured("station").toInt())));
-            return;
-        } else if(this->serialParsing["StopPLC"].match(msg).hasMatch()) {
-            QRegularExpressionMatch resultMatch = this->serialParsing["StopPLC"].match(msg);
+        } else if(this->serialParsing["StopPLC"].match(serialMsg).hasMatch()) {
+            QRegularExpressionMatch resultMatch = this->serialParsing["StopPLC"].match(serialMsg);
             try {
                 DataVisualizerWindow::myStations[resultMatch.captured("station").toInt()]->refresh(resultMatch.captured("pressure").toDouble(), resultMatch.captured("temperature").toDouble(), resultMatch.captured("ambient").toDouble());
             } catch(...) {}
             SerialPortReader::portMessages.enqueue((QString("stop|%1|xx|xx\n").arg(resultMatch.captured("station").toInt())));
-            return;
-        } else if(this->serialParsing["ErrorPLC"].match(msg).hasMatch()) {
-            QRegularExpressionMatch resultMatch = this->serialParsing["ErrorPLC"].match(msg);
-            DataVisualizerWindow::myStations[resultMatch.captured("station").toInt()]->checkErrorCode(resultMatch.captured("status_code").toInt());
-            msgBox = new QMessageBox();
-            msgBox->setIcon(QMessageBox::Critical);
-            msgBox->setWindowTitle(QString("Falla en estación %1!").arg(QString::number(resultMatch.captured("station").toInt())));
-            return;
+        } else if(this->serialParsing["ErrorPLC"].match(serialMsg).hasMatch()) {
+            QRegularExpressionMatch resultMatch = this->serialParsing["ErrorPLC"].match(serialMsg);
+            DataVisualizerWindow::myStations[resultMatch.captured("station").toInt()]->hoopErrorCode(resultMatch.captured("status_code").toInt());
         }
-    } catch(StationError::InitPressureLoad* ex) {
-        msgBox->setText(ex->what());
-        delete ex;
-    } catch(StationError::PressureLoose* ex) {
-        msgBox->setText(ex->what());
-        delete ex;
-    } catch(StationError::RecurrentPressureLoad* ex) {
-        msgBox->setText(ex->what());
-        delete ex;
+
     }
-    int result = msgBox->exec();
-    qDebug() << "Result of MsgBox: " << result;
 }
 
 void SerialPortReader::status(const QByteArray& data) {

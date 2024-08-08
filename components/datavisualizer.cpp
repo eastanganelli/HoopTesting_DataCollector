@@ -5,6 +5,7 @@
 #include "setdb.h"
 
 QMap<uint, QSharedPointer<Station>> DataVisualizerWindow::myStations = QMap<uint, QSharedPointer<Station>>();
+QSharedPointer<Manager> DataVisualizerWindow::myDatabases = QSharedPointer<Manager>(nullptr);
 
 DataVisualizerWindow::DataVisualizerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::DataVisualizerWindow) {
     ui->setupUi(this); {
@@ -21,6 +22,9 @@ DataVisualizerWindow::DataVisualizerWindow(QWidget *parent) : QMainWindow(parent
         this->mStatusTimer->start(ms_);
         this->ui->tabWidget->setEnabled(false);
     }
+    DataVisualizerWindow::myDatabases = QSharedPointer<Manager>(new Manager());
+    DataVisualizerWindow::myDatabases->initialize();
+    DataVisualizerWindow::myDatabases->open();
 }
 
 DataVisualizerWindow::~DataVisualizerWindow() {
@@ -34,19 +38,18 @@ void DataVisualizerWindow::setStationsUI() {
     for(uint i = 1; i <= 6; i++) {
         QLabel* pressurelbl  = this->findChild<QLabel*>("lblPress_" + QString::number(i)),
               * temperaturelbl = this->findChild<QLabel*>("lblTemp_" + QString::number(i)),
-              * timelbl = this->findChild<QLabel*>("lblTime_" + QString::number(i));
+              * timelbl = this->findChild<QLabel*>("lblTime_" + QString::number(i)),
+              * statuslbl = this->findChild<QLabel*>("lblState_" + QString::number(i));
         QPushButton* btnConfig = this->findChild<QPushButton*>("btnEstConfig_" + QString::number(i)),
-                   * btnRun = this->findChild<QPushButton*>("btnEstRun_" + QString::number(i));
+                   * btnSaveClear = this->findChild<QPushButton*>("btnSvClr_" + QString::number(i));
         PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(i));
         QTabWidget* myTabs = this->ui->tabWidget;
-        btnRun->setVisible(false); {
-            // bool activeDesviationRead = false;
-            // uint minValuesDesviationRaed = 0;
-            double /*pressureDesviationRead = 0.00,*/ yAxisDesviationRead = 0.00;
+        btnSaveClear->setVisible(false); {
+            double yAxisDesviationRead = 0.00;
             QString pressureColor, temperatureColor;
             plotSettings::loadSettings(yAxisDesviationRead, pressureColor, temperatureColor);
         }
-        QSharedPointer<Station> auxStation = QSharedPointer<Station>(new Station(pressurelbl, temperaturelbl, timelbl, btnConfig, btnRun, myTabs, mygraph));
+        QSharedPointer<Station> auxStation = QSharedPointer<Station>(new Station(pressurelbl, temperaturelbl, timelbl, statuslbl, btnConfig, btnSaveClear, myTabs, mygraph));
         DataVisualizerWindow::myStations.insert(i, auxStation);
     }
 }
@@ -83,14 +86,9 @@ void DataVisualizerWindow::btnStationsDialog(const uint id_) {
     }
 }
 
-void DataVisualizerWindow::btnStationStartStop(const uint id_) {
+void DataVisualizerWindow::btnStationSaveClear(const uint id_) {
     QSharedPointer<Station> myStation = DataVisualizerWindow::myStations[id_];
-    // if(myStation->getStatus() == StationStatus::WAITING) {
-    //     Station::set(*myStation.get());
-    //     myStation->start();
-    // } else if(myStation->getStatus() == StationStatus::RUNNING) {
-    //     myStation->stop();
-    // }
+    myStation->clear();
 }
 
 void DataVisualizerWindow::stationConfiguration(const uint ID_Station) {
@@ -113,17 +111,17 @@ void DataVisualizerWindow::on_btnEstConfig_5_clicked() { this->btnStationsDialog
 
 void DataVisualizerWindow::on_btnEstConfig_6_clicked() { this->btnStationsDialog(6); }
 
-void DataVisualizerWindow::on_btnEstRun_1_clicked()    { this->btnStationStartStop(1); }
+void DataVisualizerWindow::on_btnSvClr_1_clicked() { this->btnStationSaveClear(1); }
 
-void DataVisualizerWindow::on_btnEstRun_2_clicked()    { this->btnStationStartStop(2); }
+void DataVisualizerWindow::on_btnSvClr_2_clicked() { this->btnStationSaveClear(2); }
 
-void DataVisualizerWindow::on_btnEstRun_3_clicked()    { this->btnStationStartStop(3); }
+void DataVisualizerWindow::on_btnSvClr_3_clicked() { this->btnStationSaveClear(3); }
 
-void DataVisualizerWindow::on_btnEstRun_4_clicked()    { this->btnStationStartStop(4); }
+void DataVisualizerWindow::on_btnSvClr_4_clicked() { this->btnStationSaveClear(4); }
 
-void DataVisualizerWindow::on_btnEstRun_5_clicked()    { this->btnStationStartStop(5); }
+void DataVisualizerWindow::on_btnSvClr_5_clicked() { this->btnStationSaveClear(5); }
 
-void DataVisualizerWindow::on_btnEstRun_6_clicked()    { this->btnStationStartStop(6); }
+void DataVisualizerWindow::on_btnSvClr_6_clicked() { this->btnStationSaveClear(6); }
 
 void DataVisualizerWindow::on_serialConnect_triggered() {
     if(this->myActivePort->isOpen()) { this->myActivePort->closePort(); }
@@ -167,4 +165,3 @@ void DataVisualizerWindow::on_actionGr_fico_triggered() {
     myPlotSettings->exec();
     delete myPlotSettings;
 }
-

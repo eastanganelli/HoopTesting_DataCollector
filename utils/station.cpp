@@ -3,12 +3,13 @@
 
 uint Station::activeStation = 0;
 
-Station::Station(QLabel *pressure, QLabel *temperature, QLabel *time, QPushButton *config, QPushButton *startStop, QTabWidget *tabs, PressureTempGraph *graph): ID(activeStation) {
+Station::Station(QLabel *pressure, QLabel *temperature, QLabel *time, QLabel *statusHoop, QPushButton *config, QPushButton *saveClear, QTabWidget *tabs, PressureTempGraph *graph): ID(activeStation) {
     this->lblPressure    = pressure;
     this->lblTemperature = temperature;
     this->lblTime        = time;
+    this->lblStatusHoop  = statusHoop;
     this->btnConfig      = config;
-    this->btnStartStop   = startStop;
+    this->btnSaveClear   = saveClear;
     this->graph          = graph;
     this->started        = DEFAULT_DATETIME;
     this->timer          = DEFAULT_DATETIME;
@@ -27,6 +28,14 @@ uint Station::getID() { return this->ID; }
 
 void Station::reloadPlotSettings() { PressureTempGraph::plotRangeConfigurations(this->graph); }
 
+void Station::clear() {
+    this->lblPressure->setText("0 Bar");
+    this->lblTemperature->setText("0 °C");
+    this->lblTime->setText("00:00:00");
+    this->lblStatusHoop->setText(".");
+    this->btnSaveClear->setVisible(false);
+}
+
 void Station::refresh(double pressure, double temperature, double ambient) {
     QDateTime actualTime = QDateTime::currentDateTime();
     if(this->started == DEFAULT_DATETIME) {
@@ -37,6 +46,36 @@ void Station::refresh(double pressure, double temperature, double ambient) {
     this->refreshLabels(key, pressure, temperature);
 }
 
+void Station::hoopErrorCode(const int codeError) {
+    try {
+        try {
+            this->checkErrorCode(codeError);
+        } catch(StationError::InitPressureLoad& ex)    { throw ex.what(); }
+        catch(StationError::PressureLoose& ex)         { throw ex.what(); }
+        catch(StationError::RecurrentPressureLoad& ex) { throw ex.what(); }
+    } catch(QString& ex) {
+        this->lblStatusHoop->setText(ex);
+        this->lblStatusHoop->setStyleSheet("color: red;");
+    }
+}
+
+void Station::checkErrorCode(const int codeError) {
+    switch(codeError) {
+        case (int)StationError::errorCodes::eInitPressureLoad: {
+            throw StationError::InitPressureLoad(this->ID);
+            break;
+        }
+        case (int)StationError::errorCodes::ePressureLoose: {
+            throw StationError::PressureLoose(this->ID);
+            break;
+        }
+        case (int)StationError::errorCodes::eRecurrentPressureLoad: {
+            throw StationError::RecurrentPressureLoad(this->ID);
+            break;
+        }
+    }
+}
+
 void Station::refreshPlot(const uint key, const double pressure, const double temperature) { this->graph->insert(key, pressure, temperature); }
 
 void Station::refreshLabels(const uint key, const double pressure, const double temperature) {
@@ -44,25 +83,4 @@ void Station::refreshLabels(const uint key, const double pressure, const double 
     this->lblPressure->setText(QString("%1 Bar").arg(QString::number(pressure, 'f', 2)));
     this->lblTemperature->setText(QString("%1 °C").arg(QString::number(temperature, 'f', 2)));
     this->lblTime->setText(QString::number((lblText.date().day() - 1) * 24 + lblText.time().hour()) + ":" + lblText.toString("mm:ss"));
-}
-
-void Station::setHoopParameters() {
-
-}
-
-void Station::checkErrorCode(const int codeError) {
-    switch(codeError) {
-        case (int)StationError::errorCodes::eInitPressureLoad: {
-            throw new StationError::InitPressureLoad(this->ID);
-            break;
-        }
-        case (int)StationError::errorCodes::ePressureLoose: {
-            throw new StationError::PressureLoose(this->ID);
-            break;
-        }
-        case (int)StationError::errorCodes::eRecurrentPressureLoad: {
-            throw new StationError::RecurrentPressureLoad(this->ID);
-            break;
-        }
-    }
 }
