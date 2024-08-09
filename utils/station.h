@@ -16,12 +16,12 @@ enum class StationStatus { WAITING, RUNNING, READY };
 
 class Station {
     const uint ID;
+    uint idTest;
+    QDateTime timer, started;
 
     QLabel* lblPressure, *lblTemperature, *lblTime, *lblStatusHoop;
     QPushButton* btnConfig, *btnSaveClear;
     PressureTempGraph* graph;
-    uint idTest;
-    QDateTime timer, started;
 
     static uint activeStation;
 
@@ -34,9 +34,12 @@ public:
     Station(QLabel* pressure, QLabel* temperature, QLabel* time, QLabel* statusHoop, QPushButton* config, QPushButton* saveClear, QTabWidget* tabs, PressureTempGraph* graph);
     ~Station();
     uint getID();
+    void setTestID(const uint testID);
+    uint getTestID() const;
     void reloadPlotSettings();
     void clear();
     void refresh(double pressure, double temperature, double ambient);
+    void hasStarted();
     void hasStoped();
     void hoopErrorCode(const int codeError);
 };

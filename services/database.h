@@ -33,10 +33,11 @@ class Manager {
         bool open();
         void close();
         QSqlDatabase get();
-        uint stationTestID(const uint ID_Station) const;
-        uint stationOccupy(const uint ID_Station);
-        void stationFree(const uint ID_Station);
-        void insertData(const uint ID_Test, const float pressure, const float temperature, const float ambient);
+        uint isStationOccupy(const uint ID_Station);
+        void isStationFree(const uint ID_Station);
+        void insertData(const uint ID_Station, const float pressure, const float temperature, const float ambient);
+        void StopStation(const uint ID_Station);
+        void StopByStandby(const uint ID_Station);
     };
 
     RemoteDB myRemoteDB;
@@ -48,16 +49,18 @@ public:
     void initialize();
     void open();
     void close();
+    void initializeStationActive(QSharedPointer<Station>& myStation, const uint station_ID);
     uint isStationActive(const uint station_ID);
-    void insertTest(const uint station_id);
+    // void insertTest(const uint station_id);
     void insertData(const uint testID, const double pressure, const double temperature, const double ambient);
+    void unlinkStationTest(const uint station_id);
     void deleteTest();
 
     static void loadConfiguration(QSqlDatabase& myDB);
-    static bool test(const QString hostname, const uint port, const QString username, const QString password);
     static bool test(QSqlDatabase testDB);
-    static void save(const QString hostname, const uint port, const QString username, const QString password);
+    static bool test(const QString hostname, const uint port, const QString username, const QString password);
     static void save(const QSqlDatabase myDB);
+    static void save(const QString hostname, const uint port, const QString username, const QString password);
     static void CacheToRemote(RemoteDB& remote, CacheDB& cache);
 };
 

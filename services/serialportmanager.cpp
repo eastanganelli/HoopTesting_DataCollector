@@ -173,19 +173,27 @@ void SerialPortReader::serialToStation(QByteArray& msg) {
         }
         else if(this->serialParsing["StartPLC"].match(serialMsg).hasMatch()) {
             QRegularExpressionMatch resultMatch = this->serialParsing["StartPLC"].match(serialMsg);
-            DataVisualizerWindow::myStations[resultMatch.captured("station").toInt()]->refresh(resultMatch.captured("pressure").toDouble(), resultMatch.captured("temperature").toDouble(), resultMatch.captured("ambient").toDouble());
+            const uint idStation = resultMatch.captured("station").toInt();
+            const double pressure = resultMatch.captured("pressure").toDouble(), temperature = resultMatch.captured("temperature").toDouble(), ambient = resultMatch.captured("ambient").toDouble();
+            DataVisualizerWindow::myStations[idStation]->refresh(pressure, temperature, ambient);
+            DataVisualizerWindow::myDatabases->insertData(idStation, pressure, temperature, ambient);
             SerialPortReader::portMessages.enqueue((QString("start|%1|xx|xx\n").arg(resultMatch.captured("station").toInt())));
         } else if(this->serialParsing["StopPLC"].match(serialMsg).hasMatch()) {
             QRegularExpressionMatch resultMatch = this->serialParsing["StopPLC"].match(serialMsg);
             try {
-                DataVisualizerWindow::myStations[resultMatch.captured("station").toInt()]->refresh(resultMatch.captured("pressure").toDouble(), resultMatch.captured("temperature").toDouble(), resultMatch.captured("ambient").toDouble());
+                const uint idStation = resultMatch.captured("station").toInt();
+                const double pressure = resultMatch.captured("pressure").toDouble(), temperature = resultMatch.captured("temperature").toDouble(), ambient = resultMatch.captured("ambient").toDouble();
+                QSharedPointer<Station> myStation = DataVisualizerWindow::myStations[idStation];
+                myStation->refresh(pressure, temperature, ambient);
+                DataVisualizerWindow::myDatabases->insertData(idStation, pressure, temperature, ambient);
+                DataVisualizerWindow::myDatabases->unlinkStationTest(idStation);
+                myStation->hasStoped();
             } catch(...) {}
             SerialPortReader::portMessages.enqueue((QString("stop|%1|xx|xx\n").arg(resultMatch.captured("station").toInt())));
         } else if(this->serialParsing["ErrorPLC"].match(serialMsg).hasMatch()) {
             QRegularExpressionMatch resultMatch = this->serialParsing["ErrorPLC"].match(serialMsg);
             DataVisualizerWindow::myStations[resultMatch.captured("station").toInt()]->hoopErrorCode(resultMatch.captured("status_code").toInt());
         }
-
     }
 }
 

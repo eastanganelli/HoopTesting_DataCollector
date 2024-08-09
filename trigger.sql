@@ -3,12 +3,9 @@
 
 -- SELECT s.testID AS TestID FROM station s WHERE s.id=1;
 
-CREATE TRIGGER newTest BEFORE INSERT ON data
+CREATE TRIGGER insertNewTest BEFORE INSERT ON data
+WHEN NOT EXISTS(SELECT s.testID FROM station s WHERE s.id = NEW.station_id)
 BEGIN
-	SET countTest = SELECT s.testID FROM station s WHERE s.id = new.station_id);
-	 IF(countTest < 1) THEN
-		INSERT INTO test (createdAt) VALUES (CURRENT_TIMESTAMP);
-		SET myNewTest := SELECT id FROM test ORDER by id;
-		UPDATE station SET testID = myNewTest WHERE station.id = new.station_id;
-	 END IF;
-END;
+	INSERT INTO test (createdAt) VALUES (CURRENT_TIMESTAMP);
+	UPDATE station SET testID = (SELECT id FROM test ORDER by id) WHERE station.id = new.station_id
+END

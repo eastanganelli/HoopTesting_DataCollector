@@ -63,6 +63,7 @@ private:
     friend class SerialPortReader;
     friend class SetStation;
     friend class plotSettings;
+    friend class Manager;
     static QMap<uint, QSharedPointer<Station>> myStations;
     static QSharedPointer<Manager> myDatabases;
 };

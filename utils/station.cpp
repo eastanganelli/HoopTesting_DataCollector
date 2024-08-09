@@ -13,6 +13,7 @@ Station::Station(QLabel *pressure, QLabel *temperature, QLabel *time, QLabel *st
     this->graph          = graph;
     this->started        = DEFAULT_DATETIME;
     this->timer          = DEFAULT_DATETIME;
+    this->idTest         = 0;
     activeStation++;
 
     /**
@@ -25,6 +26,10 @@ Station::Station(QLabel *pressure, QLabel *temperature, QLabel *time, QLabel *st
 Station::~Station() { }
 
 uint Station::getID() { return this->ID; }
+
+void Station::setTestID(const uint testID) { this->idTest = testID; }
+
+uint Station::getTestID() const { return this->idTest; }
 
 void Station::reloadPlotSettings() { PressureTempGraph::plotRangeConfigurations(this->graph); }
 
@@ -42,8 +47,22 @@ void Station::refresh(double pressure, double temperature, double ambient) {
         this->started = actualTime;
     }
     uint key  = this->started.secsTo(actualTime);
-    this->refreshPlot(key, pressure, temperature);
+    this->hasStarted();
+    this->refreshPlot(key,   pressure, temperature);
     this->refreshLabels(key, pressure, temperature);
+}
+
+void Station::hasStarted() {
+    if(this->btnSaveClear->isVisible()) {
+        this->btnSaveClear->setVisible(false);
+        this->btnConfig->setVisible(true);
+    }
+}
+
+void Station::hasStoped() {
+    this->btnSaveClear->setVisible(true);
+    this->btnSaveClear->setEnabled(true);
+    this->btnConfig->setVisible(false);
 }
 
 void Station::hoopErrorCode(const int codeError) {
