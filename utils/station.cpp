@@ -25,6 +25,15 @@ Station::Station(QLabel *pressure, QLabel *temperature, QLabel *time, QLabel *st
 
 Station::~Station() { }
 
+void Station::reloadTestParameters(const uint testID, const QDateTime started) {
+    this->idTest   = testID;
+    this->started  = started;
+    this->timer    = started;
+    this->changeBtnsVisibility(false);
+    this->lblStatusHoop->setText(".");
+    this->clear();
+}
+
 uint Station::getID() { return this->ID; }
 
 void Station::setTestID(const uint testID) { this->idTest = testID; }
@@ -38,7 +47,7 @@ void Station::clear() {
     this->lblTemperature->setText("0 °C");
     this->lblTime->setText("00:00:00");
     this->lblStatusHoop->setText(".");
-    this->btnSaveClear->setVisible(false);
+    this->changeBtnsVisibility(false);
 }
 
 void Station::refresh(double pressure, double temperature, double ambient) {
@@ -53,17 +62,11 @@ void Station::refresh(double pressure, double temperature, double ambient) {
 }
 
 void Station::hasStarted() {
-    if(this->btnSaveClear->isVisible()) {
-        this->btnSaveClear->setVisible(false);
-        this->btnConfig->setVisible(true);
-    }
+    if(this->btnSaveClear->isVisible())
+        this->changeBtnsVisibility(false);
 }
 
-void Station::hasStoped() {
-    this->btnSaveClear->setVisible(true);
-    this->btnSaveClear->setEnabled(true);
-    this->btnConfig->setVisible(false);
-}
+void Station::hasStoped() { this->changeBtnsVisibility(true); }
 
 void Station::hoopErrorCode(const int codeError) {
     try {
@@ -93,6 +96,12 @@ void Station::checkErrorCode(const int codeError) {
             break;
         }
     }
+}
+
+void Station::changeBtnsVisibility(const bool state) {
+    this->btnSaveClear->setVisible(state);
+    this->btnSaveClear->setEnabled(state);
+    this->btnConfig->setVisible(!state);
 }
 
 void Station::refreshPlot(const uint key, const double pressure, const double temperature) { this->graph->insert(key, pressure, temperature); }

@@ -25,7 +25,7 @@ class Station {
 
     static uint activeStation;
 
-    void checkIfStationPopulated();
+    void changeBtnsVisibility(const bool state);
     void refreshPlot(const uint key, const double pressure, const double temperature);
     void refreshLabels(const uint key, const double pressure, const double temperature);
     void checkErrorCode(const int codeError);
@@ -33,6 +33,7 @@ class Station {
 public:
     Station(QLabel* pressure, QLabel* temperature, QLabel* time, QLabel* statusHoop, QPushButton* config, QPushButton* saveClear, QTabWidget* tabs, PressureTempGraph* graph);
     ~Station();
+    void reloadTestParameters(const uint testID, const QDateTime started);
     uint getID();
     void setTestID(const uint testID);
     uint getTestID() const;

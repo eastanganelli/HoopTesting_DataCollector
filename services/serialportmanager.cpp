@@ -192,7 +192,9 @@ void SerialPortReader::serialToStation(QByteArray& msg) {
             SerialPortReader::portMessages.enqueue((QString("stop|%1|xx|xx\n").arg(resultMatch.captured("station").toInt())));
         } else if(this->serialParsing["ErrorPLC"].match(serialMsg).hasMatch()) {
             QRegularExpressionMatch resultMatch = this->serialParsing["ErrorPLC"].match(serialMsg);
-            DataVisualizerWindow::myStations[resultMatch.captured("station").toInt()]->hoopErrorCode(resultMatch.captured("status_code").toInt());
+            const uint idStation = resultMatch.captured("station").toInt();
+            DataVisualizerWindow::myStations[idStation]->hoopErrorCode(resultMatch.captured("status_code").toInt());
+            DataVisualizerWindow::myDatabases->unlinkStationTest(idStation);
         }
     }
 }

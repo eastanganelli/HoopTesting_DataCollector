@@ -1,0 +1,25 @@
+#include <QApplication>
+#include <QMessageBox>
+#include <QThread>
+#include <QMetaObject>
+
+void showMessageBox(const QString &message) {
+    QMessageBox msgBox;
+    msgBox.setText(message);
+    msgBox.exec();
+}
+
+int main(int argc, char *argv[]) {
+    QApplication app(argc, argv);
+
+    QThread thread;
+    QObject::connect(&thread, &QThread::started,  {
+        QString message = "Hello from thread!";
+        QMetaObject::invokeMethod(qApp, message { showMessageBox(message); }, Qt::QueuedConnection);
+    });
+
+    thread.start();
+    thread.wait();
+
+    return app.exec();
+}
