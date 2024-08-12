@@ -64,7 +64,9 @@ void Station::hasStarted() {
     //     this->changeBtnsVisibility(false);
 }
 
-void Station::hasStoped() { this->changeBtnsVisibility(true); }
+void Station::hasStoped() { }
+
+// void Station::hasStoped() { this->changeBtnsVisibility(true); }
 
 void Station::setStatus(const Status status) {
     this->status = status;
@@ -94,8 +96,8 @@ void Station::checkErrorCode(const int codeError, const uint a_ID) {
     }
 }
 
-void Station::changeBtnsVisibility(const bool state) {
-    // this->btnSaveClear->setVisible(state);
-    // this->btnSaveClear->setEnabled(state);
-    // this->btnConfig->setVisible(!state);
-}
+// void Station::changeBtnsVisibility(const bool state) {
+//     // this->btnSaveClear->setVisible(state);
+//     // this->btnSaveClear->setEnabled(state);
+//     // this->btnConfig->setVisible(!state);
+// }

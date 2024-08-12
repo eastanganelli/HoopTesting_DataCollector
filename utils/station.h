@@ -25,7 +25,7 @@ class Station: public QObject {
 
     static uint activeStation;
 
-    void changeBtnsVisibility(const bool state);
+    // void changeBtnsVisibility(const bool state);
 
 public:
     Station();
