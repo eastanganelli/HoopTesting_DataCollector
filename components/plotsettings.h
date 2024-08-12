@@ -18,7 +18,11 @@ public:
     explicit plotSettings(QWidget *parent = nullptr);
     ~plotSettings();
 
+    Q_SIGNAL void refreshPlots();
+
 private slots:
+    // void Plots_Refreshing();
+
     void on_btnPressureColor_clicked();
     void on_btnTemperatureColor_clicked();
     void on_btnSave_clicked();

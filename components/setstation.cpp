@@ -17,7 +17,7 @@ SetStation::~SetStation() {
     delete ui;
 }
 
-void SetStation::setSelectStation(QSharedPointer<Station> selectedStation) {
+void SetStation::setSelectStation(QSharedPointer<Station>& selectedStation) {
     // this->selectedStation = selectedStation;
 }
 

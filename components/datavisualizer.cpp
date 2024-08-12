@@ -1,11 +1,14 @@
+#include <QMessageBox>
 #include "datavisualizer.h"
 #include "ui_datavisualizer.h"
-#include "../components/plotsettings.h"
-#include "setserial.h"
 #include "setdb.h"
+#include "setserial.h"
+#include "plotsettings.h"
 
 QMap<uint, QSharedPointer<Station>> DataVisualizerWindow::myStations = QMap<uint, QSharedPointer<Station>>();
 QSharedPointer<Manager> DataVisualizerWindow::myDatabases = QSharedPointer<Manager>(nullptr);
+
+enum class Status;
 
 DataVisualizerWindow::DataVisualizerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::DataVisualizerWindow) {
     ui->setupUi(this); {
@@ -13,12 +16,11 @@ DataVisualizerWindow::DataVisualizerWindow(QWidget *parent) : QMainWindow(parent
         this->initStatusBar();
         this->myActivePort = QSharedPointer<SerialPortReader>(new SerialPortReader(this->PortStatus, this->ConnectionPort, this->ui->serialConnect));
         this->mStatusTimer = QSharedPointer<QTimer>(new QTimer(this));
-        // this->myDataDB     = QSharedPointer<Schemas::Data>(new Schemas::Data(this->ConnectionDataBase, this->ui->dbConnect));
     } {
-        // this->myDataDB->open();
         this->myActivePort->openPort();
         this->setStationsUI();
         connect(this->mStatusTimer.get(), &QTimer::timeout, this, &DataVisualizerWindow::statusConnections);
+        // connect(this->mStatusTimer.get(), &QTimer::timeout, this, myStationsAux);
         this->mStatusTimer->start(ms_);
         this->ui->tabWidget->setEnabled(false);
     }
@@ -28,28 +30,24 @@ DataVisualizerWindow::DataVisualizerWindow(QWidget *parent) : QMainWindow(parent
 }
 
 DataVisualizerWindow::~DataVisualizerWindow() {
-    // this->myDataDB->close();
-    // this->myDataDB.clear();
     this->myActivePort.clear();
     delete ui;
 }
 
 void DataVisualizerWindow::setStationsUI() {
     for(uint i = 1; i <= 6; i++) {
-        QLabel* pressurelbl  = this->findChild<QLabel*>("lblPress_" + QString::number(i)),
-              * temperaturelbl = this->findChild<QLabel*>("lblTemp_" + QString::number(i)),
-              * timelbl = this->findChild<QLabel*>("lblTime_" + QString::number(i)),
-              * statuslbl = this->findChild<QLabel*>("lblState_" + QString::number(i));
-        QPushButton* btnConfig = this->findChild<QPushButton*>("btnEstConfig_" + QString::number(i)),
-                   * btnSaveClear = this->findChild<QPushButton*>("btnSvClr_" + QString::number(i));
+        QPushButton* btnConfig = this->findChild<QPushButton*>("btnEstConfig_" + QString::number(i));
         PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(i));
-        QTabWidget* myTabs = this->ui->tabWidget;
-        btnSaveClear->setVisible(false); {
+        btnConfig->setVisible(false); {
             double yAxisDesviationRead = 0.00;
             QString pressureColor, temperatureColor;
             plotSettings::loadSettings(yAxisDesviationRead, pressureColor, temperatureColor);
         }
-        QSharedPointer<Station> auxStation = QSharedPointer<Station>(new Station(pressurelbl, temperaturelbl, timelbl, statuslbl, btnConfig, btnSaveClear, myTabs, mygraph));
+        QSharedPointer<Station> auxStation = QSharedPointer<Station>(new Station());
+        connect(auxStation.data(), &Station::statusChanged, this, &DataVisualizerWindow::Station_StatusChanged);
+        connect(auxStation.data(), &Station::labelsUpdate,  this, &DataVisualizerWindow::Station_LblsStates);
+        connect(auxStation.data(), &Station::plotNewPoint,  this, &DataVisualizerWindow::Plot_NewPoint);
+        connect(auxStation.data(), &Station::hoopErrorCode, this, &DataVisualizerWindow::Station_ErrorCode);
         DataVisualizerWindow::myStations.insert(i, auxStation);
     }
 }
@@ -97,6 +95,71 @@ void DataVisualizerWindow::stationConfiguration(const uint ID_Station) {
     dialogStation->setModal(true);
     dialogStation->exec();
     delete dialogStation;
+}
+
+void DataVisualizerWindow::Station_StatusChanged() {
+    Station* senderStation = qobject_cast<Station*>(sender());
+    if(senderStation) {
+        QPushButton* btnConfig = this->findChild<QPushButton*>("btnEstConfig_" + QString::number(senderStation->getID()));
+        switch (senderStation->getStatus()) {
+            case Status::READY:
+                // senderStation->setPort(this->myActivePort);
+                // senderStation->start();
+                break;
+            case Status::RUNNING:
+                if(btnConfig->isVisible())
+                    btnConfig->setVisible(true);
+                break;
+            case Status::WAITING:
+                // senderStation->stop();
+                break;
+        }
+    }
+}
+
+void DataVisualizerWindow::Station_ErrorCode(const int codeError) {
+    Station* senderStation = qobject_cast<Station*>(sender());
+    if(senderStation) {
+        try {
+            try {
+                Station::checkErrorCode(codeError, senderStation->getID());
+            } catch(StationError::InitPressureLoad& ex)    { throw ex.what(); }
+            catch(StationError::PressureLoose& ex)         { throw ex.what(); }
+            catch(StationError::RecurrentPressureLoad& ex) { throw ex.what(); }
+        } catch(QString& ex) {
+            QMessageBox msgBox;
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.setWindowModality(Qt::WindowModal);
+            msgBox.setWindowFlags(Qt::WindowStaysOnTopHint);
+            msgBox.setText(ex);
+            msgBox.setWindowTitle("Error");
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.exec();
+        }
+    }
+}
+
+void DataVisualizerWindow::Station_LblsStates(const uint key, const double pressure, const double temperature) {
+    Station* senderStation = qobject_cast<Station*>(sender());
+    if(senderStation) {
+        const uint v_ID = senderStation->getID();
+        QDateTime v_timerTxt = senderStation->getTimer().addSecs(key);
+        QLabel* pressurelbl  = this->findChild<QLabel*>("lblPress_" + QString::number(v_ID)),
+              * temperaturelbl = this->findChild<QLabel*>("lblTemp_" + QString::number(v_ID)),
+              * timelbl = this->findChild<QLabel*>("lblTime_" + QString::number(v_ID));
+        pressurelbl->setText(QString("%1 Bar").arg(QString::number(pressure, 'f', 2)));
+        temperaturelbl->setText(QString("%1 °C").arg(QString::number(temperature, 'f', 2)));
+        timelbl->setText(QString::number((v_timerTxt.date().day() - 1) * 24 + v_timerTxt.time().hour()) + ":" + v_timerTxt.toString("mm:ss"));
+    }
+}
+
+void DataVisualizerWindow::Plot_NewPoint(const uint key, const double pressure, const double temperature) {
+    Station* senderStation = qobject_cast<Station*>(sender());
+    if(senderStation) {
+        const uint v_ID = senderStation->getID();
+        PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(v_ID));
+        mygraph->insert(key, pressure, temperature);
+    }
 }
 
 void DataVisualizerWindow::on_btnEstConfig_1_clicked() { this->btnStationsDialog(1); }

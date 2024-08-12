@@ -67,7 +67,6 @@ private slots:
 public:
     explicit SetStation(QWidget *parent = nullptr);
     ~SetStation();
-
-    void setSelectStation(QSharedPointer<Station> selectedStation);
+    void setSelectStation(QSharedPointer<Station>& selectedStation);
 };
 #endif // SETSTATION_H

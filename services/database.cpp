@@ -170,7 +170,7 @@ void Manager::CacheDB::insertData(const uint ID_Station, const float pressure, c
                 result = stationQuery.value("TestID").toUInt();
                 myStation->setTestID(result);
                 stationQuery.prepare("UPDATE station SET testID = :testID WHERE id = :id_station;");
-                stationQuery.bindValue(":testID", result);
+                stationQuery.bindValue(":testID",     result);
                 stationQuery.bindValue(":id_station", Station_ID);
                 stationQuery.exec();
             }
@@ -180,11 +180,29 @@ void Manager::CacheDB::insertData(const uint ID_Station, const float pressure, c
 
     QSqlQuery insertData(this->a_cacheDB);
     insertData.prepare("INSERT INTO data (testID, pressure, temperature, ambient) VALUES (:testID, :pressure, :temperature, :ambient);");
-    insertData.bindValue(":testID", TestID);
-    insertData.bindValue(":pressure", pressure);
+    insertData.bindValue(":testID",      TestID);
+    insertData.bindValue(":pressure",    pressure);
     insertData.bindValue(":temperature", temperature);
-    insertData.bindValue(":ambient", ambient);
+    insertData.bindValue(":ambient",     ambient);
     insertData.exec();
+}
+
+void Manager::CacheDB::updateTest(const uint testID, const QString &standard, const QString &material, const QString &specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString &testType, const QString &operatorName, const QString &endCap) {
+    QSqlQuery updateTest(this->a_cacheDB);
+    updateTest.prepare("UPDATE test SET standard = :standard, material = :material, specification = :specification, lenTotal = :lenTotal, lenFree = :lenFree, diamNom = :diamNom, diamReal = :diamReal, thickness = :thickness, testType = :testType, operator = :operator, endCap = :endCap WHERE id = :testID;");
+    updateTest.bindValue(":testID",        testID);
+    updateTest.bindValue(":standard",      standard);
+    updateTest.bindValue(":material",      material);
+    updateTest.bindValue(":specification", specification);
+    updateTest.bindValue(":lenTotal",      lenTotal);
+    updateTest.bindValue(":lenFree",       lenFree);
+    updateTest.bindValue(":diamNom",       diamNom);
+    updateTest.bindValue(":diamReal",      diamReal);
+    updateTest.bindValue(":thickness",     thickness);
+    updateTest.bindValue(":testType",      testType);
+    updateTest.bindValue(":operator",      operatorName);
+    updateTest.bindValue(":endCap",        endCap);
+    updateTest.exec();
 }
 
 void Manager::CacheDB::StopStation(const uint ID_Station) {

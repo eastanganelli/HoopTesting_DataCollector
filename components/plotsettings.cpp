@@ -76,9 +76,9 @@ void plotSettings::on_btnSave_clicked() {
     switch(msgBox.exec()) {
     case QMessageBox::Yes : {
         plotSettings::saveSettings(this->ui->sboxDesviationYAxis->value(), this->ui->inputPressureColor->text(), this->ui->inputTemperatureColor->text());
-        for(QSharedPointer<Station> myStation : DataVisualizerWindow::myStations) {
-            myStation->reloadPlotSettings();
-        }
+        // for(QSharedPointer<Station> myStation : DataVisualizerWindow::myStations) {
+        //     myStation->reloadPlotSettings();
+        // }
         this->close();
         break;
     }

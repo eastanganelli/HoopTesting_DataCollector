@@ -1,8 +1,9 @@
 #ifndef STATION_H
 #define STATION_H
-#include <QWidget>
 #include <QTimer>
 #include <QLabel>
+#include <QObject>
+#include <QWidget>
 #include <QDateTime>
 #include <QException>
 #include <QPushButton>
@@ -12,37 +13,43 @@
 
 const QDateTime DEFAULT_DATETIME = QDateTime(QDate(1970, 1, 1), QTime(0,0,0,0));
 
-enum class StationStatus { WAITING, RUNNING, READY };
+enum class Status { RUNNING, WAITING, READY };
 
-class Station {
+class Station: public QObject {
+    Q_OBJECT
+
     const uint ID;
     uint idTest;
     QDateTime timer, started;
-
-    QLabel* lblPressure, *lblTemperature, *lblTime, *lblStatusHoop;
-    QPushButton* btnConfig, *btnSaveClear;
-    PressureTempGraph* graph;
+    Status status;
 
     static uint activeStation;
 
     void changeBtnsVisibility(const bool state);
-    void refreshPlot(const uint key, const double pressure, const double temperature);
-    void refreshLabels(const uint key, const double pressure, const double temperature);
-    void checkErrorCode(const int codeError);
 
 public:
-    Station(QLabel* pressure, QLabel* temperature, QLabel* time, QLabel* statusHoop, QPushButton* config, QPushButton* saveClear, QTabWidget* tabs, PressureTempGraph* graph);
+    Station();
     ~Station();
     void reloadTestParameters(const uint testID, const QDateTime started);
     uint getID();
     void setTestID(const uint testID);
     uint getTestID() const;
-    void reloadPlotSettings();
+    // void reloadPlotSettings();
     void clear();
     void refresh(double pressure, double temperature, double ambient);
     void hasStarted();
     void hasStoped();
-    void hoopErrorCode(const int codeError);
+    void setStatus(const Status status);
+    QDateTime getTimer();
+    void setTimer(const QDateTime timer);
+    Status getStatus() const;
+
+    static void checkErrorCode(const int codeError, const uint a_ID);
+
+    Q_SIGNAL void statusChanged();
+    Q_SIGNAL void labelsUpdate(const uint v_key, const double v_pressure, const double v_temperature);
+    Q_SIGNAL void plotNewPoint(const uint v_key, const double v_pressure, const double v_temperature);
+    Q_SIGNAL void hoopErrorCode(const int codeError);
 };
 
 namespace StationError {

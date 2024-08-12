@@ -35,6 +35,13 @@ class DataVisualizerWindow : public QMainWindow {
     bool myBtnsStates;
 
 private slots:
+    void Station_StatusChanged();
+    // void Station_BtnsStates();
+    void Station_ErrorCode(const int codeError);
+    void Station_LblsStates(const uint key, const double pressure, const double temperature);
+    // void Plot_ChangeStyle();
+    void Plot_NewPoint(const uint key, const double pressure, const double temperature);
+
     void on_btnEstConfig_1_clicked();
     void on_btnEstConfig_2_clicked();
     void on_btnEstConfig_3_clicked();

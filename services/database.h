@@ -36,6 +36,7 @@ class Manager {
         uint isStationOccupy(const uint ID_Station);
         void isStationFree(const uint ID_Station);
         void insertData(const uint ID_Station, const float pressure, const float temperature, const float ambient);
+        void updateTest(const uint testID, const QString& standard, const QString& material, const QString& specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString& testType, const QString& operatorName, const QString& endCap);
         void StopStation(const uint ID_Station);
         void StopByStandby(const uint ID_Station);
     };
@@ -52,6 +53,7 @@ public:
     void initializeStationActive(QSharedPointer<Station>& myStation, const uint station_ID);
     uint isStationActive(const uint station_ID);
     // void insertTest(const uint station_id);
+    void updateTest(const uint testID, const QString& standard, const QString& material, const QString& specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString& testType, const QString& operatorName, const QString& endCap);
     void insertData(const uint testID, const double pressure, const double temperature, const double ambient);
     void unlinkStationTest(const uint station_id);
     void deleteTest();
