@@ -3,22 +3,21 @@
 
 class DataVisualizerWindow;
 
-SetStation::SetStation(QWidget *parent) : QDialog(parent) , ui(new Ui::SetStation) {
+SetStation::SetStation(QWidget *parent, QSharedPointer<Station> *selectedStation) : QDialog(parent) , ui(new Ui::SetStation) {
     ui->setupUi(this);
     this->setWindowFlags(Qt::Dialog | Qt::Desktop);
+    this->myStation = selectedStation;
+
     // this->normsDB = QSharedPointer<Schemas::Static>(new Schemas::Static());
     // if(this->normsDB->open()) { this->preLoadData(); }
     this->setConnectionSignals();
     this->ui->lblSpecimen->setText("Prueba Nro.: 0");
+    this->ui->gpTestTime->setVisible(false);
 }
 
 SetStation::~SetStation() {
     // this->normsDB->close();
     delete ui;
-}
-
-void SetStation::setSelectStation(QSharedPointer<Station>& selectedStation) {
-    // this->selectedStation = selectedStation;
 }
 
 void SetStation::on_inputWallThickness_valueChanged(int wallthickness) {
@@ -55,20 +54,20 @@ void SetStation::preLoadData() {
 }
 
 void SetStation::setConnectionSignals() {
-    connect(this->ui->cbStandard,      SIGNAL(currentIndexChanged(int)),    this, SLOT(checkFieldsCompletetion()));
-    connect(this->ui->cbMaterial,      SIGNAL(currentIndexChanged(int)),    this, SLOT(checkFieldsCompletetion()));
-    connect(this->ui->cbSpecification, SIGNAL(currentIndexChanged(int)),    this, SLOT(checkFieldsCompletetion()));
-    connect(this->ui->cbBoxTestTime,   SIGNAL(currentTextChanged(QString)), this, SLOT(checkFieldsCompletetion()));
-    connect(this->ui->cbTemp,          SIGNAL(currentTextChanged(QString)), this, SLOT(checkFieldsCompletetion()));
-    connect(this->ui->radSeconds,      SIGNAL(clicked(bool)),               this, SLOT(checkFieldsCompletetion()));
-    connect(this->ui->radHours,        SIGNAL(clicked(bool)),               this, SLOT(checkFieldsCompletetion()));
-    connect(this->ui->inputDiamNormal,     SIGNAL(textChanged(QString)),    this, SLOT(checkFieldsCompletetion()));
-    connect(this->ui->inputDiamReal,       SIGNAL(textChanged(QString)),    this, SLOT(checkFieldsCompletetion()));
-    connect(this->ui->inputHoopStress,     SIGNAL(textChanged(QString)),    this, SLOT(checkFieldsCompletetion()));
-    connect(this->ui->inputLenFree,        SIGNAL(textChanged(QString)),    this, SLOT(checkFieldsCompletetion()));
-    connect(this->ui->inputLenTotal,       SIGNAL(textChanged(QString)),    this, SLOT(checkFieldsCompletetion()));
-    connect(this->ui->inputPressure,       SIGNAL(textChanged(QString)),    this, SLOT(checkFieldsCompletetion()));
-    connect(this->ui->inputWallThickness,  SIGNAL(textChanged(QString)),    this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->cbStandard,         SIGNAL(currentIndexChanged(int)),    this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->cbMaterial,         SIGNAL(currentIndexChanged(int)),    this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->cbSpecification,    SIGNAL(currentIndexChanged(int)),    this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->cbBoxTestTime,      SIGNAL(currentTextChanged(QString)), this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->cbTemp,             SIGNAL(currentTextChanged(QString)), this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->radSeconds,         SIGNAL(clicked(bool)),               this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->radHours,           SIGNAL(clicked(bool)),               this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->inputDiamNormal,    SIGNAL(textChanged(QString)),        this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->inputDiamReal,      SIGNAL(textChanged(QString)),        this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->inputHoopStress,    SIGNAL(textChanged(QString)),        this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->inputLenFree,       SIGNAL(textChanged(QString)),        this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->inputLenTotal,      SIGNAL(textChanged(QString)),        this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->inputPressure,      SIGNAL(textChanged(QString)),        this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->inputWallThickness, SIGNAL(textChanged(QString)),        this, SLOT(checkFieldsCompletetion()));
 }
 
 void SetStation::checkSpecimen() {
@@ -142,7 +141,7 @@ void SetStation::on_cbStandard_currentIndexChanged(int index) {
     SetStation::clearComboBox(this->ui->cbMaterial,      "Material",       true);
     SetStation::clearComboBox(this->ui->cbSpecification, "Especificación", false);
     SetStation::clearComboBox(this->ui->cbTemp,          " ",              true);
-    SetStation::clearComboBox(this->ui->cbBoxTestTime,   " ",              true);
+    // SetStation::clearComboBox(this->ui->cbBoxTestTime,   " ",              true);
     SetStation::clearComboBox(this->ui->cbBoxEndCap,     " ",              true);
     SetStation::clearComboBox(this->ui->cbBoxTestType,   " ",              true);
     SetStation::clearComboBox(this->ui->cbBoxEnviroment, " ",              true);

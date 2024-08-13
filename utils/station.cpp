@@ -7,7 +7,6 @@ Station::Station(): ID(activeStation) {
     this->started        = DEFAULT_DATETIME;
     this->timer          = DEFAULT_DATETIME;
     this->idTest         = 0;
-    this->status         = Status::READY;
     activeStation++;
 
     /**
@@ -34,11 +33,8 @@ void Station::setTestID(const uint testID) { this->idTest = testID; }
 
 uint Station::getTestID() const { return this->idTest; }
 
-// void Station::reloadPlotSettings() {
-//     PressureTempGraph::plotRangeConfigurations(this->graph);
-// }
-
 void Station::clear() {
+    emit this->statusChanged(Status::READY);
     // this->lblPressure->setText("0 Bar");
     // this->lblTemperature->setText("0 °C");
     // this->lblTime->setText("00:00:00");
@@ -48,10 +44,7 @@ void Station::clear() {
 
 void Station::refresh(double pressure, double temperature, double ambient) {
     QDateTime actualTime = QDateTime::currentDateTime();
-    if(this->started == DEFAULT_DATETIME) {
-        this->status = Status::RUNNING;
-        this->started = actualTime;
-    }
+    if(this->started == DEFAULT_DATETIME) { this->started = actualTime; }
     uint key  = this->started.secsTo(actualTime);
     this->hasStarted();
     QDateTime v_timerTxt = this->timer.addSecs(key);
@@ -59,25 +52,13 @@ void Station::refresh(double pressure, double temperature, double ambient) {
     emit this->plotNewPoint(key, pressure, temperature);
 }
 
-void Station::hasStarted() {
-    // if(this->btnSaveClear->isVisible())
-    //     this->changeBtnsVisibility(false);
-}
+void Station::hasStarted() { emit this->statusChanged(Status::RUNNING); }
 
-void Station::hasStoped() { }
-
-// void Station::hasStoped() { this->changeBtnsVisibility(true); }
-
-void Station::setStatus(const Status status) {
-    this->status = status;
-    emit statusChanged();
-}
+void Station::hasStoped()  { emit this->statusChanged(Status::WAITING); }
 
 QDateTime Station::getTimer() { return this->timer; }
 
 void Station::setTimer(const QDateTime timer) { this->timer = timer; }
-
-Status Station::getStatus() const { return this->status; }
 
 void Station::checkErrorCode(const int codeError, const uint a_ID) {
     switch(codeError) {
@@ -95,9 +76,3 @@ void Station::checkErrorCode(const int codeError, const uint a_ID) {
         }
     }
 }
-
-// void Station::changeBtnsVisibility(const bool state) {
-//     // this->btnSaveClear->setVisible(state);
-//     // this->btnSaveClear->setEnabled(state);
-//     // this->btnConfig->setVisible(!state);
-// }

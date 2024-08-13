@@ -13,7 +13,7 @@ class PressureTempGraph : public QCustomPlot {
 
 public:
     PressureTempGraph(QWidget* parent = nullptr);
-    void refresh(const double &yAxisDesviation, const QString &pressureColor, const QString &temperatureColor);
+    void changeStyle(const double &yAxisDesviation, const QString &pressureColor, const QString &temperatureColor);
     void insert(const uint key, const double _pressure, const double _temp);
     void clear();
 

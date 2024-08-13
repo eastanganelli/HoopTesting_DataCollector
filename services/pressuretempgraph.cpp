@@ -34,7 +34,7 @@ PressureTempGraph::PressureTempGraph(QWidget* parent) : QCustomPlot(parent) {
     connect(this->yAxis2, SIGNAL(rangeChanged(QCPRange)), this->yAxis2, SLOT(setRange(QCPRange)));
 }
 
-void PressureTempGraph::refresh(const double &yAxisDesviation, const QString &pressureColor, const QString &temperatureColor) {
+void PressureTempGraph::changeStyle(const double &yAxisDesviation, const QString &pressureColor, const QString &temperatureColor) {
     QColor pressure(pressureColor.isEmpty() ? QColor(Qt::green) : pressureColor), temperature(temperatureColor.isEmpty() ? QColor(Qt::red) : temperatureColor);
     this->yAxisDesviation = yAxisDesviation;
     this->graph(0)->setPen(QPen(pressure));

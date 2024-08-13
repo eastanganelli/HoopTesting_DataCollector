@@ -3,34 +3,20 @@
 #include <QMessageBox>
 #include <QThread>
 #include "serialportmanager.h"
-#include "../defines.h"
 #include "../components/datavisualizer.h"
 
 class DataVisualizerWindow;
 
 QQueue<QString> SerialPortReader::portMessages = QQueue<QString>();
 
+SerialPortReader::SerialPortReader() {
+    this->initialize();
+}
+
 SerialPortReader::SerialPortReader(const QString portName, const QString baudRate) {
     this->initialize();
     this->setPortName(portName);
     this->setBaudRate(baudRate.toUInt());
-    this->lblConnectionStatus = nullptr;
-    this->lblPortStatus       = nullptr;
-    this->btnConnect          = nullptr;
-}
-
-SerialPortReader::SerialPortReader(QLabel *portStatus, QLabel *connectionStatus, QAction *acConnection) {
-    this->initialize();
-    this->lblConnectionStatus = connectionStatus;
-    this->lblPortStatus       = portStatus;
-    this->btnConnect          = acConnection;
-}
-
-SerialPortReader::SerialPortReader(QSerialPort* serialPortPort, QLabel *portStatus, QLabel *connectionStatus, QAction *acConnection) : QSerialPort(serialPortPort) {
-    this->initialize();
-    this->lblConnectionStatus = connectionStatus;
-    this->lblPortStatus       = portStatus;
-    this->btnConnect          = acConnection;
 }
 
 void SerialPortReader::initialize() {
@@ -78,7 +64,17 @@ void SerialPortReader::read(QString& serialName, uint& baudRate) {
 
 void SerialPortReader::onSerialPortReadyRead() {
     QByteArray data = this->readAll();
-    this->status(data);
+    auto statusCom = [&](const QByteArray& data, const QTime& timeStatus ) -> void {
+        if(timeStatus.second() >= timeoutConnection && data.isEmpty()) {
+            emit this->CheckSerialPort(SerialPortReader::Status::INACTIVE);
+            this->connectionState = false;
+        } else if(timeStatus.second() < timeoutConnection && !data.isEmpty()) {
+            emit this->CheckSerialPort(SerialPortReader::Status::ACTIVE);
+            this->connectionState = true;
+        }
+    };
+
+    statusCom(data, this->timeStatus);
     if (!data.isEmpty()) {
         this->timeStatus = QTime(0, 0, 0, 0);
         this->serialToStation(data);
@@ -87,19 +83,12 @@ void SerialPortReader::onSerialPortReadyRead() {
     this->autoMessageSender();
 }
 
-bool SerialPortReader::statusPort() {
-    bool state = this->isOpen();
-    if(state && !this->portState) {
-        this->changingLblPortState("Conectado", StatusGreen);
-        this->portState = true;
-    }
-    else if(!state && this->portState) {
-        this->changingLblPortState("Desconectado",  StatusRed);
-        this->changingLblConnectionState("Cerrado", StatusRed);
-        this->portState = false;
-    }
-    return state && this->connectionState;
-}
+// bool SerialPortReader::statusPort() {
+//     bool state = this->isOpen();
+//     if(state && !this->portState)      { this->portState = true; }
+//     else if(!state && this->portState) { this->portState = false; }
+//     return state && this->connectionState;
+// }
 
 void SerialPortReader::sendMessage(const QByteArray &message) {
     this->clear();
@@ -107,37 +96,33 @@ void SerialPortReader::sendMessage(const QByteArray &message) {
     this->waitForBytesWritten(-1);
 }
 
-bool SerialPortReader::openPort() {
+void SerialPortReader::openPort() {
     QString serialName;
     uint baudRate;
-    this->portState = false;
     SerialPortReader::read(serialName, baudRate);
     if(serialName.isEmpty()) {
         QMessageBox msgBox(QMessageBox::Warning , "Configuración", "Puerto Serial no configurado!");
         msgBox.exec();
-        this->btnConnect->setText("Conectar");
-    } else {
-        this->setBaudRate(baudRate);
-        this->setPortName(serialName);
-        this->portState = !this->open(QIODevice::ReadWrite);
-        if(!this->portState) {
-            this->connectionState = false;
-            this->btnConnect->setText("Desconectar");
-            this->changingLblConnectionState("Cerrado", StatusRed);
-            this->mSerialTimer->start(ms_);
-            return true;
-        }
+        return;
     }
-    return false;
+    this->setBaudRate(baudRate);
+    this->setPortName(serialName);
+    bool portState = !this->open(QIODevice::ReadWrite);
+    if(portState) { return; }
+    this->connectionState = false;
+    emit this->CheckSerialPort(SerialPortReader::Status::OPEN);
+    this->mSerialTimer->start(ms_);
+    return;
 }
 
-bool SerialPortReader::closePort() {
+void SerialPortReader::closePort() {
     this->close();
-    if(this->isOpen()) { return false; }
-    this->btnConnect->setText("Conectar");
+    if(this->isOpen()) { return; }
     this->mSerialTimer->stop();
-    return true;
+    emit this->CheckSerialPort(SerialPortReader::Status::CLOSE);
 }
+
+bool SerialPortReader::isActive() { return this->isOpen() && this->connectionState; }
 
 bool SerialPortReader::test(const QString portName, const QString baudRate) {
     SerialPortReader testPort(portName, baudRate);
@@ -158,16 +143,6 @@ void SerialPortReader::autoMessageSender() {
     }
 }
 
-void SerialPortReader::changingLblConnectionState(const QString state_, const QString color_) {
-    this->lblPortStatus->setText("Comunicación: " + state_);
-    this->lblPortStatus->setStyleSheet("color:" + color_ +";");
-}
-
-void SerialPortReader::changingLblPortState(const QString state_, const QString color_) {
-    this->lblConnectionStatus->setText("Puerto: " + state_);
-    this->lblConnectionStatus->setStyleSheet("color:" + color_ +";");
-}
-
 void SerialPortReader::serialToStation(QByteArray& msg) {
     auto Msgs = QString(msg).split(this->serialParsing["Separator"]);
     for(QString& serialMsg : Msgs) {
@@ -177,7 +152,10 @@ void SerialPortReader::serialToStation(QByteArray& msg) {
             const uint idStation = resultMatch.captured("station").toInt();
             const auto pressure = resultMatch.captured("pressure"), temperature = resultMatch.captured("temperature"), ambient = resultMatch.captured("ambient");
             if(pressure != "xx.xx" && temperature != "xx.xx" && ambient != "xx.xx") {
-                DataVisualizerWindow::myStations[idStation]->refresh(pressure.toDouble(), temperature.toDouble(), ambient.toDouble());
+                QSharedPointer<Station> myStation =DataVisualizerWindow::myStations[idStation];
+                if(myStation->getTestID() == 0)
+                    myStation->hasStarted();
+                myStation->refresh(pressure.toDouble(), temperature.toDouble(), ambient.toDouble());
                 DataVisualizerWindow::myDatabases->insertData(idStation, pressure.toDouble(), temperature.toDouble(), ambient.toDouble());
             }
             SerialPortReader::portMessages.enqueue((QString("start|%1|xx|xx\n").arg(idStation)));
@@ -194,7 +172,6 @@ void SerialPortReader::serialToStation(QByteArray& msg) {
                 SerialPortReader::portMessages.enqueue((QString("stop|%1|xx|xx\n").arg(idStation)));
                 DataVisualizerWindow::myDatabases->unlinkStationTest(idStation);
                 myStation->hasStoped();
-                myStation->setStatus(Status::WAITING);
             } catch(...) {}
         } else if(this->serialParsing["ErrorPLC"].match(serialMsg).hasMatch()) {
             QRegularExpressionMatch resultMatch = this->serialParsing["ErrorPLC"].match(serialMsg);
@@ -203,17 +180,6 @@ void SerialPortReader::serialToStation(QByteArray& msg) {
             DataVisualizerWindow::myDatabases->unlinkStationTest(idStation);
             SerialPortReader::portMessages.enqueue((QString("error|%1|xx|xx\n").arg(idStation)));
             emit myStation->hoopErrorCode(resultMatch.captured("status_code").toInt());
-            // myStation->setStatus(Status::WAITING);
         }
-    }
-}
-
-void SerialPortReader::status(const QByteArray& data) {
-    if(this->timeStatus.second() >= timeoutConnection && data.isEmpty()) {
-        this->connectionState = false;
-        this->changingLblConnectionState("Cerrado", StatusRed);
-    } else if(this->timeStatus.second() < timeoutConnection && !data.isEmpty()) {
-        this->connectionState = true;
-        this->changingLblConnectionState("Abierto", StatusGreen);
     }
 }

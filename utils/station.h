@@ -13,15 +13,16 @@
 
 const QDateTime DEFAULT_DATETIME = QDateTime(QDate(1970, 1, 1), QTime(0,0,0,0));
 
-enum class Status { RUNNING, WAITING, READY };
-
 class Station: public QObject {
     Q_OBJECT
 
+public:
+    enum class Status { RUNNING, WAITING, READY };
+
+private:
     const uint ID;
     uint idTest;
     QDateTime timer, started;
-    Status status;
 
     static uint activeStation;
 
@@ -39,14 +40,14 @@ public:
     void refresh(double pressure, double temperature, double ambient);
     void hasStarted();
     void hasStoped();
-    void setStatus(const Status status);
+    void setStatus(const Station::Status status);
     QDateTime getTimer();
     void setTimer(const QDateTime timer);
     Status getStatus() const;
 
     static void checkErrorCode(const int codeError, const uint a_ID);
 
-    Q_SIGNAL void statusChanged();
+    Q_SIGNAL void statusChanged(const Station::Status& myStatus);
     Q_SIGNAL void labelsUpdate(const uint v_key, const double v_pressure, const double v_temperature);
     Q_SIGNAL void plotNewPoint(const uint v_key, const double v_pressure, const double v_temperature);
     Q_SIGNAL void hoopErrorCode(const int codeError);

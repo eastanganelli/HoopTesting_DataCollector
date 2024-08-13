@@ -1,9 +1,7 @@
 #ifndef PLOTSETTINGS_H
 #define PLOTSETTINGS_H
 #include <QDialog>
-#include "datavisualizer.h"
 
-class DataVisualizerWindow;
 class Station;
 
 namespace Ui { class plotSettings; }
@@ -18,7 +16,7 @@ public:
     explicit plotSettings(QWidget *parent = nullptr);
     ~plotSettings();
 
-    Q_SIGNAL void refreshPlots();
+    Q_SIGNAL void changeStyle(const double yaxisDesviation, const QString &pressureColor, const QString &temperatureColor);
 
 private slots:
     // void Plots_Refreshing();
@@ -37,8 +35,6 @@ private:
 
     void isComplete();
     void setDefault();
-
-    static void StationsPlotReload(const double yaxisDesviation, const QString &pressureColor, const QString &temperatureColor);
 
     Ui::plotSettings *ui;
 };

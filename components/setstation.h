@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QJsonObject>
 #include <QStringList>
+#include <QSqlDatabase>
 #include <QSharedPointer>
 
 #include "../utils/station.h"
@@ -26,11 +27,9 @@ class SetStation : public QDialog {
     static void clearComboBox(QComboBox* myWidget, QString text, bool state);
 
     Ui::SetStation *ui;
-
-    uint idSample;
+    QSharedPointer<Station>* myStation;
+    QSqlDatabase staticDatabase, cacheDatabase;
     QJsonObject StaticData;
-    // QSharedPointer<Schemas::Static> normsDB;
-    // QSharedPointer<Station> selectedStation;
     // QSharedPointer<NodeStandard>      selectedStandard;
     // QSharedPointer<NodeMaterial>      selectedMaterial;
     // QSharedPointer<NodeSpecification> selectedSpecification;
@@ -39,15 +38,6 @@ class SetStation : public QDialog {
     // QSharedPointer<NodeTestType>      selectedTestType;
     // QSharedPointer<NodeOperator>      selectedOperator;
     // QSharedPointer<NodeEnviroment>    selectedEnviroment;
-    // QList<QSharedPointer<NodeStandard>>          listStandards;
-    // QList<QSharedPointer<NodeMaterial>>          listMaterials;
-    // QList<QSharedPointer<NodeSpecification>>     listSpecifications;
-    // QList<QSharedPointer<NodeConditionalPeriod>> listCondPeriods;
-    // QList<QSharedPointer<NodeSetting>>           listSettings;
-    // QList<QSharedPointer<NodeEndCap>>            listEndCap;
-    // QList<QSharedPointer<NodeTestType>>          listTestTypes;
-    // QList<QSharedPointer<NodeOperator>>          listOperators;
-    // QList<QSharedPointer<NodeEnviroment>>        listEnviroments;
 
 private slots:
     void checkFieldsCompletetion();
@@ -60,13 +50,16 @@ private slots:
     void on_cbBoxOperator_currentIndexChanged(int index);
     void on_cbBoxTestType_currentIndexChanged(int index);
     void on_cbBoxEnviroment_currentIndexChanged(int index);
+    void on_cbBoxTestTime_currentIndexChanged(int index);
     void on_btnSave_clicked();
     void on_btnCancel_clicked();
-    void on_cbBoxTestTime_currentIndexChanged(int index);
 
 public:
-    explicit SetStation(QWidget *parent = nullptr);
+    enum class Response { SaveExport, EscExport };
+
+    explicit SetStation(QWidget *parent = nullptr, QSharedPointer<Station>* selectedStation = nullptr);
     ~SetStation();
-    void setSelectStation(QSharedPointer<Station>& selectedStation);
+
+    Q_SIGNAL void setHoopParameters(const SetStation::Response& response);
 };
 #endif // SETSTATION_H

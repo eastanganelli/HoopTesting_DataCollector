@@ -1,48 +1,57 @@
 #include <QMessageBox>
 #include "datavisualizer.h"
 #include "ui_datavisualizer.h"
+#include "../defines.h"
 #include "setdb.h"
 #include "setserial.h"
 #include "plotsettings.h"
 
-QMap<uint, QSharedPointer<Station>> DataVisualizerWindow::myStations = QMap<uint, QSharedPointer<Station>>();
-QSharedPointer<Manager> DataVisualizerWindow::myDatabases = QSharedPointer<Manager>(nullptr);
-
-enum class Status;
+QMap<uint, QSharedPointer<Station>> DataVisualizerWindow::myStations  = QMap<uint, QSharedPointer<Station>>();
+QSharedPointer<Manager>             DataVisualizerWindow::myDatabases = QSharedPointer<Manager>(nullptr);
 
 DataVisualizerWindow::DataVisualizerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::DataVisualizerWindow) {
-    ui->setupUi(this); {
-        this->dialogStation = nullptr;
-        this->initStatusBar();
-        this->myActivePort = QSharedPointer<SerialPortReader>(new SerialPortReader(this->PortStatus, this->ConnectionPort, this->ui->serialConnect));
-        this->mStatusTimer = QSharedPointer<QTimer>(new QTimer(this));
-    } {
-        this->myActivePort->openPort();
-        this->setStationsUI();
-        connect(this->mStatusTimer.get(), &QTimer::timeout, this, &DataVisualizerWindow::statusConnections);
-        // connect(this->mStatusTimer.get(), &QTimer::timeout, this, myStationsAux);
-        this->mStatusTimer->start(ms_);
-        this->ui->tabWidget->setEnabled(false);
-    }
+    ui->setupUi(this);
+    this->initStatusBar();
+    this->myActivePort = QSharedPointer<SerialPortReader>(new SerialPortReader());
+    this->mStatusTimer = QSharedPointer<QTimer>(new QTimer(this));
+    this->setStationsUI();
+    this->ui->tabWidget->setEnabled(false);
     DataVisualizerWindow::myDatabases = QSharedPointer<Manager>(new Manager());
-    DataVisualizerWindow::myDatabases->initialize();
-    DataVisualizerWindow::myDatabases->open();
+    QTimer::singleShot(0, this, SLOT(doLater()));
 }
 
 DataVisualizerWindow::~DataVisualizerWindow() {
     this->myActivePort.clear();
+    for(auto myStation: DataVisualizerWindow::myStations) {
+        disconnect(myStation.data(), &Station::statusChanged, this, &DataVisualizerWindow::Station_StatusChanged);
+        disconnect(myStation.data(), &Station::labelsUpdate,  this, &DataVisualizerWindow::Station_LblsStates);
+        disconnect(myStation.data(), &Station::plotNewPoint,  this, &DataVisualizerWindow::Plot_NewPoint);
+        disconnect(myStation.data(), &Station::hoopErrorCode, this, &DataVisualizerWindow::Station_ErrorCode);
+    }
+    disconnect(DataVisualizerWindow::myDatabases.data(), &Manager::DatabaseInitialize, this, &DataVisualizerWindow::Database_Initialize);
+    disconnect(DataVisualizerWindow::myDatabases.data(), &Manager::DatabaseConnection, this, &DataVisualizerWindow::Database_Connection);
     delete ui;
 }
 
+void DataVisualizerWindow::doLater() {
+    connect(this->myActivePort.get(), &SerialPortReader::CheckSerialPort, this, &DataVisualizerWindow::Check_Status);
+    connect(this->myActivePort.get(), &SerialPortReader::CheckSerialPort, this, &DataVisualizerWindow::SerialPort_Status);
+    this->myActivePort->openPort();
+    connect(this->mStatusTimer.get(), &QTimer::timeout, this, &DataVisualizerWindow::Check_Status);
+    this->mStatusTimer->start(ms_);
+    connect(DataVisualizerWindow::myDatabases.data(), &Manager::DatabaseInitialize, this, &DataVisualizerWindow::Database_Initialize);
+    connect(DataVisualizerWindow::myDatabases.data(), &Manager::DatabaseConnection, this, &DataVisualizerWindow::Database_Connection);
+    DataVisualizerWindow::myDatabases->initialize();
+    DataVisualizerWindow::myDatabases->open();
+}
+
+void DataVisualizerWindow::Check_Status()  { this->ui->tabWidget->setEnabled(this->myActivePort->isActive() && DataVisualizerWindow::myDatabases->isOpen()); }
+
 void DataVisualizerWindow::setStationsUI() {
     for(uint i = 1; i <= 6; i++) {
-        QPushButton* btnConfig = this->findChild<QPushButton*>("btnEstConfig_" + QString::number(i));
-        PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(i));
-        btnConfig->setVisible(false); {
-            double yAxisDesviationRead = 0.00;
-            QString pressureColor, temperatureColor;
-            plotSettings::loadSettings(yAxisDesviationRead, pressureColor, temperatureColor);
-        }
+        double yAxisDesviationRead = 0.00;
+        QString pressureColor, temperatureColor;
+        plotSettings::loadSettings(yAxisDesviationRead, pressureColor, temperatureColor);
         QSharedPointer<Station> auxStation = QSharedPointer<Station>(new Station());
         connect(auxStation.data(), &Station::statusChanged, this, &DataVisualizerWindow::Station_StatusChanged);
         connect(auxStation.data(), &Station::labelsUpdate,  this, &DataVisualizerWindow::Station_LblsStates);
@@ -55,7 +64,7 @@ void DataVisualizerWindow::setStationsUI() {
 void DataVisualizerWindow::initStatusBar() {
     this->ConnectionDataBase = new QLabel("Base de Datos: No Conectado");
     this->ConnectionPort     = new QLabel("Puerto: No Conectado");
-    this->PortStatus         = new QLabel("Comunicación: Cerrado");
+    this->PortStatus         = new QLabel("Comunicación: Cerrada");
     this->ConnectionDataBase->setObjectName("lblConnectDB");
     this->ConnectionDataBase->setStyleSheet("color: red;");
     this->ConnectionPort->setObjectName("lblConnectionPort");
@@ -68,13 +77,6 @@ void DataVisualizerWindow::initStatusBar() {
     this->ui->serialConnect->setText("Abrir Puerto");
 }
 
-void DataVisualizerWindow::btnsStates(const bool state_) { this->ui->tabWidget->setEnabled(state_); }
-
-bool DataVisualizerWindow::btnsStates() {
-    for(auto myStation: DataVisualizerWindow::myStations) { return this->findChild<QGroupBox*>("gbBtns_" + QString::number(myStation->getID()))->isEnabled(); }
-    return false;
-}
-
 void DataVisualizerWindow::btnStationsDialog(const uint id_) {
     try {
         DataVisualizerWindow::stationConfiguration(id_);
@@ -84,33 +86,26 @@ void DataVisualizerWindow::btnStationsDialog(const uint id_) {
     }
 }
 
-void DataVisualizerWindow::btnStationSaveClear(const uint id_) {
-    QSharedPointer<Station> myStation = DataVisualizerWindow::myStations[id_];
-    myStation->clear();
-}
-
 void DataVisualizerWindow::stationConfiguration(const uint ID_Station) {
-    SetStation* dialogStation = new SetStation();
-    dialogStation->setSelectStation(DataVisualizerWindow::myStations[ID_Station]);
-    dialogStation->setModal(true);
-    dialogStation->exec();
-    delete dialogStation;
+    SetStation myHoopParameters(nullptr, &DataVisualizerWindow::myStations[ID_Station]);
+    myHoopParameters.setModal(true);
+    myHoopParameters.exec();
 }
 
-void DataVisualizerWindow::Station_StatusChanged() {
+void DataVisualizerWindow::Station_StatusChanged(const Station::Status& myStatus) {
     Station* senderStation = qobject_cast<Station*>(sender());
     if(senderStation) {
         QPushButton* btnConfig = this->findChild<QPushButton*>("btnEstConfig_" + QString::number(senderStation->getID()));
-        switch (senderStation->getStatus()) {
-            case Status::READY:
-                // senderStation->setPort(this->myActivePort);
-                // senderStation->start();
+        switch (myStatus) {
+            case Station::Status::READY:
+                if(btnConfig->isVisible())
+                    btnConfig->setVisible(false);
                 break;
-            case Status::RUNNING:
+            case Station::Status::RUNNING:
                 if(btnConfig->isVisible())
                     btnConfig->setVisible(true);
                 break;
-            case Status::WAITING:
+            case Station::Status::WAITING:
                 // senderStation->stop();
                 break;
         }
@@ -153,12 +148,80 @@ void DataVisualizerWindow::Station_LblsStates(const uint key, const double press
     }
 }
 
+void DataVisualizerWindow::SerialPort_Status(const SerialPortReader::Status &myStatus) {
+    auto changeConnectionPort = [&](const QString &lbl_text, const QString& v_Status, const QString &v_color) {
+        this->ui->serialConnect->setText(v_Status);
+        this->ConnectionPort->setText("Puerto: " + lbl_text);
+        this->ConnectionPort->setStyleSheet("color:" + v_color + ";");
+    };
+    auto changeCommunicationPort = [&](const QString &lbl_text, const QString &v_color) {
+        this->PortStatus->setText("Comunicación: " + lbl_text);
+        this->PortStatus->setStyleSheet("color:" + v_color + ";");
+    };
+
+    switch (myStatus) {
+    case SerialPortReader::Status::OPEN:
+        this->ui->serialConnect->setText("Cerrar Puerto");
+        changeConnectionPort("Conectado", "Cerrar", StatusGreen);
+        break;
+    case SerialPortReader::Status::CLOSE:
+        this->ui->serialConnect->setText("Abrir Puerto");
+        changeConnectionPort("Desconectado", "Abrir", StatusRed);
+        changeCommunicationPort("Cerrada",   StatusRed);
+        break;
+    case SerialPortReader::Status::ACTIVE:
+        changeCommunicationPort("Abierta",   StatusGreen);
+        break;
+    case SerialPortReader::Status::INACTIVE:
+        changeCommunicationPort("Cerrada",   StatusRed);
+        break;
+    }
+}
+
+void DataVisualizerWindow::Plot_ChangeStyle(const double &yAxisDesviation, const QString &pressureColor, const QString &temperatureColor) {
+    for(auto myStation: DataVisualizerWindow::myStations) {
+        PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(myStation->getID()));
+        mygraph->changeStyle(yAxisDesviation, pressureColor, temperatureColor);
+    }
+}
+
 void DataVisualizerWindow::Plot_NewPoint(const uint key, const double pressure, const double temperature) {
     Station* senderStation = qobject_cast<Station*>(sender());
     if(senderStation) {
         const uint v_ID = senderStation->getID();
         PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(v_ID));
         mygraph->insert(key, pressure, temperature);
+    }
+}
+
+void DataVisualizerWindow::SetStation_Response(const SetStation::Response &response) {
+
+}
+
+void DataVisualizerWindow::Database_Initialize(const Manager::Status &v_Status, const QString &v_Error) {
+
+}
+
+void DataVisualizerWindow::Database_Connection(const Manager::Status &v_Status, const QString &v_Error) {
+    auto changeConnectionDB = [&](const QString &lbl_Status, const QString& v_Status, const QString &v_color) {
+        this->ui->dbConnect->setText(v_Status);
+        this->ConnectionDataBase->setText("Base de Datos: " + lbl_Status);
+        this->ConnectionDataBase->setStyleSheet("color:" + v_color + ";");
+    };
+
+    switch (v_Status) {
+    case Manager::Status::OPEN:
+        changeConnectionDB("Conectada", "Desconectar", StatusGreen);
+        break;
+    case Manager::Status::CLOSE:
+        changeConnectionDB("Desconectada", "Conectar", StatusRed);
+        break;
+    case Manager::Status::ERROR:
+        QMessageBox msgBox(QMessageBox::Warning, "Error", v_Error);
+        msgBox.setWindowModality(Qt::WindowModal);
+        msgBox.setWindowFlags(Qt::WindowStaysOnTopHint);
+        msgBox.exec();
+        break;
     }
 }
 
@@ -173,18 +236,6 @@ void DataVisualizerWindow::on_btnEstConfig_4_clicked() { this->btnStationsDialog
 void DataVisualizerWindow::on_btnEstConfig_5_clicked() { this->btnStationsDialog(5); }
 
 void DataVisualizerWindow::on_btnEstConfig_6_clicked() { this->btnStationsDialog(6); }
-
-void DataVisualizerWindow::on_btnSvClr_1_clicked() { this->btnStationSaveClear(1); }
-
-void DataVisualizerWindow::on_btnSvClr_2_clicked() { this->btnStationSaveClear(2); }
-
-void DataVisualizerWindow::on_btnSvClr_3_clicked() { this->btnStationSaveClear(3); }
-
-void DataVisualizerWindow::on_btnSvClr_4_clicked() { this->btnStationSaveClear(4); }
-
-void DataVisualizerWindow::on_btnSvClr_5_clicked() { this->btnStationSaveClear(5); }
-
-void DataVisualizerWindow::on_btnSvClr_6_clicked() { this->btnStationSaveClear(6); }
 
 void DataVisualizerWindow::on_serialConnect_triggered() {
     if(this->myActivePort->isOpen()) { this->myActivePort->closePort(); }
@@ -203,28 +254,18 @@ void DataVisualizerWindow::on_dbConfig_triggered() {
     myDBConfiguration->exec();
 }
 
-void DataVisualizerWindow::on_dbConnect_triggered() {
-    // if(this->myDataDB->isOpen()) { this->myDataDB->close(); return; }
-    // this->myDataDB->open();
+void DataVisualizerWindow::on_actionGr_fico_triggered() {
+    plotSettings* myPlotSettings = new plotSettings();
+    connect(myPlotSettings, &plotSettings::changeStyle, this, &DataVisualizerWindow::Plot_ChangeStyle);
+    myPlotSettings->setModal(true);
+    myPlotSettings->exec();
+    disconnect(myPlotSettings, &plotSettings::changeStyle, this, &DataVisualizerWindow::Plot_ChangeStyle);
+    delete myPlotSettings;
 }
 
-void DataVisualizerWindow::statusConnections() {
-    bool portState = this->myActivePort->statusPort()/*,
-         DbState   = this->myDataDB->status()*/;
-    if(portState /*&& DbState*/) {
-        this->myBtnsStates = true;
-        this->btnsStates(this->myBtnsStates);
-    } else if(!portState /*|| !DbState*/) {
-        this->myBtnsStates = false;
-        this->btnsStates(this->myBtnsStates);
-    }
+void DataVisualizerWindow::on_dbConnect_triggered() {
+    if(DataVisualizerWindow::myDatabases->isOpen()) { DataVisualizerWindow::myDatabases->close(); return; }
+    DataVisualizerWindow::myDatabases->open();
 }
 
 void DataVisualizerWindow::on_close_triggered() { this->close(); }
-
-void DataVisualizerWindow::on_actionGr_fico_triggered() {
-    plotSettings* myPlotSettings = new plotSettings();
-    myPlotSettings->setModal(true);
-    myPlotSettings->exec();
-    delete myPlotSettings;
-}

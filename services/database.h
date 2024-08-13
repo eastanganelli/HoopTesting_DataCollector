@@ -1,6 +1,7 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 #include <QString>
+#include <QObject>
 #include <QSettings>
 #include <QException>
 #include <QApplication>
@@ -10,16 +11,20 @@
 
 #define datetime_format "yyyy/MM/dd hh:mm:ss"
 
-class Manager {
+class Manager: public QObject {
+    Q_OBJECT
+
     class RemoteDB {
-        QSqlDatabase a_remoteDB;
+        QSqlDatabase a_StaticDatabase, a_DataDatabase;
 
     public:
-        RemoteDB() {}
-        ~RemoteDB() {}
+        RemoteDB();
+        ~RemoteDB();
         void initialize();
-        bool open();
+        void open();
+        bool isOpen();
         void close();
+        bool isClose();
     };
 
     class CacheDB {
@@ -30,8 +35,10 @@ class Manager {
         CacheDB();
         ~CacheDB();
         void initialize();
-        bool open();
+        void open();
+        bool isOpen();
         void close();
+        bool isClose();
         QSqlDatabase get();
         uint isStationOccupy(const uint ID_Station);
         void isStationFree(const uint ID_Station);
@@ -41,15 +48,19 @@ class Manager {
         void StopByStandby(const uint ID_Station);
     };
 
-    RemoteDB myRemoteDB;
-    CacheDB  myCacheDB;
+    RemoteDB a_RemoteDB;
+    CacheDB  a_CacheDB;
 
 public:
+    enum class Status { OPEN, CLOSE, ERROR };
+
     Manager();
     ~Manager();
     void initialize();
     void open();
+    bool isOpen();
     void close();
+    void isClose();
     void initializeStationActive(QSharedPointer<Station>& myStation, const uint station_ID);
     uint isStationActive(const uint station_ID);
     // void insertTest(const uint station_id);
@@ -64,6 +75,9 @@ public:
     static void save(const QSqlDatabase myDB);
     static void save(const QString hostname, const uint port, const QString username, const QString password);
     static void CacheToRemote(RemoteDB& remote, CacheDB& cache);
+
+    Q_SIGNAL void DatabaseInitialize(const Manager::Status& v_Status,  const QString& v_Error);
+    Q_SIGNAL void DatabaseConnection(const Manager::Status& v_Status,  const QString& v_Error);
 };
 
 namespace ManagerErrors {
