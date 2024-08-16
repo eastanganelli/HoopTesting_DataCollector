@@ -3,9 +3,8 @@
 #include <QSqlError>
 #include "database.h"
 #include "../utils/simplecrypt.h"
-#include "../components/datavisualizer.h"
 
-class DataVisualizerWindow;
+QSharedPointer<Manager> Manager::myDatabases = QSharedPointer<Manager>(nullptr);
 
 Manager::Manager() {}
 
@@ -74,6 +73,7 @@ void Manager::open() {
         this->a_CacheDB.open();
     } catch(ManagerErrors::ConnectionError& e) {
         emit this->DatabaseConnection(Manager::Status::ERROR, e.what());
+        return;
     }
     emit this->DatabaseConnection(Manager::Status::OPEN, "");
 }
@@ -104,6 +104,74 @@ void Manager::RemoteDB::close() {
     this->a_DataDatabase.close();
 }
 
+QSqlDatabase Manager::RemoteDB::get(const RemoteSelect &selection) {
+    if(selection == RemoteSelect::STATIC)
+        return this->a_StaticDatabase;
+    return this->a_DataDatabase;
+}
+
+void Manager::RemoteDB::insertTest(const uint testID, const QString &standard, const QString &material, const QString &specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString &testType, const QString &operatorName, const QString &endCap, const QString &enviroment, const QString &conditionalPeriod, const uint &pressureTarget, const uint &temperatureTarget, const QString& createdAt) {
+    QSqlQuery insertSample(this->a_DataDatabase),
+              insertSpecimen(this->a_DataDatabase);
+    uint idSample = [&insertSample](const QString &standard, const QString &material, const QString &specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString &conditionalPeriod) -> uint {
+        uint a_id = 0;
+        if(!(standard.isNull() || material.isNull() || specification.isNull() || lenTotal == 0 || lenFree == 0 || diamNom == 0 || diamReal == 0 || thickness == 0 || conditionalPeriod.isNull())) {
+            insertSample.prepare("INSERT INTO sample (standard, material, specification, diamreal, diamnom, wallthick, lentotal, lenfree, condPeriod) VALUES (:standard, :material, :specification, :diamreal, :diamnom, :wallthick, :lentotal, lenfree, :condPeriod);");
+            insertSample.bindValue(":standard", standard);
+            insertSample.bindValue(":material", material);
+            insertSample.bindValue(":specification", specification);
+            insertSample.bindValue(":diamnom", diamNom);
+            insertSample.bindValue(":diamreal", diamReal);
+            insertSample.bindValue(":wallthick", thickness);
+            insertSample.bindValue(":lenfree", lenFree);
+            insertSample.bindValue(":lentotal", lenTotal);
+            insertSample.bindValue(":condPeriod", conditionalPeriod);
+            insertSample.exec();
+        }
+        insertSample.prepare("SELECT s.id FROM sample s WHERE s.standard like :standard AND s.material LIKE :material AND s.specification LIKE :specification AND s.diamnom = :diamnom AND s.diamreal = :diamreal AND s.wallthick = :wallthick AND s.lenfree = :lenfree AND s.lentotal = :lentotal");
+        insertSample.bindValue(":standard", standard);
+        insertSample.bindValue(":material", material);
+        insertSample.bindValue(":specification", specification);
+        insertSample.bindValue(":diamnom", diamNom);
+        insertSample.bindValue(":diamreal", diamReal);
+        insertSample.bindValue(":wallthick", thickness);
+        insertSample.bindValue(":lenfree", lenFree);
+        insertSample.bindValue(":lentotal", lenTotal);
+        insertSample.exec();
+        insertSample.next();
+        a_id = insertSample.value("id").toUInt();
+        return a_id;
+    }(standard, material,specification, lenTotal, lenFree, diamNom, diamReal, thickness, conditionalPeriod);
+
+    void* _ = [&insertSpecimen](const uint& idSample, const uint& testID, const QString &testType, const QString &operatorName, const QString &endCap, const QString &enviroment, const uint& pressureTarget, const uint& temperatureTarget, const QString& createdAt) -> void* {
+        if(idSample != 0 && !(testType.isNull() || operatorName.isNull() || endCap.isNull() || enviroment.isNull())) {
+            insertSpecimen.prepare("INSERT INTO specimen (id, sample, targetPressure, targetTemperature, operator, enviroment, testName, endCap, createdAt) VALUES (:testID, :sampleID, :pressureTarget, :temperatureTarget, :operatorName, :enviroment, :testType, :endCap, :createdAt);");
+            insertSpecimen.bindValue(":testID", testID);
+            insertSpecimen.bindValue(":sampleID", idSample);
+            insertSpecimen.bindValue(":testType", testType);
+            insertSpecimen.bindValue(":operatorName", operatorName);
+            insertSpecimen.bindValue(":endCap", endCap);
+            insertSpecimen.bindValue(":enviroment", enviroment);
+            insertSpecimen.bindValue(":pressureTarget", pressureTarget);
+            insertSpecimen.bindValue(":temperatureTarget", temperatureTarget);
+            insertSpecimen.bindValue(":createdAt", createdAt);
+            insertSpecimen.exec();
+        }
+        return nullptr;
+    }(idSample, testID, testType, operatorName, endCap, enviroment, pressureTarget, temperatureTarget,createdAt);
+}
+
+void Manager::RemoteDB::insertData(const uint& testID, const float& pressure, const float& temperature, const float& ambient, const QString& createdAt) {
+    QSqlQuery insertData(this->a_DataDatabase);
+    insertData.prepare("INSERT INTO data (specimen, pressure, temperature, ambient, createdAt) VALUES (:testID, :pressure, :temperature, :ambient, :createdAt);");
+    insertData.bindValue(":testID", testID);
+    insertData.bindValue(":pressure", pressure);
+    insertData.bindValue(":temperature", temperature);
+    insertData.bindValue(":ambient", ambient);
+    insertData.bindValue(":createdAt", QDateTime::currentDateTime());
+    insertData.exec();
+}
+
 void Manager::CacheDB::close() { this->a_cacheDB.close(); }
 
 void Manager::close() {
@@ -125,9 +193,50 @@ uint Manager::isStationActive(const uint station_ID) {
     return result;
 }
 
+QSqlQuery Manager::selectTest(const QString &myQuery, const QString& dbName) {
+    QSqlQuery testQuery(QSqlDatabase::database(dbName));
+    testQuery.prepare(myQuery);
+    testQuery.exec();
+    if(!testQuery.next()) {
+        throw ManagerErrors::QuerySelectError("No se encontraron resultados!");
+    }
+    return testQuery;
+}
+
 void Manager::insertData(const uint testID, const double pressure, const double temperature, const double ambient) { this->a_CacheDB.insertData(testID, pressure, temperature, ambient); }
 
+void Manager::deleteTest(const uint testID) { this->a_CacheDB.StopStation(testID); }
+
 void Manager::unlinkStationTest(const uint station_id) { this->a_CacheDB.StopStation(station_id); }
+
+void Manager::exportTestData(const uint& testID) {
+    QSqlQuery cacheQuery(this->a_CacheDB.get()),
+              remoteQuery(this->a_RemoteDB.get(RemoteDB::RemoteSelect::DATA));
+    RemoteDB remoteDatabase = this->a_RemoteDB;
+    void* _ = [&remoteDatabase, &cacheQuery, testID]() -> void* {
+        cacheQuery.prepare("SELECT * FROM test t WHERE t.id = :testID;");
+        cacheQuery.bindValue(":testID", testID);
+        cacheQuery.exec();
+        cacheQuery.next();
+        const QString standard = cacheQuery.value("standard").toString(), material = cacheQuery.value("material").toString(),          specification = cacheQuery.value("specification").toString(),
+                      testType = cacheQuery.value("testType").toString(), operatorName = cacheQuery.value("operator").toString(), endCap = cacheQuery.value("endCap").toString(),
+                      enviroment = cacheQuery.value("enviroment").toString(), conditionalPeriod = cacheQuery.value("conditionalPeriod").toString(), createdAt = cacheQuery.value("createdAt").toString();
+        const uint lenTotal = cacheQuery.value("lenTotal").toUInt(), lenFree = cacheQuery.value("lenFree").toUInt(),
+                   diamNom = cacheQuery.value("diameterNormal").toUInt(),   diamReal = cacheQuery.value("diameterReal").toUInt(), thickness = cacheQuery.value("wallthickness").toUInt(),
+                   pressureTarget = cacheQuery.value("pressureTarget").toUInt(), temperatureTarget = cacheQuery.value("temperatureTarget").toUInt();
+        remoteDatabase.insertTest(testID, standard, material, specification, lenTotal, lenFree, diamNom, diamReal, thickness, testType, operatorName, endCap, enviroment, conditionalPeriod, pressureTarget, temperatureTarget, createdAt);
+        return nullptr;
+    }();
+    _ = [&cacheQuery, &remoteDatabase, testID]() -> void* {
+        cacheQuery.prepare("SELECT d.pressure, d.temperature, d.ambient, d.createdat FROM data d WHERE testID = :testID;");
+        cacheQuery.bindValue(":testID", testID);
+        cacheQuery.exec();
+        while(cacheQuery.next()) {
+            remoteDatabase.insertData(testID, cacheQuery.value("pressure").toDouble(), cacheQuery.value("temperature").toDouble(), cacheQuery.value("ambient").toDouble(), cacheQuery.value("createdAt").toString());
+        }
+        return nullptr;
+    }();
+}
 
 void Manager::loadConfiguration(QSqlDatabase &myDB) {
     SimpleCrypt myDecrypt;
@@ -193,11 +302,15 @@ void Manager::save(const QString hostname, const uint port, const QString userna
     mySettings.endGroup();
 }
 
+void Manager::updateTest(const uint testID, const QString& standard, const QString& material, const QString& specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString& testType, const QString& operatorName, const QString& endCap, const QString& enviroment, const QString& conditionalPeriod, const uint& pressureTarget, const uint& temperatureTarget) {
+    this->a_CacheDB.updateTest(testID, standard, material, specification, lenTotal, lenFree, diamNom, diamReal, thickness, testType, operatorName, endCap, enviroment, conditionalPeriod, pressureTarget, temperatureTarget);
+}
+
 QSqlDatabase Manager::CacheDB::get() { return this->a_cacheDB; }
 
 void Manager::CacheDB::insertData(const uint ID_Station, const float pressure, const float temperature, const float ambient) {
     uint TestID = [](const uint Station_ID, QSqlDatabase& db) -> uint {
-        QSharedPointer<Station> myStation = DataVisualizerWindow::myStations[Station_ID];
+        QSharedPointer<Station> myStation = Station::myStations[Station_ID];
         uint result = myStation->getTestID();
         if(result == 0) {
             QSqlQuery stationQuery(db);
@@ -214,12 +327,12 @@ void Manager::CacheDB::insertData(const uint ID_Station, const float pressure, c
                 stationQuery.exec();
                 stationQuery.next();
                 result = stationQuery.value("TestID").toUInt();
-                myStation->setTestID(result);
                 stationQuery.prepare("UPDATE station SET testID = :testID WHERE id = :id_station;");
                 stationQuery.bindValue(":testID",     result);
                 stationQuery.bindValue(":id_station", Station_ID);
                 stationQuery.exec();
             }
+            myStation->setTestID(result);
         }
         return result;
     }(ID_Station, this->a_cacheDB);
@@ -233,22 +346,26 @@ void Manager::CacheDB::insertData(const uint ID_Station, const float pressure, c
     insertData.exec();
 }
 
-void Manager::CacheDB::updateTest(const uint testID, const QString &standard, const QString &material, const QString &specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString &testType, const QString &operatorName, const QString &endCap) {
-    QSqlQuery updateTest(this->a_cacheDB);
-    updateTest.prepare("UPDATE test SET standard = :standard, material = :material, specification = :specification, lenTotal = :lenTotal, lenFree = :lenFree, diamNom = :diamNom, diamReal = :diamReal, thickness = :thickness, testType = :testType, operator = :operator, endCap = :endCap WHERE id = :testID;");
-    updateTest.bindValue(":testID",        testID);
-    updateTest.bindValue(":standard",      standard);
-    updateTest.bindValue(":material",      material);
-    updateTest.bindValue(":specification", specification);
-    updateTest.bindValue(":lenTotal",      lenTotal);
-    updateTest.bindValue(":lenFree",       lenFree);
-    updateTest.bindValue(":diamNom",       diamNom);
-    updateTest.bindValue(":diamReal",      diamReal);
-    updateTest.bindValue(":thickness",     thickness);
-    updateTest.bindValue(":testType",      testType);
-    updateTest.bindValue(":operator",      operatorName);
-    updateTest.bindValue(":endCap",        endCap);
-    updateTest.exec();
+void Manager::CacheDB::updateTest(const uint testID, const QString& standard, const QString& material, const QString& specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString& testType, const QString& operatorName, const QString& endCap, const QString& enviroment, const QString& conditionalPeriod, const uint& pressureTarget, const uint& temperatureTarget) {
+    QSqlQuery updateQuery(this->a_cacheDB);
+    updateQuery.prepare("UPDATE test SET standard = :standard, material = :material, specification = :specification, lenTotal = :lenTotal, lenFree = :lenFree, diameterReal = :diameterReal, diameterNormal = :diameterNormal, wallthickness = :wallthickness, endCap = :endCap, testType = :testType, operator = :operator, enviroment = :enviroment, conditionalPeriod = :conditionalPeriod, pressureTarget = :pressureTarget, temperatureTarget = :temperatureTarget, updatedAt = CURRENT_TIMESTAMP WHERE id = :id;");
+    updateQuery.bindValue(":standard",          standard);
+    updateQuery.bindValue(":material",          material);
+    updateQuery.bindValue(":specification",     specification);
+    updateQuery.bindValue(":lenTotal",          lenTotal);
+    updateQuery.bindValue(":lenFree",           lenFree);
+    updateQuery.bindValue(":diameterNormal",    diamReal);
+    updateQuery.bindValue(":diameterReal",      diamNom);
+    updateQuery.bindValue(":wallthickness",     thickness);
+    updateQuery.bindValue(":endCap",            endCap);
+    updateQuery.bindValue(":testType",          testType);
+    updateQuery.bindValue(":operator",          operatorName);
+    updateQuery.bindValue(":enviroment",        enviroment);
+    updateQuery.bindValue(":conditionalPeriod", conditionalPeriod);
+    updateQuery.bindValue(":pressureTarget",    pressureTarget);
+    updateQuery.bindValue(":temperatureTarget", temperatureTarget);
+    updateQuery.bindValue(":id",                testID);
+    updateQuery.exec();
 }
 
 void Manager::CacheDB::StopStation(const uint ID_Station) {

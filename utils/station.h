@@ -7,7 +7,6 @@
 #include <QDateTime>
 #include <QException>
 #include <QPushButton>
-#include "../services/pressuretempgraph.h"
 
 #define OFFSET_UPPER 1
 
@@ -26,8 +25,6 @@ private:
 
     static uint activeStation;
 
-    // void changeBtnsVisibility(const bool state);
-
 public:
     Station();
     ~Station();
@@ -35,7 +32,6 @@ public:
     uint getID();
     void setTestID(const uint testID);
     uint getTestID() const;
-    // void reloadPlotSettings();
     void clear();
     void refresh(double pressure, double temperature, double ambient);
     void hasStarted();
@@ -44,6 +40,8 @@ public:
     QDateTime getTimer();
     void setTimer(const QDateTime timer);
     Status getStatus() const;
+
+    static QMap<uint, QSharedPointer<Station>> myStations;
 
     static void checkErrorCode(const int codeError, const uint a_ID);
 

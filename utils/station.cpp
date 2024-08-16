@@ -1,6 +1,8 @@
 #include <QObject>
 #include "station.h"
+#include "../components/setstation.h"
 
+QMap<uint, QSharedPointer<Station>> Station::myStations  = QMap<uint, QSharedPointer<Station>>();
 uint Station::activeStation = 1;
 
 Station::Station(): ID(activeStation) {
@@ -8,12 +10,6 @@ Station::Station(): ID(activeStation) {
     this->timer          = DEFAULT_DATETIME;
     this->idTest         = 0;
     activeStation++;
-
-    /**
-     * Check if the station is active in the SQLite DB
-     * If was load the id of the test and the started time
-     * Else set the idTest to 0 and the started time to the default time
-     */
 }
 
 Station::~Station() { }
@@ -54,7 +50,10 @@ void Station::refresh(double pressure, double temperature, double ambient) {
 
 void Station::hasStarted() { emit this->statusChanged(Status::RUNNING); }
 
-void Station::hasStoped()  { emit this->statusChanged(Status::WAITING); }
+void Station::hasStoped()  {
+    // SetStation::stationConfiguration(this->ID, this->idTest, SetStation::Response::Export);
+    emit this->statusChanged(Status::WAITING);
+}
 
 QDateTime Station::getTimer() { return this->timer; }
 

@@ -2,9 +2,9 @@
 #define SERIALPORTMANAGER_H
 #include <QMap>
 #include <QLabel>
+#include <QQueue>
 #include <QStack>
 #include <QAction>
-#include <QtConcurrent/QtConcurrent>
 #include <QByteArray>
 #include <QSerialPort>
 #include <QSharedPointer>
@@ -12,12 +12,13 @@
 
 #include "../utils/station.h"
 
-#define timeoutConnection 30 // In seconds
-#define ms_ 250                // In miliseconds
+
+#define timeoutConnection 15000 // In miliseconds
+// #define ms_ 250                // In miliseconds
 
 class SerialPortReader : public QSerialPort {
     Q_OBJECT
-
+    // https://forum.qt.io/topic/139144/running-just-one-slot-in-a-different-thread/11
     void initialize();
     void serialToStation(QByteArray& data);
     void sendMessage(const QByteArray& message);
@@ -32,7 +33,8 @@ class SerialPortReader : public QSerialPort {
 
     static QQueue<QString> portMessages;
 
-public slots:
+private slots:
+    void onTimeout();
     void onSerialPortReadyRead();
 
 public:

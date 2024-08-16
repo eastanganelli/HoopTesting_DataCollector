@@ -18,6 +18,8 @@ class Manager: public QObject {
         QSqlDatabase a_StaticDatabase, a_DataDatabase;
 
     public:
+        enum class RemoteSelect { STATIC, DATA };
+
         RemoteDB();
         ~RemoteDB();
         void initialize();
@@ -25,6 +27,9 @@ class Manager: public QObject {
         bool isOpen();
         void close();
         bool isClose();
+        QSqlDatabase get(const RemoteSelect& selection);
+        void insertTest(const uint testID, const QString& standard, const QString& material, const QString& specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString& testType, const QString& operatorName, const QString& endCap, const QString& enviroment, const QString& conditionalPeriod, const uint& pressureTarget, const uint& temperatureTarget, const QString &createdAt);
+        void insertData(const uint &testID, const float &pressure, const float &temperature, const float &ambient, const QString &createdAt);
     };
 
     class CacheDB {
@@ -40,10 +45,8 @@ class Manager: public QObject {
         void close();
         bool isClose();
         QSqlDatabase get();
-        uint isStationOccupy(const uint ID_Station);
-        void isStationFree(const uint ID_Station);
         void insertData(const uint ID_Station, const float pressure, const float temperature, const float ambient);
-        void updateTest(const uint testID, const QString& standard, const QString& material, const QString& specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString& testType, const QString& operatorName, const QString& endCap);
+        void updateTest(const uint testID, const QString& standard, const QString& material, const QString& specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString& testType, const QString& operatorName, const QString& endCap, const QString& enviroment, const QString& conditionalPeriod, const uint& pressureTarget, const uint& temperatureTarget);
         void StopStation(const uint ID_Station);
         void StopByStandby(const uint ID_Station);
     };
@@ -63,11 +66,9 @@ public:
     void isClose();
     void initializeStationActive(QSharedPointer<Station>& myStation, const uint station_ID);
     uint isStationActive(const uint station_ID);
-    // void insertTest(const uint station_id);
-    void updateTest(const uint testID, const QString& standard, const QString& material, const QString& specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString& testType, const QString& operatorName, const QString& endCap);
-    void insertData(const uint testID, const double pressure, const double temperature, const double ambient);
-    void unlinkStationTest(const uint station_id);
-    void deleteTest();
+    QSqlQuery selectTest(const QString& myQuery, const QString& dbName);
+
+    static QSharedPointer<Manager> myDatabases;
 
     static void loadConfiguration(QSqlDatabase& myDB);
     static bool test(QSqlDatabase testDB);
@@ -78,6 +79,13 @@ public:
 
     Q_SIGNAL void DatabaseInitialize(const Manager::Status& v_Status,  const QString& v_Error);
     Q_SIGNAL void DatabaseConnection(const Manager::Status& v_Status,  const QString& v_Error);
+
+public slots:
+    void updateTest(const uint testID, const QString& standard, const QString& material, const QString& specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString& testType, const QString& operatorName, const QString& endCap, const QString& enviroment, const QString& conditionalPeriod, const uint& pressureTarget, const uint& temperatureTarget);
+    void insertData(const uint testID, const double pressure, const double temperature, const double ambient);
+    void deleteTest(const uint testID);
+    void unlinkStationTest(const uint station_id);
+    void exportTestData(const uint &testID);
 };
 
 namespace ManagerErrors {
