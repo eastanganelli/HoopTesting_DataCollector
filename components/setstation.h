@@ -21,8 +21,7 @@ class SetStation : public QDialog {
     Q_OBJECT
 
     uint hooppressure();
-    void setConnectionSignals();
-    void checkSpecimen();
+    void SetSignals();
     void configureStation();
 
     static void inputPressureFixed(float pressure_, QSpinBox* input_);
@@ -35,6 +34,7 @@ class SetStation : public QDialog {
     QJsonArray standards, operators;
 
 private slots:
+    void checkSpecimen();
     void checkFieldsCompletetion();
     void on_cbStandard_currentIndexChanged(int index);
     void on_cbMaterial_currentIndexChanged(int index);
@@ -44,9 +44,7 @@ private slots:
     void on_inputLenFree_valueChanged(int value_);
     void on_btnSave_clicked();
     void on_btnCancel_clicked();
-
     void on_btnSaveExport_clicked();
-
     void on_btnEscExport_clicked();
 
 public:

@@ -92,13 +92,14 @@ void DataVisualizerWindow::Station_StatusChanged(const Station::Status& myStatus
         if(myStatus == Station::Status::READY) {
             if(btnConfig->isVisible())
                 btnConfig->setVisible(false);
-
         } else if(myStatus == Station::Status::RUNNING) {
             if(btnConfig->isVisible())
                 btnConfig->setVisible(true);
         } else if(myStatus == Station::Status::WAITING) {
             SetStation::stationConfiguration(senderStation->getID(), senderStation->getTestID(), SetStation::Response::Export);
-            emit openDialog(senderStation->getID(), senderStation->getTestID(), SetStation::Response::Export);
+            PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(senderStation->getID()));
+            mygraph->clear();
+            senderStation->clear();
         }
     }
 }

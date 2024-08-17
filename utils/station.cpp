@@ -30,12 +30,10 @@ void Station::setTestID(const uint testID) { this->idTest = testID; }
 uint Station::getTestID() const { return this->idTest; }
 
 void Station::clear() {
+    this->started = DEFAULT_DATETIME;
+    this->timer   = DEFAULT_DATETIME;
+    this->idTest  = 0;
     emit this->statusChanged(Status::READY);
-    // this->lblPressure->setText("0 Bar");
-    // this->lblTemperature->setText("0 °C");
-    // this->lblTime->setText("00:00:00");
-    // this->lblStatusHoop->setText(".");
-    // this->changeBtnsVisibility(false);
 }
 
 void Station::refresh(double pressure, double temperature, double ambient) {

@@ -21,8 +21,8 @@ SetStation::~SetStation() {
 void SetStation::stationConfiguration(const uint& ID_Station, const uint& ID_Test, const SetStation::Response& v_mode) {
     SetStation myHoopParameters;
     myHoopParameters.setParameters(ID_Station, ID_Test, v_mode);
-    myHoopParameters.setWindowModality(Qt::ApplicationModal);
-    // myHoopParameters.setModal(true);
+    // myHoopParameters.setWindowModality(Qt::ApplicationModal);
+    myHoopParameters.setModal(true);
     myHoopParameters.exec();
 }
 
@@ -33,17 +33,101 @@ void SetStation::setParameters(const uint& ID_Station_, const uint& ID_Test_, co
         this->ui->btnSave->setVisible(false);
         this->ui->btnCancel->setVisible(false);
     } else if(mode == SetStation::Response::Cancel || mode == SetStation::Response::Save) {
-        this->setConnectionSignals();
         this->ui->btnSaveExport->setVisible(false);
         this->ui->btnEscExport->setVisible(false);
     }
-    this->preLoadData();
     this->preLoadUI();
+    this->preLoadData();
+    this->SetSignals();
+    connect(this->ui->cbStandard,         SIGNAL(currentIndexChanged(int)), this, SLOT(checkSpecimen()));
+    connect(this->ui->cbMaterial,         SIGNAL(currentIndexChanged(int)), this, SLOT(checkSpecimen()));
+    connect(this->ui->cbSpecification,    SIGNAL(currentIndexChanged(int)), this, SLOT(checkSpecimen()));
+    connect(this->ui->inputDiamNormal,    SIGNAL(textChanged(QString)),     this, SLOT(checkSpecimen()));
+    connect(this->ui->inputDiamReal,      SIGNAL(textChanged(QString)),     this, SLOT(checkSpecimen()));
+    connect(this->ui->inputLenFree,       SIGNAL(textChanged(QString)),     this, SLOT(checkSpecimen()));
+    connect(this->ui->inputLenTotal,      SIGNAL(textChanged(QString)),     this, SLOT(checkSpecimen()));
+    connect(this->ui->inputWallThickness, SIGNAL(textChanged(QString)),     this, SLOT(checkSpecimen()));
     connect(this, &SetStation::updateTest, Manager::myDatabases.data(), &Manager::updateTest);
     connect(this, &SetStation::exportTest, Manager::myDatabases.data(), &Manager::exportTestData);
 }
 
 void SetStation::preLoadData() {
+    try {
+        QSqlQuery myResult = this->myManager->selectTest(QString("SELECT * FROM test t WHERE t.id = %1;").arg(QString::number(this->ID_Test)), "cachedDatabase");
+        QString standard = myResult.value("standard").toString(), material = myResult.value("material").toString(), specification = myResult.value("specification").toString(),
+                operatorName = myResult.value("operator").toString(), endCap = myResult.value("endCap").toString(), testType = myResult.value("testType").toString(),
+                enviroment = myResult.value("enviroment").toString();
+
+        if(!(standard.isEmpty())) {
+            for(uint i = 0; i < (uint)this->ui->cbStandard->count(); i++) {
+                if(this->ui->cbStandard->itemText(i) == standard) {
+                    this->ui->cbStandard->setCurrentIndex(i);
+                    break;
+                }
+            }
+        }
+        if(!(material.isEmpty())) {
+            for(uint i = 0; i < (uint)this->ui->cbMaterial->count(); i++) {
+                if(this->ui->cbMaterial->itemText(i) == material) {
+                    this->ui->cbMaterial->setCurrentIndex(i);
+                    break;
+                }
+            }
+        }
+        if(!(specification.isEmpty())) {
+            for(uint i = 0; i < (uint)this->ui->cbSpecification->count(); i++) {
+                if(this->ui->cbSpecification->itemText(i) == specification) {
+                    this->ui->cbSpecification->setCurrentIndex(i);
+                    break;
+                }
+            }
+        }
+        if(!(enviroment.isNull())) {
+            for(uint i = 0; i < (uint)this->ui->cbBoxEnviroment->count(); i++) {
+                if(this->ui->cbBoxEnviroment->itemText(i) == enviroment) {
+                    this->ui->cbBoxEnviroment->setCurrentIndex(i);
+                    break;
+                }
+            }
+        }
+        if(!(endCap.isNull())) {
+            for(uint i = 0; i < (uint)this->ui->cbBoxEndCap->count(); i++) {
+                if(this->ui->cbBoxEndCap->itemText(i) == endCap) {
+                    this->ui->cbBoxEndCap->setCurrentIndex(i);
+                    break;
+                }
+            }
+        }
+        if(!(testType.isNull())) {
+            for(uint i = 0; i < (uint)this->ui->cbBoxTestType->count(); i++) {
+                if(this->ui->cbBoxTestType->itemText(i) == testType) {
+                    this->ui->cbBoxTestType->setCurrentIndex(i);
+                    break;
+                }
+            }
+        }
+        if(!(operatorName.isNull())) {
+            for(uint i = 0; i < (uint)this->ui->cbBoxOperator->count(); i++) {
+                if(this->ui->cbBoxOperator->itemText(i) == operatorName) {
+                    this->ui->cbBoxOperator->setCurrentIndex(i);
+                    break;
+                }
+            }
+        }
+        this->ui->inputLenTotal->setValue(myResult.value("lenTotal").toInt());
+        this->ui->inputLenFree->setValue(myResult.value("lenFree").toInt());
+        this->ui->inputDiamNormal->setValue(myResult.value("diameterNormal").toInt());
+        this->ui->inputDiamReal->setValue(myResult.value("diameterReal").toInt());
+        this->ui->inputWallThickness->setValue(myResult.value("wallThickness").toInt());
+        this->ui->cbTemp->setCurrentText(myResult.value("temperatureTarget").toString());
+        this->ui->inputPressure->setValue(myResult.value("pressureTarget").toInt());
+        this->checkFieldsCompletetion();
+    } catch(ManagerErrors::QuerySelectError& ex) {
+        qDebug() << ex.what();
+    }
+}
+
+void SetStation::preLoadUI() {
     try {
         QSqlQuery myResult = this->myManager->selectTest(QString("SELECT selectOperators_Into_JSON() AS operators, selectStandard_Into_JSON() AS standards;"), "RemoteStatic");
         this->standards = QJsonDocument::fromJson(myResult.record().value("standards").toByteArray()).array();
@@ -51,27 +135,20 @@ void SetStation::preLoadData() {
     } catch(ManagerErrors::QuerySelectError& ex) {
         qDebug() << ex.what();
     }
-    try {
-        QSqlQuery myResult = this->myManager->selectTest(QString("SELECT * FROM test t WHERE t.id = %1;").arg(QString::number(this->ID_Test)), "cachedDatabase");
-        // qDebug() << myResult.record().count();
-    } catch(ManagerErrors::QuerySelectError& ex) {
-        qDebug() << ex.what();
-    }
-}
-
-void SetStation::preLoadUI() {
     this->ui->gpParameters->setTitle(QString("Estación Nro.: %1").arg(QString::number(this->ID_Station)));
     this->ui->lblSpecimen->setText("Prueba Nro.: 0");
     this->ui->gpTestTime->setVisible(false);
     if(this->ID_Station < 4)
         this->ui->inputPressure->setMaximum(30);
+    else
+        this->ui->inputPressure->setMaximum(60);
     for(auto element: this->standards)
         this->ui->cbStandard->addItem(element.toObject()["standard"].toString());
     for(auto element: this->operators)
         this->ui->cbBoxOperator->addItem(QString("%1, %2").arg(element.toObject()["familyName"].toString()).arg(element.toObject()["name"].toString()));
 }
 
-void SetStation::setConnectionSignals() {
+void SetStation::SetSignals() {
     connect(this->ui->cbStandard,         SIGNAL(currentIndexChanged(int)),    this, SLOT(checkFieldsCompletetion()));
     connect(this->ui->cbMaterial,         SIGNAL(currentIndexChanged(int)),    this, SLOT(checkFieldsCompletetion()));
     connect(this->ui->cbSpecification,    SIGNAL(currentIndexChanged(int)),    this, SLOT(checkFieldsCompletetion()));
@@ -118,7 +195,7 @@ void SetStation::checkSpecimen() {
         const QString standard = this->ui->cbStandard->currentText(), material = this->ui->cbMaterial->currentText(), specification = this->ui->cbSpecification->currentText();
         const uint diamNom = this->ui->inputDiamNormal->value(), diamReal = this->ui->inputDiamReal->value(), wallThick = this->ui->inputWallThickness->value(), lenFree = this->ui->inputLenFree->value(), lenTotal = this->ui->inputLenTotal->value();
         QSqlQuery myResult = this->myManager->selectTest(QString("SELECT countSpecimens('%1', '%2', '%3', %4, %5, %6, %7, %8) AS countSpecimen").arg(standard).arg(material).arg(specification).arg(QString::number(diamNom)).arg(QString::number(diamReal)).arg(QString::number(wallThick)).arg(QString::number(lenFree)).arg(QString::number(lenTotal)), "RemoteData");
-        this->ui->lblSpecimen->setText(QString("Prueba Nro.: %1").arg(QString::number(myResult.value("countSpecimen").toUInt())));
+        this->ui->lblSpecimen->setText(QString("Prueba Nro.: %1").arg(QString::number(myResult.value("countSpecimen").toUInt() + 1)));
     } catch(ManagerErrors::QuerySelectError& ex) {
         qDebug() << ex.what();
     }
@@ -127,10 +204,14 @@ void SetStation::checkSpecimen() {
 void SetStation::checkFieldsCompletetion() {
     if((this->ui->inputDiamReal->value() != 0 && this->ui->inputDiamNormal->value() != 0 && this->ui->inputWallThickness->value() != 0) &&
         (this->ui->inputLenFree->value() != 0 && this->ui->inputLenTotal->value() != 0)) {
-
-        if(!this->ui->cbTemp->currentText().isEmpty() && this->ui->inputPressure->value() != 0) { this->ui->btnSave->setEnabled(true); }
-        this->checkSpecimen();
-    } else { this->ui->btnSave->setEnabled(false); }
+        if(!this->ui->cbTemp->currentText().isEmpty() && this->ui->inputPressure->value() != 0) {
+            this->ui->btnSave->setEnabled(true);
+            this->ui->btnSaveExport->setEnabled(false);
+        }
+    } else {
+        this->ui->btnSave->setEnabled(false);
+        this->ui->btnSaveExport->setEnabled(false);
+    }
 }
 
 void SetStation::on_inputLenFree_valueChanged(int value_) { if(this->ui->inputLenTotal->value() <= value_) { this->ui->inputLenFree->setValue(this->ui->inputLenTotal->value() - 1); } }
@@ -138,8 +219,9 @@ void SetStation::on_inputLenFree_valueChanged(int value_) { if(this->ui->inputLe
 void SetStation::on_cbStandard_currentIndexChanged(int index) {
     SetStation::clearComboBox(this->ui->cbMaterial,      "Material",       true);
     SetStation::clearComboBox(this->ui->cbSpecification, "Especificación", false);
-    SetStation::clearComboBox(this->ui->cbBoxEndCap,     " ",              true);
-    SetStation::clearComboBox(this->ui->cbBoxEnviroment, " ",              true);
+    SetStation::clearComboBox(this->ui->cbBoxTestType,   "Tipo de Prueba", true);
+    SetStation::clearComboBox(this->ui->cbBoxEndCap,     "Tapa",           true);
+    SetStation::clearComboBox(this->ui->cbBoxEnviroment, "Entorno",        true);
     this->indexMaterial = this->indexStandard = this->indexSpecification = -1;
 
     if(index > -1) {
@@ -227,7 +309,6 @@ void SetStation::on_btnSaveExport_clicked() {
     }
 }
 
-
 void SetStation::on_btnEscExport_clicked() {
     QMessageBox msgBox(QMessageBox::Warning, "Parametros: Estación "  + QString::number(this->ID_Station), "Desea salir y exportar sin cambios?");
     msgBox.setWindowIcon(QIcon(":/icon/logo"));
@@ -242,4 +323,3 @@ void SetStation::on_btnEscExport_clicked() {
     default: break;
     }
 }
-

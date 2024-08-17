@@ -116,15 +116,15 @@ void Manager::RemoteDB::insertTest(const uint testID, const QString &standard, c
     uint idSample = [&insertSample](const QString &standard, const QString &material, const QString &specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString &conditionalPeriod) -> uint {
         uint a_id = 0;
         if(!(standard.isNull() || material.isNull() || specification.isNull() || lenTotal == 0 || lenFree == 0 || diamNom == 0 || diamReal == 0 || thickness == 0 || conditionalPeriod.isNull())) {
-            insertSample.prepare("INSERT INTO sample (standard, material, specification, diamreal, diamnom, wallthick, lentotal, lenfree, condPeriod) VALUES (:standard, :material, :specification, :diamreal, :diamnom, :wallthick, :lentotal, lenfree, :condPeriod);");
+            insertSample.prepare("INSERT INTO sample (standard, material, specification, diamreal, diamnom, wallthick, lentotal, lenfree, condPeriod) VALUES (:standard, :material, :specification, :diamreal, :diamnom, :wallthick, :lentotal, :lenfree, :condPeriod);");
             insertSample.bindValue(":standard", standard);
             insertSample.bindValue(":material", material);
             insertSample.bindValue(":specification", specification);
             insertSample.bindValue(":diamnom", diamNom);
             insertSample.bindValue(":diamreal", diamReal);
             insertSample.bindValue(":wallthick", thickness);
-            insertSample.bindValue(":lenfree", lenFree);
             insertSample.bindValue(":lentotal", lenTotal);
+            insertSample.bindValue(":lenfree", lenFree);
             insertSample.bindValue(":condPeriod", conditionalPeriod);
             insertSample.exec();
         }
@@ -135,8 +135,8 @@ void Manager::RemoteDB::insertTest(const uint testID, const QString &standard, c
         insertSample.bindValue(":diamnom", diamNom);
         insertSample.bindValue(":diamreal", diamReal);
         insertSample.bindValue(":wallthick", thickness);
-        insertSample.bindValue(":lenfree", lenFree);
         insertSample.bindValue(":lentotal", lenTotal);
+        insertSample.bindValue(":lenfree", lenFree);
         insertSample.exec();
         insertSample.next();
         a_id = insertSample.value("id").toUInt();
@@ -145,7 +145,7 @@ void Manager::RemoteDB::insertTest(const uint testID, const QString &standard, c
 
     void* _ = [&insertSpecimen](const uint& idSample, const uint& testID, const QString &testType, const QString &operatorName, const QString &endCap, const QString &enviroment, const uint& pressureTarget, const uint& temperatureTarget, const QString& createdAt) -> void* {
         if(idSample != 0 && !(testType.isNull() || operatorName.isNull() || endCap.isNull() || enviroment.isNull())) {
-            insertSpecimen.prepare("INSERT INTO specimen (id, sample, targetPressure, targetTemperature, operator, enviroment, testName, endCap, createdAt) VALUES (:testID, :sampleID, :pressureTarget, :temperatureTarget, :operatorName, :enviroment, :testType, :endCap, :createdAt);");
+            insertSpecimen.prepare("INSERT INTO specimen (id, sample, targetPressure, targetTemperature, operator, enviroment, testName, endCap, createdAt) VALUES (:testID, :sampleID, :pressureTarget, :temperatureTarget, :operatorName, :enviroment, :testType, :endCap, STR_TO_DATE(':createdAt','%Y-%m-%d %H:%i:%s.%f'));");
             insertSpecimen.bindValue(":testID", testID);
             insertSpecimen.bindValue(":sampleID", idSample);
             insertSpecimen.bindValue(":testType", testType);
@@ -163,7 +163,7 @@ void Manager::RemoteDB::insertTest(const uint testID, const QString &standard, c
 
 void Manager::RemoteDB::insertData(const uint& testID, const float& pressure, const float& temperature, const float& ambient, const QString& createdAt) {
     QSqlQuery insertData(this->a_DataDatabase);
-    insertData.prepare("INSERT INTO data (specimen, pressure, temperature, ambient, createdAt) VALUES (:testID, :pressure, :temperature, :ambient, :createdAt);");
+    insertData.prepare("INSERT INTO data (specimen, pressure, temperature, ambient, createdAt) VALUES (:testID, :pressure, :temperature, :ambient, STR_TO_DATE(':createdAt','%Y-%m-%d %H:%i:%s.%f'));");
     insertData.bindValue(":testID", testID);
     insertData.bindValue(":pressure", pressure);
     insertData.bindValue(":temperature", temperature);
