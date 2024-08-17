@@ -22,7 +22,7 @@ DataVisualizerWindow::~DataVisualizerWindow() {
         disconnect(myStation.data(), &Station::labelsUpdate,  this, &DataVisualizerWindow::Station_LblsStates);
         disconnect(myStation.data(), &Station::hoopErrorCode, this, &DataVisualizerWindow::Station_ErrorCode);
     }
-    disconnect(Manager::myDatabases.data(), &Manager::DatabaseInitialize, this, &DataVisualizerWindow::Database_Initialize);
+    // disconnect(Manager::myDatabases.data(), &Manager::DatabaseInitialize, this, &DataVisualizerWindow::Database_Initialize);
     disconnect(Manager::myDatabases.data(), &Manager::DatabaseConnection, this, &DataVisualizerWindow::Database_Connection);
     delete ui;
 }
@@ -30,10 +30,8 @@ DataVisualizerWindow::~DataVisualizerWindow() {
 void DataVisualizerWindow::doLater() {
     this->initStatusBar();
     this->setStationsUI();
-
-    connect(this->myActivePort.data(),   &SerialPortReader::CheckSerialPort, this, &DataVisualizerWindow::Check_Status);
     connect(this->myActivePort.data(),   &SerialPortReader::CheckSerialPort, this, &DataVisualizerWindow::SerialPort_Status);
-    connect(Manager::myDatabases.data(), &Manager::DatabaseInitialize,       this, &DataVisualizerWindow::Database_Initialize);
+    // connect(Manager::myDatabases.data(), &Manager::DatabaseInitialize,       this, &DataVisualizerWindow::Database_Initialize);
     connect(Manager::myDatabases.data(), &Manager::DatabaseConnection,       this, &DataVisualizerWindow::Database_Connection);
     Manager::myDatabases->initialize();
     Manager::myDatabases->open();
@@ -41,8 +39,6 @@ void DataVisualizerWindow::doLater() {
 }
 
 void DataVisualizerWindow::openDialogWindow(const uint &ID_Station, const uint &ID_Test, const SetStation::Response &v_mode) { SetStation::stationConfiguration(ID_Station, ID_Test, v_mode); }
-
-void DataVisualizerWindow::Check_Status()  { /*this->ui->tabWidget->setEnabled(Manager::myDatabases->isOpen() && this->myActivePort->isActive());*/ }
 
 void DataVisualizerWindow::setStationsUI() {
     for(uint i = 1; i <= 6; i++) {
@@ -76,13 +72,8 @@ void DataVisualizerWindow::initStatusBar() {
 }
 
 void DataVisualizerWindow::btnStationsDialog(const uint id_) {
-    // try {
-        QSharedPointer<Station> myStation = Station::myStations[id_];
-        SetStation::stationConfiguration(myStation->getID(), myStation->getTestID(), SetStation::Response::Save);
-    // }
-    // catch(...) {
-    //     QMessageBox::warning(this, "Error", "Error al abrir la configuración de la estación");
-    // }
+    QSharedPointer<Station> myStation = Station::myStations[id_];
+    SetStation::stationConfiguration(myStation->getID(), myStation->getTestID(), SetStation::Response::Save);
 }
 
 void DataVisualizerWindow::Station_StatusChanged(const Station::Status& myStatus) {
@@ -90,15 +81,11 @@ void DataVisualizerWindow::Station_StatusChanged(const Station::Status& myStatus
     if(senderStation) {
         QPushButton* btnConfig = this->findChild<QPushButton*>("btnEstConfig_" + QString::number(senderStation->getID()));
         if(myStatus == Station::Status::READY) {
-            if(btnConfig->isEnabled()) {
+            if(btnConfig->isEnabled())
                 btnConfig->setEnabled(false);
-                qDebug() << "Button is Enabled";
-            }
         } else if(myStatus == Station::Status::RUNNING) {
-            if(!btnConfig->isEnabled()) {
+            if(!btnConfig->isEnabled())
                 btnConfig->setEnabled(true);
-                qDebug() << "Button is Enabled";
-            }
         } else if(myStatus == Station::Status::WAITING) {
             SetStation::stationConfiguration(senderStation->getID(), senderStation->getTestID(), SetStation::Response::Export);
             PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(senderStation->getID()));
@@ -110,8 +97,8 @@ void DataVisualizerWindow::Station_StatusChanged(const Station::Status& myStatus
 }
 
 void DataVisualizerWindow::Station_ErrorCode(const int codeError) {
+    Station* senderStation = qobject_cast<Station*>(sender());
     try {
-        Station* senderStation = qobject_cast<Station*>(sender());
         if(senderStation) {
             try {
                 Station::checkErrorCode(codeError, senderStation->getID());
@@ -121,11 +108,12 @@ void DataVisualizerWindow::Station_ErrorCode(const int codeError) {
         }
     } catch(QString& ex) {
         QMessageBox msgBox(QMessageBox::Warning, "Error", ex);
-        msgBox.setWindowModality(Qt::WindowModal);
+        // msgBox.setWindowModality(Qt::WindowModal);
         msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
         // msgBox.setModal(true);
         msgBox.setStandardButtons(QMessageBox::Ok);
-        msgBox.exec();
+        int result = msgBox.exec();
+        if(result == QMessageBox::Ok) { emit senderStation->hasStoped(); }
     }
 }
 
@@ -173,14 +161,6 @@ void DataVisualizerWindow::Plot_ChangeStyle(const double &yAxisDesviation, const
         PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(myStation->getID()));
         mygraph->changeStyle(yAxisDesviation, pressureColor, temperatureColor);
     }
-}
-
-void DataVisualizerWindow::SetStation_FreeStation() {
-
-}
-
-void DataVisualizerWindow::Database_Initialize(const Manager::Status &v_Status, const QString &v_Error) {
-
 }
 
 void DataVisualizerWindow::Database_Connection(const Manager::Status &v_Status, const QString &v_Error) {

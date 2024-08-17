@@ -43,7 +43,7 @@ public:
 
     static QMap<uint, QSharedPointer<Station>> myStations;
 
-    static void checkErrorCode(const int codeError, const uint a_ID);
+    static void checkErrorCode(const int &codeError, const uint &a_ID);
 
     Q_SIGNAL void statusChanged(const Station::Status& myStatus);
     Q_SIGNAL void labelsUpdate(const uint v_key, const double v_pressure, const double v_temperature);
@@ -58,7 +58,7 @@ namespace StationError {
         QString v_errMsg;
     public:
         InitPressureLoad(const uint station_ID) {
-            this->v_errMsg = QString("Se produjo una falla en la estación al realizar la carga de presión inicial");
+            this->v_errMsg = QString("Se produjo una falla en la estación %1 al realizar la carga de presión inicial").arg(QString::number(station_ID));
         }
         const QString what() { return this->v_errMsg; }
         void raise() const override { throw *this; }
@@ -69,7 +69,7 @@ namespace StationError {
         QString v_errMsg;
     public:
         PressureLoose(const uint station_ID) {
-            this->v_errMsg = QString("Se produjo una falla en la estación debido a una caída abrupta de presión");
+            this->v_errMsg = QString("Se produjo una falla en la estación %1 debido a una caída abrupta de presión").arg(QString::number(station_ID));
         }
         const QString what() { return this->v_errMsg; }
         void raise() const override { throw *this; }
@@ -80,7 +80,7 @@ namespace StationError {
         QString v_errMsg;
     public:
         RecurrentPressureLoad(const uint station_ID) {
-            this->v_errMsg = QString("Se produjo una falla en la estación por recargas recurrentes de presión");
+            this->v_errMsg = QString("Se produjo una falla en la estación %1 por recargas recurrentes de presión").arg(QString::number(station_ID));
         }
         const QString what() { return this->v_errMsg; }
         void raise() const override { throw *this; }

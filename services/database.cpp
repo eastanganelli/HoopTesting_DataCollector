@@ -110,7 +110,7 @@ QSqlDatabase Manager::RemoteDB::get(const RemoteSelect &selection) {
     return this->a_DataDatabase;
 }
 
-void Manager::RemoteDB::insertTest(const uint testID, const QString &standard, const QString &material, const QString &specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString &testType, const QString &operatorName, const QString &endCap, const QString &enviroment, const QString &conditionalPeriod, const uint &pressureTarget, const uint &temperatureTarget, const QString& createdAt) {
+void Manager::RemoteDB::insertTest(const uint testID, const QString &standard, const QString &material, const QString &specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString &testType, const QString &operatorName, const QString &endCap, const QString &enviroment, const QString &conditionalPeriod, const uint &pressureTarget, const uint &temperatureTarget, const QString& createdAt, const QString& description) {
     QSqlQuery insertSample(this->a_DataDatabase),
               insertSpecimen(this->a_DataDatabase);
     uint idSample = [&insertSample](const QString &standard, const QString &material, const QString &specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString &conditionalPeriod) -> uint {
@@ -146,39 +146,34 @@ void Manager::RemoteDB::insertTest(const uint testID, const QString &standard, c
         return a_id;
     }(standard, material,specification, lenTotal, lenFree, diamNom, diamReal, thickness, conditionalPeriod);
 
-    void* _ = [&insertSpecimen](const uint& idSample, const uint& testID, const QString &testType, const QString &operatorName, const QString &endCap, const QString &enviroment, const uint& pressureTarget, const uint& temperatureTarget, const QString& createdAt) -> void* {
+    void* _ = [&insertSpecimen](const uint& idSample, const uint& testID, const QString &testType, const QString &operatorName, const QString &endCap, const QString &enviroment, const uint& pressureTarget, const uint& temperatureTarget, const QString& createdAt, const QString& description) -> void* {
         if(idSample != 0) {
-            insertSpecimen.prepare("INSERT INTO specimen (id, sample, targetPressure, targetTemperature, operator, enviroment, testName, endCap, createdAt, updatedAt) VALUES (:testID, :sampleID, :pressureTarget, :temperatureTarget, :operatorName, :enviroment, :testType, :endCap, STR_TO_DATE(':createdAt','%Y-%m-%d %H:%i:%s.%f'), DEFAULT);");
+            insertSpecimen.prepare("INSERT INTO specimen (id, sample, targetPressure, targetTemperature, operator, enviroment, testName, endCap, failText, createdAt, updatedAt) \
+                                    VALUES (:testID, :sampleID, :pressureTarget, :temperatureTarget, :operatorName, :enviroment, :testType, :endCap, :failText, STR_TO_DATE('" + createdAt + "','%Y-%m-%d %H:%i:%s.%f'), DEFAULT);");
             insertSpecimen.bindValue(":testID", testID);
-            insertSpecimen.bindValue(":sampleID", (idSample != 0 ? idSample : 'NULL'));
-            insertSpecimen.bindValue(":testType", (testType.isNull() ? "DEFAULT" : testType));
-            insertSpecimen.bindValue(":operatorName", (operatorName.isNull() ? "DEFAULT" : operatorName));
-            insertSpecimen.bindValue(":endCap", (endCap.isNull() ? "DEFAULT" : endCap));
-            insertSpecimen.bindValue(":enviroment", (enviroment.isNull() ? "DEFAULT" : enviroment));
-            insertSpecimen.bindValue(":pressureTarget", (pressureTarget == 0 ? 'NULL' : pressureTarget));
-            insertSpecimen.bindValue(":temperatureTarget", (temperatureTarget == 0 ? 'NULL' : temperatureTarget));
-            insertSpecimen.bindValue(":createdAt", createdAt);
+            insertSpecimen.bindValue(":sampleID", idSample);
+            insertSpecimen.bindValue(":testType", testType);
+            insertSpecimen.bindValue(":operatorName", operatorName);
+            insertSpecimen.bindValue(":endCap", endCap);
+            insertSpecimen.bindValue(":enviroment", enviroment);
+            insertSpecimen.bindValue(":pressureTarget", pressureTarget);
+            insertSpecimen.bindValue(":failtext", (description.isEmpty() ? "DEFAULT": "'" + description + "'"));
+            insertSpecimen.bindValue(":temperatureTarget", temperatureTarget);
+            insertSpecimen.exec();
         } else {
-            QString script("INSERT INTO specimen (ID, sample, targetPressure, targetTemperature, operator, enviroment, testName, endCap, failText, remark, createdAt, updatedAt) VALUES (%1, NULL, NULL, NULL, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, STR_TO_DATE('%2','%Y-%m-%d %H:%i:%s.%f'), DEFAULT);");
-            script = script.arg(testID).arg(createdAt);
-            insertSpecimen.prepare(script);
+            // QString script("INSERT INTO specimen (ID, failText, createdAt, updatedAt) VALUES (%1, '%2', STR_TO_DATE('%3','%Y-%m-%d %H:%i:%s.%f'), DEFAULT);");
+            QString script = "INSERT INTO specimen (ID, sample, targetPressure, targetTemperature, operator, enviroment, testName, endCap, failText, remark, createdAt, updatedAt) \
+                               VALUES (%1, NULL, NULL, NULL, DEFAULT, DEFAULT, DEFAULT, DEFAULT, '%2', DEFAULT, STR_TO_DATE('%3','%Y-%m-%d %H:%i:%s.%f'), DEFAULT);";
+            insertSpecimen.exec(script.arg(testID).arg(description).arg(createdAt));
         }
-        insertSpecimen.exec();
-        qDebug() << insertSpecimen.lastError().text();
-        qDebug() << insertSpecimen.lastQuery();
         return nullptr;
-    }(idSample, testID, testType, operatorName, endCap, enviroment, pressureTarget, temperatureTarget,createdAt);
+    }(idSample, testID, testType, operatorName, endCap, enviroment, pressureTarget, temperatureTarget, createdAt, description);
 }
 
-void Manager::RemoteDB::insertData(const uint& testID, const float& pressure, const float& temperature, const float& ambient, const QString& createdAt) {
+void Manager::RemoteDB::insertData(const uint& testID, const double& pressure, const double& temperature, const double& ambient, const QString& createdAt) {
     QSqlQuery insertData(this->a_DataDatabase);
-    insertData.prepare("INSERT INTO data (specimen, pressure, temperature, ambient, createdAt) VALUES (:testID, :pressure, :temperature, :ambient, STR_TO_DATE(':createdAt','%Y-%m-%d %H:%i:%s.%f'));");
-    insertData.bindValue(":testID", testID);
-    insertData.bindValue(":pressure", pressure);
-    insertData.bindValue(":temperature", temperature);
-    insertData.bindValue(":ambient", ambient);
-    insertData.bindValue(":createdAt", QDateTime::currentDateTime());
-    insertData.exec();
+    QString script("INSERT INTO data (specimen, pressure, temperature, ambient, createdAt) VALUES (%1, %2, %3, %4, STR_TO_DATE('%5','%Y-%m-%d %H:%i:%s.%f'));");
+    insertData.exec(script.arg(testID).arg(pressure).arg(temperature).arg(ambient).arg(createdAt));
 }
 
 void Manager::CacheDB::close() { this->a_cacheDB.close(); }
@@ -229,11 +224,12 @@ void Manager::exportTestData(const uint& testID) {
         cacheQuery.next();
         const QString standard = cacheQuery.value("standard").toString(), material = cacheQuery.value("material").toString(),          specification = cacheQuery.value("specification").toString(),
                       testType = cacheQuery.value("testType").toString(), operatorName = cacheQuery.value("operator").toString(), endCap = cacheQuery.value("endCap").toString(),
-                      enviroment = cacheQuery.value("enviroment").toString(), conditionalPeriod = cacheQuery.value("conditionalPeriod").toString(), createdAt = cacheQuery.value("createdAt").toString();
+                      enviroment = cacheQuery.value("enviroment").toString(), conditionalPeriod = cacheQuery.value("conditionalPeriod").toString(),
+                      createdAt = cacheQuery.value("createdAt").toString(), description = cacheQuery.value("description").toString();
         const uint lenTotal = cacheQuery.value("lenTotal").toUInt(), lenFree = cacheQuery.value("lenFree").toUInt(),
                    diamNom = cacheQuery.value("diameterNormal").toUInt(),   diamReal = cacheQuery.value("diameterReal").toUInt(), thickness = cacheQuery.value("wallthickness").toUInt(),
                    pressureTarget = cacheQuery.value("pressureTarget").toUInt(), temperatureTarget = cacheQuery.value("temperatureTarget").toUInt();
-        remoteDatabase.insertTest(testID, standard, material, specification, lenTotal, lenFree, diamNom, diamReal, thickness, testType, operatorName, endCap, enviroment, conditionalPeriod, pressureTarget, temperatureTarget, createdAt);
+        remoteDatabase.insertTest(testID, standard, material, specification, lenTotal, lenFree, diamNom, diamReal, thickness, testType, operatorName, endCap, enviroment, conditionalPeriod, pressureTarget, temperatureTarget, createdAt, description);
         return nullptr;
     }();
     _ = [&cacheQuery, &remoteDatabase, testID]() -> void* {
@@ -245,7 +241,18 @@ void Manager::exportTestData(const uint& testID) {
         }
         return nullptr;
     }();
-    this->a_CacheDB.deleteTest(testID);
+    auto exportstatus = [&cacheQuery, &remoteQuery, testID]() -> bool {
+        cacheQuery.prepare("SELECT COUNT(*) FROM data d WHERE d.testID = :testID;");
+        cacheQuery.bindValue(":testID", testID);
+        cacheQuery.exec();
+        cacheQuery.next();
+        remoteQuery.prepare("SELECT COUNT(*) FROM data d WHERE d.specimen = :testID;");
+        remoteQuery.bindValue(":testID", testID);
+        remoteQuery.exec();
+        remoteQuery.next();
+        return cacheQuery.value(0).toUInt() == remoteQuery.value(0).toUInt();
+    };
+    if(exportstatus()) { this->a_CacheDB.deleteTest(testID); }
 }
 
 void Manager::loadConfiguration(QSqlDatabase &myDB) {

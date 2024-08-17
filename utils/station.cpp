@@ -1,6 +1,5 @@
 #include <QObject>
 #include "station.h"
-#include "../components/setstation.h"
 
 QMap<uint, QSharedPointer<Station>> Station::myStations  = QMap<uint, QSharedPointer<Station>>();
 uint Station::activeStation = 1;
@@ -18,8 +17,6 @@ void Station::reloadTestParameters(const uint testID, const QDateTime started) {
     this->idTest   = testID;
     this->started  = started;
     this->timer    = started;
-    // this->changeBtnsVisibility(false);
-    // this->lblStatusHoop->setText(".");
     this->clear();
 }
 
@@ -48,16 +45,13 @@ void Station::refresh(double pressure, double temperature, double ambient) {
 
 void Station::hasStarted() { emit this->statusChanged(Status::RUNNING); }
 
-void Station::hasStoped()  {
-    // SetStation::stationConfiguration(this->ID, this->idTest, SetStation::Response::Export);
-    emit this->statusChanged(Status::WAITING);
-}
+void Station::hasStoped()  { emit this->statusChanged(Status::WAITING); }
 
 QDateTime Station::getTimer() { return this->timer; }
 
 void Station::setTimer(const QDateTime timer) { this->timer = timer; }
 
-void Station::checkErrorCode(const int codeError, const uint a_ID) {
+void Station::checkErrorCode(const int& codeError, const uint& a_ID) {
     switch(codeError) {
         case (int)StationError::errorCodes::eInitPressureLoad: {
             throw StationError::InitPressureLoad(a_ID);

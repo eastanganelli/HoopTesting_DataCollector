@@ -29,13 +29,11 @@ private slots:
     void doLater();
 
     void openDialogWindow(const uint& ID_Station, const uint& ID_Test, const SetStation::Response& v_mode);
-    void Check_Status();
     void Station_StatusChanged(const Station::Status& myStatus);
     void Station_ErrorCode(const int codeError);
     void Station_LblsStates(const uint key, const double pressure, const double temperature);
     void SerialPort_Status(const SerialPortReader::Status& myStatus);
     void Plot_ChangeStyle(const double &yAxisDesviation, const QString &pressureColor, const QString &temperatureColor);
-    void Database_Initialize(const Manager::Status& v_Status, const QString& v_Error);
     void Database_Connection(const Manager::Status& v_Status, const QString& v_Error);
 
     void on_btnEstConfig_1_clicked();
@@ -54,8 +52,5 @@ private slots:
 public:
     DataVisualizerWindow(QWidget *parent = nullptr);
     ~DataVisualizerWindow();
-
-public slots:
-    void SetStation_FreeStation();
 };
 #endif // DATAVISUALIZER_H
