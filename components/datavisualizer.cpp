@@ -9,7 +9,7 @@
 DataVisualizerWindow::DataVisualizerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::DataVisualizerWindow) {
     ui->setupUi(this);
     this->myActivePort = QSharedPointer<SerialPortReader>(new SerialPortReader());
-    this->ui->tabWidget->setEnabled(false);
+    this->ui->tabWidget->setEnabled(true);
     Manager::myDatabases = QSharedPointer<Manager>(new Manager());
     QTimer::singleShot(0, this, SLOT(doLater()));
     connect(this, &DataVisualizerWindow::openDialog, this, &DataVisualizerWindow::openDialogWindow);
@@ -42,7 +42,7 @@ void DataVisualizerWindow::doLater() {
 
 void DataVisualizerWindow::openDialogWindow(const uint &ID_Station, const uint &ID_Test, const SetStation::Response &v_mode) { SetStation::stationConfiguration(ID_Station, ID_Test, v_mode); }
 
-void DataVisualizerWindow::Check_Status()  { this->ui->tabWidget->setEnabled(Manager::myDatabases->isOpen() && this->myActivePort->isActive()); }
+void DataVisualizerWindow::Check_Status()  { /*this->ui->tabWidget->setEnabled(Manager::myDatabases->isOpen() && this->myActivePort->isActive());*/ }
 
 void DataVisualizerWindow::setStationsUI() {
     for(uint i = 1; i <= 6; i++) {
@@ -90,14 +90,19 @@ void DataVisualizerWindow::Station_StatusChanged(const Station::Status& myStatus
     if(senderStation) {
         QPushButton* btnConfig = this->findChild<QPushButton*>("btnEstConfig_" + QString::number(senderStation->getID()));
         if(myStatus == Station::Status::READY) {
-            if(btnConfig->isVisible())
-                btnConfig->setVisible(false);
+            if(btnConfig->isEnabled()) {
+                btnConfig->setEnabled(false);
+                qDebug() << "Button is Enabled";
+            }
         } else if(myStatus == Station::Status::RUNNING) {
-            if(btnConfig->isVisible())
-                btnConfig->setVisible(true);
+            if(!btnConfig->isEnabled()) {
+                btnConfig->setEnabled(true);
+                qDebug() << "Button is Enabled";
+            }
         } else if(myStatus == Station::Status::WAITING) {
             SetStation::stationConfiguration(senderStation->getID(), senderStation->getTestID(), SetStation::Response::Export);
             PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(senderStation->getID()));
+            btnConfig->setEnabled(false);
             mygraph->clear();
             senderStation->clear();
         }

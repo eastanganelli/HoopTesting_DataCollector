@@ -39,16 +39,6 @@ void SetStation::setParameters(const uint& ID_Station_, const uint& ID_Test_, co
     this->preLoadUI();
     this->preLoadData();
     this->SetSignals();
-    connect(this->ui->cbStandard,         SIGNAL(currentIndexChanged(int)), this, SLOT(checkSpecimen()));
-    connect(this->ui->cbMaterial,         SIGNAL(currentIndexChanged(int)), this, SLOT(checkSpecimen()));
-    connect(this->ui->cbSpecification,    SIGNAL(currentIndexChanged(int)), this, SLOT(checkSpecimen()));
-    connect(this->ui->inputDiamNormal,    SIGNAL(textChanged(QString)),     this, SLOT(checkSpecimen()));
-    connect(this->ui->inputDiamReal,      SIGNAL(textChanged(QString)),     this, SLOT(checkSpecimen()));
-    connect(this->ui->inputLenFree,       SIGNAL(textChanged(QString)),     this, SLOT(checkSpecimen()));
-    connect(this->ui->inputLenTotal,      SIGNAL(textChanged(QString)),     this, SLOT(checkSpecimen()));
-    connect(this->ui->inputWallThickness, SIGNAL(textChanged(QString)),     this, SLOT(checkSpecimen()));
-    connect(this, &SetStation::updateTest, Manager::myDatabases.data(), &Manager::updateTest);
-    connect(this, &SetStation::exportTest, Manager::myDatabases.data(), &Manager::exportTestData);
 }
 
 void SetStation::preLoadData() {
@@ -160,6 +150,20 @@ void SetStation::SetSignals() {
     connect(this->ui->inputLenTotal,      SIGNAL(textChanged(QString)),        this, SLOT(checkFieldsCompletetion()));
     connect(this->ui->inputPressure,      SIGNAL(textChanged(QString)),        this, SLOT(checkFieldsCompletetion()));
     connect(this->ui->inputWallThickness, SIGNAL(textChanged(QString)),        this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->cbBoxEndCap,        SIGNAL(currentIndexChanged(int)),    this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->cbBoxEnviroment,    SIGNAL(currentIndexChanged(int)),    this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->cbBoxOperator,      SIGNAL(currentIndexChanged(int)),    this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->cbBoxTestType,      SIGNAL(currentIndexChanged(int)),    this, SLOT(checkFieldsCompletetion()));
+    connect(this->ui->cbStandard,         SIGNAL(currentIndexChanged(int)), this, SLOT(checkSpecimen()));
+    connect(this->ui->cbMaterial,         SIGNAL(currentIndexChanged(int)), this, SLOT(checkSpecimen()));
+    connect(this->ui->cbSpecification,    SIGNAL(currentIndexChanged(int)), this, SLOT(checkSpecimen()));
+    connect(this->ui->inputDiamNormal,    SIGNAL(textChanged(QString)),     this, SLOT(checkSpecimen()));
+    connect(this->ui->inputDiamReal,      SIGNAL(textChanged(QString)),     this, SLOT(checkSpecimen()));
+    connect(this->ui->inputLenFree,       SIGNAL(textChanged(QString)),     this, SLOT(checkSpecimen()));
+    connect(this->ui->inputLenTotal,      SIGNAL(textChanged(QString)),     this, SLOT(checkSpecimen()));
+    connect(this->ui->inputWallThickness, SIGNAL(textChanged(QString)),     this, SLOT(checkSpecimen()));
+    connect(this, &SetStation::updateTest, Manager::myDatabases.data(), &Manager::updateTest);
+    connect(this, &SetStation::exportTest, Manager::myDatabases.data(), &Manager::exportTestData);
 }
 
 void SetStation::on_inputWallThickness_valueChanged(int wallthickness) {
@@ -202,12 +206,12 @@ void SetStation::checkSpecimen() {
 }
 
 void SetStation::checkFieldsCompletetion() {
-    if((this->ui->inputDiamReal->value() != 0 && this->ui->inputDiamNormal->value() != 0 && this->ui->inputWallThickness->value() != 0) &&
-        (this->ui->inputLenFree->value() != 0 && this->ui->inputLenTotal->value() != 0)) {
-        if(!this->ui->cbTemp->currentText().isEmpty() && this->ui->inputPressure->value() != 0) {
-            this->ui->btnSave->setEnabled(true);
-            this->ui->btnSaveExport->setEnabled(false);
-        }
+    if((this->ui->cbStandard->currentIndex() > -1 && this->ui->cbMaterial->currentIndex() > -1 && this->ui->cbSpecification->currentIndex() > -1) &&
+        (!this->ui->cbBoxEndCap->currentText().isEmpty() && !this->ui->cbBoxEnviroment->currentText().isEmpty() && !this->ui->cbBoxTestType->currentText().isEmpty() && !this->ui->cbBoxOperator->currentText().isEmpty()) &&
+        (this->ui->inputDiamNormal->value() > 0 && this->ui->inputDiamReal->value() > 0 &&  this->ui->inputWallThickness->value() > 0 && this->ui->inputLenFree->value() > 0 && this->ui->inputLenTotal->value() > 0) &&
+        (this->ui->cbTemp->currentText().toUInt() > 0 && this->ui->inputPressure->value() >0)) {
+        this->ui->btnSave->setEnabled(true);
+        this->ui->btnSaveExport->setEnabled(true);
     } else {
         this->ui->btnSave->setEnabled(false);
         this->ui->btnSaveExport->setEnabled(false);

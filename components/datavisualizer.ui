@@ -938,7 +938,7 @@
            <item row="0" column="0">
             <widget class="QPushButton" name="btnEstConfig_1">
              <property name="enabled">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
              <property name="maximumSize">
               <size>
@@ -985,7 +985,7 @@
            <item row="0" column="0">
             <widget class="QPushButton" name="btnEstConfig_2">
              <property name="enabled">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
              <property name="maximumSize">
               <size>
@@ -1052,7 +1052,7 @@
            <item row="0" column="0">
             <widget class="QPushButton" name="btnEstConfig_3">
              <property name="enabled">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
              <property name="maximumSize">
               <size>
@@ -1139,7 +1139,7 @@
            <item row="0" column="0">
             <widget class="QPushButton" name="btnEstConfig_4">
              <property name="enabled">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
              <property name="maximumSize">
               <size>
@@ -1186,7 +1186,7 @@
            <item row="0" column="0">
             <widget class="QPushButton" name="btnEstConfig_5">
              <property name="enabled">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
              <property name="maximumSize">
               <size>
@@ -1273,7 +1273,7 @@
            <item row="0" column="0">
             <widget class="QPushButton" name="btnEstConfig_6">
              <property name="enabled">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
              <property name="maximumSize">
               <size>

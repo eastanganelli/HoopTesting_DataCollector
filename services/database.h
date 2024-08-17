@@ -45,10 +45,11 @@ class Manager: public QObject {
         void close();
         bool isClose();
         QSqlDatabase get();
-        void insertData(const uint ID_Station, const float pressure, const float temperature, const float ambient);
-        void updateTest(const uint testID, const QString& standard, const QString& material, const QString& specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString& testType, const QString& operatorName, const QString& endCap, const QString& enviroment, const QString& conditionalPeriod, const uint& pressureTarget, const uint& temperatureTarget);
-        void StopStation(const uint ID_Station);
-        void StopByStandby(const uint ID_Station);
+        void insertData(const uint& ID_Station, const float pressure, const float temperature, const float ambient);
+        void updateTest(const uint& testID, const QString& standard, const QString& material, const QString& specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString& testType, const QString& operatorName, const QString& endCap, const QString& enviroment, const QString& conditionalPeriod, const uint& pressureTarget, const uint& temperatureTarget);
+        void deleteTest(const uint& testID);
+        void StopStation(const uint& ID_Station);
+        void StopByStandby(const uint& ID_Station);
     };
 
     RemoteDB a_RemoteDB;
