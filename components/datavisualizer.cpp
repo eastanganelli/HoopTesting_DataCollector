@@ -33,9 +33,14 @@ void DataVisualizerWindow::doLater() {
     connect(this->myActivePort.data(),   &SerialPortReader::CheckSerialPort, this, &DataVisualizerWindow::SerialPort_Status);
     // connect(Manager::myDatabases.data(), &Manager::DatabaseInitialize,       this, &DataVisualizerWindow::Database_Initialize);
     connect(Manager::myDatabases.data(), &Manager::DatabaseConnection,       this, &DataVisualizerWindow::Database_Connection);
-    Manager::myDatabases->initialize();
-    Manager::myDatabases->open();
-    if(Manager::myDatabases->isOpen()) { this->myActivePort->openPort(); }
+    try {
+        Manager::myDatabases->initialize();
+        Manager::myDatabases->open();
+        if(Manager::myDatabases->isOpen()) { this->myActivePort->openPort(); }
+    }
+    catch(ManagerErrors::ConfigurationError& ex) {
+        QMessageBox::warning(this, "Base de Datos", ex.what(), QMessageBox::Ok);
+    }
 }
 
 void DataVisualizerWindow::openDialogWindow(const uint &ID_Station, const uint &ID_Test, const SetStation::Response &v_mode) { SetStation::stationConfiguration(ID_Station, ID_Test, v_mode); }

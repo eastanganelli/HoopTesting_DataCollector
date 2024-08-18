@@ -48,7 +48,7 @@ void Manager::RemoteDB::initialize() {
     mySettings.endGroup();
 
     if(hostName == "" || userName == "" || password == "" || port == 0) {
-        throw new ManagerErrors::ConfigurationError("Base de datos no configurada!");
+        throw ManagerErrors::ConfigurationError("Base de datos no configurada!");
     }{
         this->a_StaticDatabase.setHostName(hostName);
         this->a_StaticDatabase.setPort(port);
@@ -148,20 +148,10 @@ void Manager::RemoteDB::insertTest(const uint testID, const QString &standard, c
 
     void* _ = [&insertSpecimen](const uint& idSample, const uint& testID, const QString &testType, const QString &operatorName, const QString &endCap, const QString &enviroment, const uint& pressureTarget, const uint& temperatureTarget, const QString& createdAt, const QString& description) -> void* {
         if(idSample != 0) {
-            insertSpecimen.prepare("INSERT INTO specimen (id, sample, targetPressure, targetTemperature, operator, enviroment, testName, endCap, failText, createdAt, updatedAt) \
-                                    VALUES (:testID, :sampleID, :pressureTarget, :temperatureTarget, :operatorName, :enviroment, :testType, :endCap, :failText, STR_TO_DATE('" + createdAt + "','%Y-%m-%d %H:%i:%s.%f'), DEFAULT);");
-            insertSpecimen.bindValue(":testID", testID);
-            insertSpecimen.bindValue(":sampleID", idSample);
-            insertSpecimen.bindValue(":testType", testType);
-            insertSpecimen.bindValue(":operatorName", operatorName);
-            insertSpecimen.bindValue(":endCap", endCap);
-            insertSpecimen.bindValue(":enviroment", enviroment);
-            insertSpecimen.bindValue(":pressureTarget", pressureTarget);
-            insertSpecimen.bindValue(":failtext", (description.isEmpty() ? "DEFAULT": "'" + description + "'"));
-            insertSpecimen.bindValue(":temperatureTarget", temperatureTarget);
-            insertSpecimen.exec();
+            QString script("INSERT INTO specimen (id, sample, targetPressure, targetTemperature, operator, enviroment, testName, endCap, failText, createdAt, updatedAt) \
+                                    VALUES (%1, %2, %3, %4, '%5', '%6', '%7', '%8', %9, STR_TO_DATE('%10','%Y-%m-%d %H:%i:%s.%f'), DEFAULT);");
+            insertSpecimen.exec(script.arg(testID).arg(idSample).arg(pressureTarget).arg(temperatureTarget).arg(operatorName).arg(enviroment).arg(testType).arg(endCap).arg((description.isEmpty() ? "DEFAULT": "'" + description + "'")).arg(createdAt));
         } else {
-            // QString script("INSERT INTO specimen (ID, failText, createdAt, updatedAt) VALUES (%1, '%2', STR_TO_DATE('%3','%Y-%m-%d %H:%i:%s.%f'), DEFAULT);");
             QString script = "INSERT INTO specimen (ID, sample, targetPressure, targetTemperature, operator, enviroment, testName, endCap, failText, remark, createdAt, updatedAt) \
                                VALUES (%1, NULL, NULL, NULL, DEFAULT, DEFAULT, DEFAULT, DEFAULT, '%2', DEFAULT, STR_TO_DATE('%3','%Y-%m-%d %H:%i:%s.%f'), DEFAULT);";
             insertSpecimen.exec(script.arg(testID).arg(description).arg(createdAt));
