@@ -3,10 +3,14 @@
 #include <QSqlError>
 #include "database.h"
 #include "../utils/simplecrypt.h"
+#include "../components/generalsettings.h"
 
 QSharedPointer<Manager> Manager::myDatabases = QSharedPointer<Manager>(nullptr);
 
-Manager::Manager() {}
+Manager::Manager() {
+    this->timeoutTest = 2;
+    generalSettings::loadSettingsStation(this->timeoutTest);
+}
 
 Manager::RemoteDB::RemoteDB() {
     this->a_StaticDatabase = QSqlDatabase::addDatabase("QMYSQL", "RemoteStatic");
@@ -31,9 +35,7 @@ void Manager::initialize() {
         this->a_RemoteDB.initialize();
         this->a_CacheDB.initialize();
     }
-    catch(ManagerErrors::ConfigurationError& e) {
-        emit this->DatabaseInitialize(Manager::Status::ERROR, e.what());
-    }
+    catch(ManagerErrors::ConfigurationError& e) { e.raise(); }
 }
 
 void Manager::RemoteDB::initialize() {
@@ -72,7 +74,7 @@ void Manager::open() {
         this->a_RemoteDB.open();
         this->a_CacheDB.open();
     } catch(ManagerErrors::ConnectionError& e) {
-        emit this->DatabaseConnection(Manager::Status::ERROR, e.what());
+        e.raise();
         return;
     }
     emit this->DatabaseConnection(Manager::Status::OPEN, "");
@@ -154,7 +156,7 @@ void Manager::RemoteDB::insertTest(const uint testID, const QString &standard, c
         } else {
             QString script = "INSERT INTO specimen (ID, sample, targetPressure, targetTemperature, operator, enviroment, testName, endCap, failText, remark, createdAt, updatedAt) \
                                VALUES (%1, NULL, NULL, NULL, DEFAULT, DEFAULT, DEFAULT, DEFAULT, '%2', DEFAULT, STR_TO_DATE('%3','%Y-%m-%d %H:%i:%s.%f'), DEFAULT);";
-            insertSpecimen.exec(script.arg(testID).arg(description).arg(createdAt));
+            insertSpecimen.exec(script.arg(testID).arg((description.isEmpty() ? "DEFAULT": "'" + description + "'")).arg(createdAt));
         }
         return nullptr;
     }(idSample, testID, testType, operatorName, endCap, enviroment, pressureTarget, temperatureTarget, createdAt, description);
@@ -174,7 +176,7 @@ void Manager::close() {
     emit this->DatabaseConnection(Manager::Status::CLOSE, "");
 }
 
-uint Manager::isStationActive(const uint station_ID) {
+uint Manager::stationIsActive(const uint station_ID) {
     QSqlQuery stationOccupy(this->a_CacheDB.get());
     stationOccupy.prepare("SELECT s.testID AS TestID FROM station s WHERE s.id = :id_station;");
     stationOccupy.bindValue(":id_station", station_ID);
@@ -187,6 +189,31 @@ uint Manager::isStationActive(const uint station_ID) {
     return result;
 }
 
+void Manager::stationsFreedom() {
+    try {
+        QSqlQuery stationOccupy(this->a_CacheDB.get()), stationIsFree(this->a_CacheDB.get());
+        stationOccupy.prepare("SELECT \
+                                 ass.Station AS StationID, \
+                                 ass.testID AS TestID \
+                            FROM ActiveStations ass;");
+        stationOccupy.exec();
+        while(stationOccupy.next()) {
+            uint activeTestID = stationOccupy.value("TestID").toUInt();
+            QDateTime now = QDateTime::currentDateTime();
+            stationIsFree.prepare("SELECT \
+                                    MAX(d.createdAt) AS lastDate \
+                                  FROM data d \
+                                  WHERE d.testID = :idStation;");
+            stationIsFree.bindValue(":idStation", activeTestID);
+            stationIsFree.exec();
+            stationIsFree.next();
+            QDateTime lastDate = QDateTime::fromString(stationIsFree.value("lastDate").toString(), "yyyy-MM-dd HH:mm:ss");
+            qDebug() << lastDate.secsTo(now);
+            if(lastDate.secsTo(now) > (this->timeoutTest * 3600)) { this->exportTestData(activeTestID); }
+        }
+    } catch(...) {}
+}
+
 QSqlQuery Manager::selectTest(const QString &myQuery, const QString& dbName) {
     QSqlQuery testQuery(QSqlDatabase::database(dbName));
     testQuery.prepare(myQuery);
@@ -197,7 +224,7 @@ QSqlQuery Manager::selectTest(const QString &myQuery, const QString& dbName) {
     return testQuery;
 }
 
-void Manager::insertData(const uint testID, const double pressure, const double temperature, const double ambient) { this->a_CacheDB.insertData(testID, pressure, temperature, ambient); }
+void Manager::insertData(const uint& ID_Station, const double& pressure, const double& temperature, const double& ambient) { this->a_CacheDB.insertData(ID_Station, pressure, temperature, ambient); }
 
 void Manager::deleteTest(const uint testID) { this->a_CacheDB.StopStation(testID); }
 
@@ -212,7 +239,7 @@ void Manager::exportTestData(const uint& testID) {
         cacheQuery.bindValue(":testID", testID);
         cacheQuery.exec();
         cacheQuery.next();
-        const QString standard = cacheQuery.value("standard").toString(), material = cacheQuery.value("material").toString(),          specification = cacheQuery.value("specification").toString(),
+        const QString standard = cacheQuery.value("standard").toString(), material = cacheQuery.value("material").toString(), specification = cacheQuery.value("specification").toString(),
                       testType = cacheQuery.value("testType").toString(), operatorName = cacheQuery.value("operator").toString(), endCap = cacheQuery.value("endCap").toString(),
                       enviroment = cacheQuery.value("enviroment").toString(), conditionalPeriod = cacheQuery.value("conditionalPeriod").toString(),
                       createdAt = cacheQuery.value("createdAt").toString(), description = cacheQuery.value("description").toString();
@@ -226,9 +253,7 @@ void Manager::exportTestData(const uint& testID) {
         cacheQuery.prepare("SELECT d.pressure, d.temperature, d.ambient, d.createdat FROM data d WHERE testID = :testID;");
         cacheQuery.bindValue(":testID", testID);
         cacheQuery.exec();
-        while(cacheQuery.next()) {
-            remoteDatabase.insertData(testID, cacheQuery.value("pressure").toDouble(), cacheQuery.value("temperature").toDouble(), cacheQuery.value("ambient").toDouble(), cacheQuery.value("createdAt").toString());
-        }
+        while(cacheQuery.next()) { remoteDatabase.insertData(testID, cacheQuery.value("pressure").toDouble(), cacheQuery.value("temperature").toDouble(), cacheQuery.value("ambient").toDouble(), cacheQuery.value("createdAt").toString()); }
         return nullptr;
     }();
     auto exportstatus = [&cacheQuery, &remoteQuery, testID]() -> bool {
@@ -244,6 +269,8 @@ void Manager::exportTestData(const uint& testID) {
     };
     if(exportstatus()) { this->a_CacheDB.deleteTest(testID); }
 }
+
+void Manager::testTimeoutTime(const uint &timeoutTime) { this->timeoutTest = timeoutTime; qDebug() << "Update timeout Test: " << timeoutTime; }
 
 void Manager::loadConfiguration(QSqlDatabase &myDB) {
     SimpleCrypt myDecrypt;
@@ -313,9 +340,11 @@ void Manager::updateTest(const uint testID, const QString& standard, const QStri
     this->a_CacheDB.updateTest(testID, standard, material, specification, lenTotal, lenFree, diamNom, diamReal, thickness, testType, operatorName, endCap, enviroment, conditionalPeriod, pressureTarget, temperatureTarget);
 }
 
+void Manager::failureTest(const uint testID, const QString &description) { this->a_CacheDB.failureTest(testID, description); }
+
 QSqlDatabase Manager::CacheDB::get() { return this->a_cacheDB; }
 
-void Manager::CacheDB::insertData(const uint& ID_Station, const float pressure, const float temperature, const float ambient) {
+void Manager::CacheDB::insertData(const uint& ID_Station, const double& pressure, const double& temperature, const double& ambient) {
     uint TestID = [](const uint Station_ID, QSqlDatabase& db) -> uint {
         QSharedPointer<Station> myStation = Station::myStations[Station_ID];
         uint result = myStation->getTestID();
@@ -373,6 +402,12 @@ void Manager::CacheDB::updateTest(const uint& testID, const QString& standard, c
     updateQuery.bindValue(":temperatureTarget", temperatureTarget);
     updateQuery.bindValue(":id",                testID);
     updateQuery.exec();
+}
+
+void Manager::CacheDB::failureTest(const uint &ID_Station, const QString &description) {
+    QSqlQuery updateQuery(this->a_cacheDB);
+    QString script("UPDATE test SET description = '%1' id = %2;");
+    updateQuery.exec(script.arg(description).arg(QString::number(ID_Station)));
 }
 
 void Manager::CacheDB::deleteTest(const uint &testID) {

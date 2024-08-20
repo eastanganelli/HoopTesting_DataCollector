@@ -1,7 +1,7 @@
 #include "../services/pressuretempgraph.h"
-#include "../components/plotsettings.h"
+#include "../components/generalsettings.h"
 
-class plotSettings;
+class generalSettings;
 
 PressureTempGraph::PressureTempGraph(QWidget* parent) : QCustomPlot(parent) {
     this->maxPressureVal   = 0.00;
@@ -26,7 +26,11 @@ PressureTempGraph::PressureTempGraph(QWidget* parent) : QCustomPlot(parent) {
     this->yAxis->setLabelColor(this->pressureColor);
     this->yAxis2->setLabelColor(this->temperatureColor);
     this->graph(0)->setPen(QPen(this->pressureColor));
+    this->graph(0)->setAdaptiveSampling(true);
+    this->graph(0)->rescaleValueAxis(true);
     this->graph(1)->setPen(QPen(this->temperatureColor));
+    this->graph(1)->setAdaptiveSampling(true);
+    this->graph(1)->rescaleValueAxis(true);
     PressureTempGraph::plotRangeConfigurations(this);
 
     connect(this->xAxis,  SIGNAL(rangeChanged(QCPRange)), this->xAxis2, SLOT(setRange(QCPRange)));
@@ -70,12 +74,10 @@ void PressureTempGraph::changeRanges(const double actualPressure, const double a
 
 void PressureTempGraph::insert(const uint key, const double _pressure, const double _temp) {
     this->changeRanges(_pressure, _temp);
-
     this->graph(0)->addData(key, _pressure);
     this->graph(1)->addData(key, _temp);
-    this->graph(0)->rescaleValueAxis(true);
-    this->graph(1)->rescaleValueAxis(true);
-
+    // this->graph(0)->rescaleValueAxis(true);
+    // this->graph(1)->rescaleValueAxis(true);
     this->xAxis->setRange(key, key, Qt::AlignRight);
     this->replot();
 }
@@ -94,7 +96,7 @@ void PressureTempGraph::clear() {
 
 void PressureTempGraph::plotRangeConfigurations(PressureTempGraph *myPlot) {
     QString pressureColor, temperatureColor;
-    plotSettings::loadSettings(myPlot->yAxisDesviation, pressureColor, temperatureColor);
+    generalSettings::loadSettingsPlot(myPlot->yAxisDesviation, pressureColor, temperatureColor);
 
     if(!pressureColor.isEmpty() || !temperatureColor.isEmpty()) {
         myPlot->pressureColor    = QColor(pressureColor);

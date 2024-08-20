@@ -32,27 +32,29 @@ public:
     uint getID();
     void setTestID(const uint testID);
     uint getTestID() const;
+    Status getStatus() const;
+    void setStatus(const Station::Status status);
+    QDateTime getTimer();
+    void setTimer(const QDateTime timer);
     void clear();
     void refresh(double pressure, double temperature, double ambient);
     void hasStarted();
     void hasStoped();
-    void setStatus(const Station::Status status);
-    QDateTime getTimer();
-    void setTimer(const QDateTime timer);
-    Status getStatus() const;
 
     static QMap<uint, QSharedPointer<Station>> myStations;
 
-    static void checkErrorCode(const int &codeError, const uint &a_ID);
-
     Q_SIGNAL void statusChanged(const Station::Status& myStatus);
-    Q_SIGNAL void labelsUpdate(const uint v_key, const double v_pressure, const double v_temperature);
-    Q_SIGNAL void plotNewPoint(const uint v_key, const double v_pressure, const double v_temperature);
-    Q_SIGNAL void hoopErrorCode(const int codeError);
+    Q_SIGNAL void labelsUpdate(const uint& v_key, const double& v_pressure, const double& v_temperature);
+    Q_SIGNAL void plotNewPoint(const uint& v_key, const double& v_pressure, const double& v_temperature);
+    Q_SIGNAL void cacheNewData(const uint& ID_Station, const double& v_pressure, const double& v_temperature, const double& v_ambient);
+    Q_SIGNAL void cacheErrorTest(const uint& ID, const QString& description);
+    Q_SIGNAL void hoopErrorCode(const QString& errMsg);
 };
 
 namespace StationError {
     enum class errorCodes { eInitPressureLoad = 1, ePressureLoose, eRecurrentPressureLoad };
+
+    void checkErrorCode(const int &codeError, const uint &a_ID);
 
     class InitPressureLoad : public QException {
         QString v_errMsg;

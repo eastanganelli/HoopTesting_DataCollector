@@ -27,7 +27,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         components/setdb.cpp components/setdb.h components/setdb.ui
         components/setserial.cpp components/setserial.h components/setserial.ui
         components/setstation.cpp components/setstation.h components/setstation.ui
-        components/plotsettings.cpp components/plotsettings.h components/plotsettings.ui
+        components/generalsettings.cpp components/generalsettings.h components/generalsettings.ui
 
         services/database.cpp services/database.h
         services/pressuretempgraph.cpp services/pressuretempgraph.h

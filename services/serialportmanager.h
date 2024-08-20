@@ -19,11 +19,11 @@
 class SerialPortReader : public QSerialPort {
     Q_OBJECT
     // https://forum.qt.io/topic/139144/running-just-one-slot-in-a-different-thread/11
-    void initialize();
     void serialToStation(QByteArray& data);
     void sendMessage(const QByteArray& message);
     void autoMessageSender();
     void stationStop(QSharedPointer<Station> auxStation);
+    void stationErrorTest(QSharedPointer<Station>& myStation, const QString& msgErr);
 
     QSharedPointer<QTimer> mSerialTimer;
     QByteArray buffer;
@@ -49,11 +49,31 @@ public:
     static void save(const SerialPortReader myPort);
     static void read(QString& serialName, uint& baudRate);
 
+    void initialize();
     void openPort();
     void closePort();
     bool isActive();
-    // bool statusPort();
 
     Q_SIGNAL void CheckSerialPort(const SerialPortReader::Status& Status);
 };
+
+namespace SerialError {
+    class Parameter : public QException {
+        QString v_errMsg;
+    public:
+        Parameter(const QString errMsg) : v_errMsg(errMsg) {}
+        const QString what() { return this->v_errMsg; }
+        void raise() const override { throw *this; }
+        Parameter* clone() const override { return new Parameter(*this); }
+    };
+
+    class OpenPort : public QException {
+        QString v_errMsg;
+    public:
+        OpenPort(const QString errMsg) : v_errMsg(errMsg) {}
+        const QString what() { return this->v_errMsg; }
+        void raise() const override { throw *this; }
+        OpenPort* clone() const override { return new OpenPort(*this); }
+    };
+}
 #endif // SERIALPORTMANAGER_H

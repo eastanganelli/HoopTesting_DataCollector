@@ -45,18 +45,20 @@ class Manager: public QObject {
         void close();
         bool isClose();
         QSqlDatabase get();
-        void insertData(const uint& ID_Station, const float pressure, const float temperature, const float ambient);
+        void insertData(const uint& ID_Station, const double &pressure, const double &temperature, const double &ambient);
         void updateTest(const uint& testID, const QString& standard, const QString& material, const QString& specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString& testType, const QString& operatorName, const QString& endCap, const QString& enviroment, const QString& conditionalPeriod, const uint& pressureTarget, const uint& temperatureTarget);
+        void failureTest(const uint& ID_Station, const QString& description);
         void deleteTest(const uint& testID);
         void StopStation(const uint& ID_Station);
         void StopByStandby(const uint& ID_Station);
     };
 
+    uint timeoutTest; // In Hours
     RemoteDB a_RemoteDB;
     CacheDB  a_CacheDB;
 
 public:
-    enum class Status { OPEN, CLOSE, ERROR };
+    enum class Status { OPEN, CLOSE };
 
     Manager();
     ~Manager();
@@ -65,8 +67,8 @@ public:
     bool isOpen();
     void close();
     void isClose();
-    void initializeStationActive(QSharedPointer<Station>& myStation, const uint station_ID);
-    uint isStationActive(const uint station_ID);
+    uint stationIsActive(const uint station_ID);
+    void stationsFreedom();
     QSqlQuery selectTest(const QString& myQuery, const QString& dbName);
 
     static QSharedPointer<Manager> myDatabases;
@@ -83,10 +85,12 @@ public:
 
 public slots:
     void updateTest(const uint testID, const QString& standard, const QString& material, const QString& specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString& testType, const QString& operatorName, const QString& endCap, const QString& enviroment, const QString& conditionalPeriod, const uint& pressureTarget, const uint& temperatureTarget);
-    void insertData(const uint testID, const double pressure, const double temperature, const double ambient);
+    void failureTest(const uint testID, const QString& description);
+    void insertData(const uint &ID_Station,  const double &pressure, const double &temperature, const double &ambient);
     void deleteTest(const uint testID);
     void unlinkStationTest(const uint station_id);
     void exportTestData(const uint &testID);
+    void testTimeoutTime(const uint& timeoutTime);
 };
 
 namespace ManagerErrors {

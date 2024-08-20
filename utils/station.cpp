@@ -37,8 +37,8 @@ void Station::refresh(double pressure, double temperature, double ambient) {
     QDateTime actualTime = QDateTime::currentDateTime();
     if(this->started == DEFAULT_DATETIME) { this->started = actualTime; }
     uint key  = this->started.secsTo(actualTime);
-    this->hasStarted();
     QDateTime v_timerTxt = this->timer.addSecs(key);
+    emit this->cacheNewData(this->ID, pressure, temperature, ambient);
     emit this->labelsUpdate(key, pressure, temperature);
     emit this->plotNewPoint(key, pressure, temperature);
 }
@@ -51,7 +51,7 @@ QDateTime Station::getTimer() { return this->timer; }
 
 void Station::setTimer(const QDateTime timer) { this->timer = timer; }
 
-void Station::checkErrorCode(const int& codeError, const uint& a_ID) {
+void StationError::checkErrorCode(const int& codeError, const uint& a_ID) {
     switch(codeError) {
         case (int)StationError::errorCodes::eInitPressureLoad: {
             throw StationError::InitPressureLoad(a_ID);
