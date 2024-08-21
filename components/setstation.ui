@@ -3,7 +3,7 @@
  <class>SetStation</class>
  <widget class="QDialog" name="SetStation">
   <property name="windowModality">
-   <enum>Qt::WindowModality::ApplicationModal</enum>
+   <enum>Qt::WindowModality::WindowModal</enum>
   </property>
   <property name="geometry">
    <rect>
@@ -107,10 +107,10 @@
           <number>6</number>
          </property>
          <property name="topMargin">
-          <number>0</number>
+          <number>3</number>
          </property>
          <property name="bottomMargin">
-          <number>0</number>
+          <number>8</number>
          </property>
          <item>
           <widget class="QLabel" name="lblLenTotal">
@@ -694,7 +694,7 @@
        </widget>
       </item>
       <item row="2" column="0" colspan="3">
-       <widget class="QGroupBox" name="groupBox_2">
+       <widget class="QGroupBox" name="gbDiameters">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -718,10 +718,28 @@
           <pointsize>10</pointsize>
          </font>
         </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
         <property name="title">
          <string>Diámetros</string>
         </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <property name="spacing">
+          <number>6</number>
+         </property>
+         <property name="sizeConstraint">
+          <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+         </property>
+         <property name="topMargin">
+          <number>5</number>
+         </property>
+         <property name="bottomMargin">
+          <number>11</number>
+         </property>
          <item>
           <widget class="QLabel" name="lblDiamExt">
            <property name="sizePolicy">
@@ -729,6 +747,12 @@
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
            </property>
            <property name="text">
             <string>Real</string>
@@ -746,11 +770,35 @@
            <property name="minimumSize">
             <size>
              <width>80</width>
-             <height>26</height>
+             <height>22</height>
             </size>
+           </property>
+           <property name="sizeIncrement">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="baseSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="frame">
+            <bool>true</bool>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
            </property>
            <property name="buttonSymbols">
             <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+           </property>
+           <property name="correctionMode">
+            <enum>QAbstractSpinBox::CorrectionMode::CorrectToNearestValue</enum>
+           </property>
+           <property name="showGroupSeparator" stdset="0">
+            <bool>false</bool>
            </property>
            <property name="maximum">
             <number>5000</number>
@@ -801,14 +849,29 @@
          </item>
          <item>
           <widget class="QSpinBox" name="inputDiamNormal">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="minimumSize">
             <size>
              <width>80</width>
-             <height>26</height>
+             <height>22</height>
             </size>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
            </property>
            <property name="buttonSymbols">
             <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+           </property>
+           <property name="correctionMode">
+            <enum>QAbstractSpinBox::CorrectionMode::CorrectToNearestValue</enum>
+           </property>
+           <property name="showGroupSeparator" stdset="0">
+            <bool>false</bool>
            </property>
            <property name="maximum">
             <number>5000</number>
@@ -859,14 +922,29 @@
          </item>
          <item>
           <widget class="QSpinBox" name="inputWallThickness">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="minimumSize">
             <size>
              <width>80</width>
-             <height>26</height>
+             <height>22</height>
             </size>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
            </property>
            <property name="buttonSymbols">
             <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+           </property>
+           <property name="correctionMode">
+            <enum>QAbstractSpinBox::CorrectionMode::CorrectToNearestValue</enum>
+           </property>
+           <property name="showGroupSeparator" stdset="0">
+            <bool>false</bool>
            </property>
            <property name="maximum">
             <number>5000</number>
@@ -932,7 +1010,7 @@
        </widget>
       </item>
       <item row="5" column="0" colspan="3">
-       <widget class="QGroupBox" name="groupBox">
+       <widget class="QGroupBox" name="gbExtras">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>

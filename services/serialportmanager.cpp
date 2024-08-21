@@ -123,37 +123,37 @@ bool SerialPortReader::test(SerialPortReader testPort) {
 }
 
 void SerialPortReader::autoMessageSender() {
-    while(!(SerialPortReader::portMessages.isEmpty()))
+    while(!(SerialPortReader::portMessages.isEmpty())) {
         this->sendMessage((SerialPortReader::portMessages.dequeue()).toUtf8());
+    }
 }
 
 void SerialPortReader::stationErrorTest(QSharedPointer<Station> &myStation, const QString& msgErr) {
-    SerialPortReader::portMessages.enqueue((QString("error|%1|xx|xx\n").arg(QString::number(myStation->getID()))));
-    Manager::myDatabases->unlinkStationTest(myStation->getID());
-    emit myStation->hoopErrorCode(msgErr);
-    myStation->hasStoped();
 }
 
-void SerialPortReader::onTimeout() { emit this->CheckSerialPort(SerialPortReader::Status::INACTIVE); }
+void SerialPortReader::onTimeout() {
+    emit this->CheckSerialPort(SerialPortReader::Status::INACTIVE);
+    qDebug() << "Timeout";
+}
 
 void SerialPortReader::serialToStation(QByteArray& msg) {
     auto Msgs = QString(msg).split(this->serialParsing["Separator"]);
     QSharedPointer<Station> myStation = nullptr;
     for(QString& serialMsg : Msgs) {
-        try {
-            myStation = nullptr;
-            if(this->serialParsing["Dummy"].match(serialMsg).hasMatch()) { continue; }
-            else if(this->serialParsing["StartPLC"].match(serialMsg).hasMatch()) {
-                QRegularExpressionMatch resultMatch = this->serialParsing["StartPLC"].match(serialMsg);
-                const auto pressure = resultMatch.captured("pressure"), temperature = resultMatch.captured("temperature"), ambient = resultMatch.captured("ambient");
-                myStation = Station::myStations[resultMatch.captured("station").toInt()];
-                if(pressure != "xx.xx" && temperature != "xx.xx" && ambient != "xx.xx") {
-                    if(myStation->getTestID() == 0)
-                        myStation->hasStarted();
-                    myStation->refresh(pressure.toDouble(), temperature.toDouble(), ambient.toDouble());
-                }
-                SerialPortReader::portMessages.enqueue((QString("start|%1|xx|xx\n").arg(QString::number(myStation->getID()))));
-            } else if(this->serialParsing["StopPLC"].match(serialMsg).hasMatch()) {
+        myStation = nullptr;
+        if(this->serialParsing["Dummy"].match(serialMsg).hasMatch()) { continue; }
+        else if(this->serialParsing["StartPLC"].match(serialMsg).hasMatch()) {
+            QRegularExpressionMatch resultMatch = this->serialParsing["StartPLC"].match(serialMsg);
+            const auto pressure = resultMatch.captured("pressure"), temperature = resultMatch.captured("temperature"), ambient = resultMatch.captured("ambient");
+            myStation = Station::myStations[resultMatch.captured("station").toInt()];
+            if(pressure != "xx.xx" && temperature != "xx.xx" && ambient != "xx.xx") {
+                if(myStation->getTestID() == 0)
+                    myStation->hasStarted();
+                myStation->refresh(pressure.toDouble(), temperature.toDouble(), ambient.toDouble());
+            }
+            SerialPortReader::portMessages.enqueue((QString("start|%1|xx|xx\n").arg(QString::number(myStation->getID()))));
+        } else if(this->serialParsing["StopPLC"].match(serialMsg).hasMatch()) {
+            try {
                 QRegularExpressionMatch resultMatch = this->serialParsing["StopPLC"].match(serialMsg);
                 const auto pressure  = resultMatch.captured("pressure"), temperature = resultMatch.captured("temperature"), ambient = resultMatch.captured("ambient");
                 myStation = Station::myStations[resultMatch.captured("station").toInt()];
@@ -162,15 +162,12 @@ void SerialPortReader::serialToStation(QByteArray& msg) {
                 SerialPortReader::portMessages.enqueue((QString("stop|%1|xx|xx\n").arg(QString::number(myStation->getID()))));
                 Manager::myDatabases->unlinkStationTest(myStation->getID());
                 myStation->hasStoped();
-            } else if(this->serialParsing["ErrorPLC"].match(serialMsg).hasMatch()) {
-                QRegularExpressionMatch resultMatch = this->serialParsing["ErrorPLC"].match(serialMsg);
-                myStation = Station::myStations[resultMatch.captured("station").toInt()];
-                StationError::checkErrorCode(resultMatch.captured("status_code").toInt(), myStation->getID());
-            }
+            } catch(...) {}
+        } else if(this->serialParsing["ErrorPLC"].match(serialMsg).hasMatch()) {
+            QRegularExpressionMatch resultMatch = this->serialParsing["ErrorPLC"].match(serialMsg);
+            myStation = Station::myStations[resultMatch.captured("station").toInt()];
+            SerialPortReader::portMessages.enqueue((QString("error|%1|xx|xx\n").arg(QString::number(myStation->getID()))));
+            myStation->hasStopError(resultMatch.captured("status_code").toInt());
         }
-        catch(StationError::InitPressureLoad& ex)      { this->stationErrorTest(myStation, ex.what()); }
-        catch(StationError::PressureLoose& ex)         { this->stationErrorTest(myStation, ex.what()); }
-        catch(StationError::RecurrentPressureLoad& ex) { this->stationErrorTest(myStation, ex.what()); }
-        catch(...) {}
     }
 }

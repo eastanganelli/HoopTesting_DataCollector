@@ -101,7 +101,6 @@ void PressureTempGraph::plotRangeConfigurations(PressureTempGraph *myPlot) {
     if(!pressureColor.isEmpty() || !temperatureColor.isEmpty()) {
         myPlot->pressureColor    = QColor(pressureColor);
         myPlot->temperatureColor = QColor(temperatureColor);
-
         myPlot->yAxis->setLabelColor(myPlot->pressureColor);
         myPlot->yAxis2->setLabelColor(myPlot->temperatureColor);
         myPlot->graph(0)->setPen(QPen(myPlot->pressureColor));

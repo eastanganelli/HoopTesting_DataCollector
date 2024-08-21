@@ -38,7 +38,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         utils/station.cpp utils/station.h
 
         myresources.rc
-        myDatabaseCached.qrc
+
 
     )
 # Define target properties for Android with Qt 6 as:

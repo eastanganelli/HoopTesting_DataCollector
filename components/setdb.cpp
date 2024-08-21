@@ -22,6 +22,7 @@ void DBConfig::on_btnSave_clicked() {
     switch(msgBox.exec()) {
         case QMessageBox::Yes : {
             Manager::save(this->myDB);
+            Manager::myDatabases->initialize();
             this->close();
             break;
         }

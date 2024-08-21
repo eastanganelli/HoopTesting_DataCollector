@@ -50,6 +50,10 @@ void DataVisualizerWindow::doLater() {
 
 void DataVisualizerWindow::openDialogWindow(const uint &ID_Station, const uint &ID_Test, const SetStation::Response &v_mode) { SetStation::stationConfiguration(ID_Station, ID_Test, v_mode); }
 
+void DataVisualizerWindow::Test_Export(const uint &test_ID) {
+
+}
+
 void DataVisualizerWindow::setStationsUI() {
     double yAxisDesviationRead = 0.00;
     QString pressureColor, temperatureColor;
@@ -102,6 +106,9 @@ void DataVisualizerWindow::Station_StatusChanged(const Station::Status& myStatus
         } else if(myStatus == Station::Status::WAITING) {
             SetStation::stationConfiguration(senderStation->getID(), senderStation->getTestID(), SetStation::Response::Export);
             PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(senderStation->getID()));
+            /*
+             * Clear labels
+            */
             btnConfig->setEnabled(false);
             mygraph->clear();
             senderStation->clear();
@@ -111,14 +118,15 @@ void DataVisualizerWindow::Station_StatusChanged(const Station::Status& myStatus
 
 void DataVisualizerWindow::Station_ErrorCode(const QString& errMsg) {
     Station* senderStation = qobject_cast<Station*>(sender());
+    Manager::myDatabases->failureTest(senderStation->getTestID(), errMsg);
     QMessageBox msgBox(QMessageBox::Warning, "Error", errMsg);
     msgBox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
-    // msgBox.setWindowModality(Qt::WindowModal);
-    // msgBox.setModal(true);
+    msgBox.setWindowModality(Qt::WindowModal);
     msgBox.setStandardButtons(QMessageBox::Ok);
     int result = msgBox.exec();
-    if(result == QMessageBox::Ok)
+    if(result == QMessageBox::Ok) {
         emit senderStation->hasStoped();
+    }
 }
 
 void DataVisualizerWindow::Station_LblsStates(const uint key, const double pressure, const double temperature) {
@@ -190,12 +198,8 @@ void DataVisualizerWindow::on_serialConnect_triggered() {
         if(this->myActivePort->isOpen()) { this->myActivePort->closePort(); }
         else { this->myActivePort->openPort(); }
     }
-    catch(SerialError::Parameter& ex) {
-        QMessageBox::warning(nullptr, "Puerto Serial", ex.what(), QMessageBox::Ok);
-    }
-    catch(SerialError::OpenPort& ex) {
-        QMessageBox::warning(nullptr, "Puerto Serial", ex.what(), QMessageBox::Ok);
-    }
+    catch(SerialError::Parameter& ex) { QMessageBox::warning(nullptr, "Puerto Serial", ex.what(), QMessageBox::Ok); }
+    catch(SerialError::OpenPort& ex)  { QMessageBox::warning(nullptr, "Puerto Serial", ex.what(), QMessageBox::Ok); }
 }
 
 void DataVisualizerWindow::on_serialConfig_triggered() {
@@ -206,15 +210,12 @@ void DataVisualizerWindow::on_serialConfig_triggered() {
 
 void DataVisualizerWindow::on_dbConnect_triggered() {
     try {
+        this->myActivePort->initialize();
         if(Manager::myDatabases->isOpen()) { Manager::myDatabases->close(); return; }
         Manager::myDatabases->open();
     }
-    catch(ManagerErrors::ConfigurationError& ex) {
-        QMessageBox::warning(nullptr, "Base de Datos", ex.what(), QMessageBox::Ok);
-    }
-    catch(ManagerErrors::ConnectionError& ex) {
-        QMessageBox::warning(nullptr, "Base de Datos", ex.what(), QMessageBox::Ok);
-    }
+    catch(ManagerErrors::ConfigurationError& ex) { QMessageBox::warning(nullptr, "Base de Datos", ex.what(), QMessageBox::Ok); }
+    catch(ManagerErrors::ConnectionError& ex)    { QMessageBox::warning(nullptr, "Base de Datos", ex.what(), QMessageBox::Ok); }
 }
 
 void DataVisualizerWindow::on_dbConfig_triggered() {

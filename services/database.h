@@ -7,8 +7,6 @@
 #include <QApplication>
 #include <QSqlDatabase>
 
-#include "../utils/station.h"
-
 #define datetime_format "yyyy/MM/dd hh:mm:ss"
 
 class Manager: public QObject {
@@ -27,6 +25,7 @@ class Manager: public QObject {
         bool isOpen();
         void close();
         bool isClose();
+        void checkDBState();
         QSqlDatabase get(const RemoteSelect& selection);
         void insertTest(const uint testID, const QString& standard, const QString& material, const QString& specification, const uint lenTotal, const uint lenFree, const uint diamNom, const uint diamReal, const uint thickness, const QString& testType, const QString& operatorName, const QString& endCap, const QString& enviroment, const QString& conditionalPeriod, const uint& pressureTarget, const uint& temperatureTarget, const QString &createdAt, const QString &description);
         void insertData(const uint &testID, const double &pressure, const double &temperature, const double &ambient, const QString &createdAt);

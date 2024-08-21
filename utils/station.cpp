@@ -47,23 +47,29 @@ void Station::hasStarted() { emit this->statusChanged(Status::RUNNING); }
 
 void Station::hasStoped()  { emit this->statusChanged(Status::WAITING); }
 
+void Station::hasStopError(const int& error_Code) {
+    QString errorMsg = StationError::checkErrorCode(error_Code, this->ID);
+    emit this->hoopErrorCode(errorMsg);
+}
+
 QDateTime Station::getTimer() { return this->timer; }
 
 void Station::setTimer(const QDateTime timer) { this->timer = timer; }
 
-void StationError::checkErrorCode(const int& codeError, const uint& a_ID) {
+QString StationError::checkErrorCode(const int& codeError, const uint& a_ID) {
     switch(codeError) {
         case (int)StationError::errorCodes::eInitPressureLoad: {
-            throw StationError::InitPressureLoad(a_ID);
-            break;
+            // throw StationError::InitPressureLoad(a_ID);
+            return QString("Se produjo una falla en la estación %1 al realizar la carga de presión inicial").arg(QString::number(a_ID));
         }
         case (int)StationError::errorCodes::ePressureLoose: {
-            throw StationError::PressureLoose(a_ID);
-            break;
+            // throw StationError::PressureLoose(a_ID);
+            return QString("Se produjo una falla en la estación %1 debido a una caída abrupta de presión").arg(QString::number(a_ID));
         }
         case (int)StationError::errorCodes::eRecurrentPressureLoad: {
-            throw StationError::RecurrentPressureLoad(a_ID);
-            break;
+            // throw StationError::RecurrentPressureLoad(a_ID);
+            return QString("Se produjo una falla en la estación %1 por recargas recurrentes de presión").arg(QString::number(a_ID));
         }
     }
+    return "";
 }

@@ -2,6 +2,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include "database.h"
+#include "../utils/station.h"
 #include "../utils/simplecrypt.h"
 #include "../components/generalsettings.h"
 
@@ -99,11 +100,24 @@ bool Manager::isOpen() { return this->a_CacheDB.isOpen() && this->a_RemoteDB.isO
 
 bool Manager::RemoteDB::isOpen() { return this->a_StaticDatabase.isOpen() && this->a_DataDatabase.isOpen(); }
 
-bool Manager::CacheDB::isOpen() { return this->a_cacheDB.isOpen(); }
+bool Manager::CacheDB::isOpen()  { return this->a_cacheDB.isOpen(); }
 
 void Manager::RemoteDB::close() {
     this->a_StaticDatabase.close();
     this->a_DataDatabase.close();
+}
+
+void Manager::RemoteDB::checkDBState() {
+    qDebug() << "Schema Data =>" << this->a_DataDatabase.lastError().text() <<
+                "|| Schema Static =>" << this->a_StaticDatabase.lastError().text();
+}
+
+void Manager::CacheDB::close() { this->a_cacheDB.close(); }
+
+void Manager::close() {
+    this->a_RemoteDB.close();
+    this->a_CacheDB.close();
+    emit this->DatabaseConnection(Manager::Status::CLOSE, "");
 }
 
 QSqlDatabase Manager::RemoteDB::get(const RemoteSelect &selection) {
@@ -147,15 +161,14 @@ void Manager::RemoteDB::insertTest(const uint testID, const QString &standard, c
         }
         return a_id;
     }(standard, material,specification, lenTotal, lenFree, diamNom, diamReal, thickness, conditionalPeriod);
-
-    void* _ = [&insertSpecimen](const uint& idSample, const uint& testID, const QString &testType, const QString &operatorName, const QString &endCap, const QString &enviroment, const uint& pressureTarget, const uint& temperatureTarget, const QString& createdAt, const QString& description) -> void* {
+    void* exportingSample = [&insertSpecimen](const uint& idSample, const uint& testID, const QString &testType, const QString &operatorName, const QString &endCap, const QString &enviroment, const uint& pressureTarget, const uint& temperatureTarget, const QString& createdAt, const QString& description) -> void* {
         if(idSample != 0) {
             QString script("INSERT INTO specimen (id, sample, targetPressure, targetTemperature, operator, enviroment, testName, endCap, failText, createdAt, updatedAt) \
                                     VALUES (%1, %2, %3, %4, '%5', '%6', '%7', '%8', %9, STR_TO_DATE('%10','%Y-%m-%d %H:%i:%s.%f'), DEFAULT);");
             insertSpecimen.exec(script.arg(testID).arg(idSample).arg(pressureTarget).arg(temperatureTarget).arg(operatorName).arg(enviroment).arg(testType).arg(endCap).arg((description.isEmpty() ? "DEFAULT": "'" + description + "'")).arg(createdAt));
         } else {
             QString script = "INSERT INTO specimen (ID, sample, targetPressure, targetTemperature, operator, enviroment, testName, endCap, failText, remark, createdAt, updatedAt) \
-                               VALUES (%1, NULL, NULL, NULL, DEFAULT, DEFAULT, DEFAULT, DEFAULT, '%2', DEFAULT, STR_TO_DATE('%3','%Y-%m-%d %H:%i:%s.%f'), DEFAULT);";
+                               VALUES (%1, NULL, NULL, NULL, DEFAULT, DEFAULT, DEFAULT, DEFAULT, %2, DEFAULT, STR_TO_DATE('%3','%Y-%m-%d %H:%i:%s.%f'), DEFAULT);";
             insertSpecimen.exec(script.arg(testID).arg((description.isEmpty() ? "DEFAULT": "'" + description + "'")).arg(createdAt));
         }
         return nullptr;
@@ -166,14 +179,6 @@ void Manager::RemoteDB::insertData(const uint& testID, const double& pressure, c
     QSqlQuery insertData(this->a_DataDatabase);
     QString script("INSERT INTO data (specimen, pressure, temperature, ambient, createdAt) VALUES (%1, %2, %3, %4, STR_TO_DATE('%5','%Y-%m-%d %H:%i:%s.%f'));");
     insertData.exec(script.arg(testID).arg(pressure).arg(temperature).arg(ambient).arg(createdAt));
-}
-
-void Manager::CacheDB::close() { this->a_cacheDB.close(); }
-
-void Manager::close() {
-    this->a_RemoteDB.close();
-    this->a_CacheDB.close();
-    emit this->DatabaseConnection(Manager::Status::CLOSE, "");
 }
 
 uint Manager::stationIsActive(const uint station_ID) {
@@ -234,11 +239,13 @@ void Manager::exportTestData(const uint& testID) {
     QSqlQuery cacheQuery(this->a_CacheDB.get()),
               remoteQuery(this->a_RemoteDB.get(RemoteDB::RemoteSelect::DATA));
     RemoteDB remoteDatabase = this->a_RemoteDB;
-    void* _ = [&remoteDatabase, &cacheQuery, testID]() -> void* {
+    qDebug() << "exportTestData - Remote database is open =" << this->a_RemoteDB.isOpen();
+    void* exportingTest = [&remoteDatabase, &cacheQuery, testID, this]() -> void* {
         cacheQuery.prepare("SELECT * FROM test t WHERE t.id = :testID;");
         cacheQuery.bindValue(":testID", testID);
         cacheQuery.exec();
         cacheQuery.next();
+        qDebug() << "exportingTest - Remote database is open =" << this->a_RemoteDB.isOpen();
         const QString standard = cacheQuery.value("standard").toString(), material = cacheQuery.value("material").toString(), specification = cacheQuery.value("specification").toString(),
                       testType = cacheQuery.value("testType").toString(), operatorName = cacheQuery.value("operator").toString(), endCap = cacheQuery.value("endCap").toString(),
                       enviroment = cacheQuery.value("enviroment").toString(), conditionalPeriod = cacheQuery.value("conditionalPeriod").toString(),
@@ -247,16 +254,19 @@ void Manager::exportTestData(const uint& testID) {
                    diamNom = cacheQuery.value("diameterNormal").toUInt(),   diamReal = cacheQuery.value("diameterReal").toUInt(), thickness = cacheQuery.value("wallthickness").toUInt(),
                    pressureTarget = cacheQuery.value("pressureTarget").toUInt(), temperatureTarget = cacheQuery.value("temperatureTarget").toUInt();
         remoteDatabase.insertTest(testID, standard, material, specification, lenTotal, lenFree, diamNom, diamReal, thickness, testType, operatorName, endCap, enviroment, conditionalPeriod, pressureTarget, temperatureTarget, createdAt, description);
+        qDebug() << "exportingTest - Remote database is open =" << this->a_RemoteDB.isOpen();
         return nullptr;
     }();
-    _ = [&cacheQuery, &remoteDatabase, testID]() -> void* {
+    void* exportingData = [&cacheQuery, &remoteDatabase, testID]() -> void* {
         cacheQuery.prepare("SELECT d.pressure, d.temperature, d.ambient, d.createdat FROM data d WHERE testID = :testID;");
         cacheQuery.bindValue(":testID", testID);
         cacheQuery.exec();
-        while(cacheQuery.next()) { remoteDatabase.insertData(testID, cacheQuery.value("pressure").toDouble(), cacheQuery.value("temperature").toDouble(), cacheQuery.value("ambient").toDouble(), cacheQuery.value("createdAt").toString()); }
+        while(cacheQuery.next()) {
+            remoteDatabase.insertData(testID, cacheQuery.value("pressure").toDouble(), cacheQuery.value("temperature").toDouble(), cacheQuery.value("ambient").toDouble(), cacheQuery.value("createdAt").toString());
+        }
         return nullptr;
     }();
-    auto exportstatus = [&cacheQuery, &remoteQuery, testID]() -> bool {
+    auto exportstatus = [&cacheQuery, &remoteQuery, testID, this]() -> bool {
         cacheQuery.prepare("SELECT COUNT(*) FROM data d WHERE d.testID = :testID;");
         cacheQuery.bindValue(":testID", testID);
         cacheQuery.exec();
@@ -265,9 +275,15 @@ void Manager::exportTestData(const uint& testID) {
         remoteQuery.bindValue(":testID", testID);
         remoteQuery.exec();
         remoteQuery.next();
+        qDebug() << "exportstatus - Remote database is open =" << this->a_RemoteDB.isOpen();
+        // qDebug() << "Count in Cache" << cacheQuery.value(0).toUInt() << " == Count in Remote" << remoteQuery.value(0).toUInt();
         return cacheQuery.value(0).toUInt() == remoteQuery.value(0).toUInt();
     };
-    if(exportstatus()) { this->a_CacheDB.deleteTest(testID); }
+    if(exportstatus()) {
+        qDebug() << "exportstatus if -Remote database is open =" << this->a_RemoteDB.isOpen();
+        this->a_CacheDB.deleteTest(testID);
+    }
+    qDebug() << "Remote database is open =" << this->a_RemoteDB.isOpen();
 }
 
 void Manager::testTimeoutTime(const uint &timeoutTime) { this->timeoutTest = timeoutTime; qDebug() << "Update timeout Test: " << timeoutTime; }
@@ -406,7 +422,7 @@ void Manager::CacheDB::updateTest(const uint& testID, const QString& standard, c
 
 void Manager::CacheDB::failureTest(const uint &ID_Station, const QString &description) {
     QSqlQuery updateQuery(this->a_cacheDB);
-    QString script("UPDATE test SET description = '%1' id = %2;");
+    QString script("UPDATE test SET description = '%1' WHERE id = %2;");
     updateQuery.exec(script.arg(description).arg(QString::number(ID_Station)));
 }
 

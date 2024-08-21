@@ -40,6 +40,7 @@ public:
     void refresh(double pressure, double temperature, double ambient);
     void hasStarted();
     void hasStoped();
+    void hasStopError(const int &error_Code);
 
     static QMap<uint, QSharedPointer<Station>> myStations;
 
@@ -54,7 +55,7 @@ public:
 namespace StationError {
     enum class errorCodes { eInitPressureLoad = 1, ePressureLoose, eRecurrentPressureLoad };
 
-    void checkErrorCode(const int &codeError, const uint &a_ID);
+    QString checkErrorCode(const int &codeError, const uint &a_ID);
 
     class InitPressureLoad : public QException {
         QString v_errMsg;
