@@ -17,6 +17,7 @@ class DataVisualizerWindow : public QMainWindow {
     void setStationsUI();
     void initStatusBar();
     void btnStationsDialog(const uint id_);
+    void stationClearUI(const uint& idStation);
 
     Ui::DataVisualizerWindow *ui;
     QSharedPointer<SerialPortReader> myActivePort;
@@ -29,7 +30,6 @@ private slots:
     void doLater();
 
     void openDialogWindow(const uint& ID_Station, const uint& ID_Test, const SetStation::Response& v_mode);
-    void Test_Export(const uint& test_ID);
     void Station_StatusChanged(const Station::Status& myStatus);
     void Station_ErrorCode(const QString& errMsg);
     void Station_LblsStates(const uint key, const double pressure, const double temperature);

@@ -10,22 +10,21 @@ SetStation::SetStation(QWidget *parent): QDialog(parent), ui(new Ui::SetStation)
     this->setWindowFlags(Qt::Dialog | Qt::Desktop);
     this->myManager = Manager::myDatabases;
     connect(this, &SetStation::updateTest, this->myManager.data(), &Manager::updateTest);
-    // connect(this, &SetStation::exportTest, this->myManager.data(), &Manager::exportTestData);
+    connect(this, &SetStation::exportTest, this->myManager.data(), &Manager::exportTestData);
     this->indexStandard = this->indexMaterial = this->indexSpecification = -1;
 }
 
 SetStation::~SetStation() {
     disconnect(this, &SetStation::updateTest, Manager::myDatabases.data(), &Manager::updateTest);
-    // disconnect(this, &SetStation::exportTest, Manager::myDatabases.data(), &Manager::exportTestData);0
+    disconnect(this, &SetStation::exportTest, Manager::myDatabases.data(), &Manager::exportTestData);
     delete ui;
 }
 
 void SetStation::stationConfiguration(const uint& ID_Station, const uint& ID_Test, const SetStation::Response& v_mode) {
-    SetStation myHoopParameters;
-    myHoopParameters.setParameters(ID_Station, ID_Test, v_mode);
-    myHoopParameters.setModal(true);
-    myHoopParameters.exec();
-    // Manager::myDatabases->open();
+    QSharedPointer<SetStation> myHoopParameters = QSharedPointer<SetStation>(new SetStation());
+    myHoopParameters->setParameters(ID_Station, ID_Test, v_mode);
+    myHoopParameters->setModal(true);
+    myHoopParameters->exec();
 }
 
 void SetStation::setParameters(const uint& ID_Station_, const uint& ID_Test_, const Response &mode) {

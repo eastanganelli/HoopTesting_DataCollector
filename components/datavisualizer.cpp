@@ -50,10 +50,6 @@ void DataVisualizerWindow::doLater() {
 
 void DataVisualizerWindow::openDialogWindow(const uint &ID_Station, const uint &ID_Test, const SetStation::Response &v_mode) { SetStation::stationConfiguration(ID_Station, ID_Test, v_mode); }
 
-void DataVisualizerWindow::Test_Export(const uint &test_ID) {
-
-}
-
 void DataVisualizerWindow::setStationsUI() {
     double yAxisDesviationRead = 0.00;
     QString pressureColor, temperatureColor;
@@ -93,6 +89,17 @@ void DataVisualizerWindow::btnStationsDialog(const uint id_) {
     SetStation::stationConfiguration(myStation->getID(), myStation->getTestID(), SetStation::Response::Save);
 }
 
+void DataVisualizerWindow::stationClearUI(const uint &idStation) {
+    PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(idStation));
+    QLabel* pressurelbl  = this->findChild<QLabel*>("lblPress_" + QString::number(idStation)),
+        * temperaturelbl = this->findChild<QLabel*>("lblTemp_" + QString::number(idStation)),
+            * timelbl = this->findChild<QLabel*>("lblTime_" + QString::number(idStation));
+    pressurelbl->setText("00.00 bar");
+    temperaturelbl->setText("00.00 °C");
+    timelbl->setText("00:00:00");
+    mygraph->clear();
+}
+
 void DataVisualizerWindow::Station_StatusChanged(const Station::Status& myStatus) {
     Station* senderStation = qobject_cast<Station*>(sender());
     if(senderStation) {
@@ -105,13 +112,10 @@ void DataVisualizerWindow::Station_StatusChanged(const Station::Status& myStatus
                 btnConfig->setEnabled(true);
         } else if(myStatus == Station::Status::WAITING) {
             SetStation::stationConfiguration(senderStation->getID(), senderStation->getTestID(), SetStation::Response::Export);
-            PressureTempGraph* mygraph = this->findChild<PressureTempGraph*>("GraphE_" + QString::number(senderStation->getID()));
-            /*
-             * Clear labels
-            */
-            btnConfig->setEnabled(false);
-            mygraph->clear();
+            Manager::myDatabases->open();
             senderStation->clear();
+            this->stationClearUI(senderStation->getID());
+            btnConfig->setEnabled(false);
         }
     }
 }

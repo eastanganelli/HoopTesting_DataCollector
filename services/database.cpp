@@ -239,13 +239,11 @@ void Manager::exportTestData(const uint& testID) {
     QSqlQuery cacheQuery(this->a_CacheDB.get()),
               remoteQuery(this->a_RemoteDB.get(RemoteDB::RemoteSelect::DATA));
     RemoteDB remoteDatabase = this->a_RemoteDB;
-    qDebug() << "exportTestData - Remote database is open =" << this->a_RemoteDB.isOpen();
-    void* exportingTest = [&remoteDatabase, &cacheQuery, testID, this]() -> void* {
+    void* exportingTest = [&remoteDatabase, &cacheQuery, testID]() -> void* {
         cacheQuery.prepare("SELECT * FROM test t WHERE t.id = :testID;");
         cacheQuery.bindValue(":testID", testID);
         cacheQuery.exec();
         cacheQuery.next();
-        qDebug() << "exportingTest - Remote database is open =" << this->a_RemoteDB.isOpen();
         const QString standard = cacheQuery.value("standard").toString(), material = cacheQuery.value("material").toString(), specification = cacheQuery.value("specification").toString(),
                       testType = cacheQuery.value("testType").toString(), operatorName = cacheQuery.value("operator").toString(), endCap = cacheQuery.value("endCap").toString(),
                       enviroment = cacheQuery.value("enviroment").toString(), conditionalPeriod = cacheQuery.value("conditionalPeriod").toString(),
@@ -254,7 +252,6 @@ void Manager::exportTestData(const uint& testID) {
                    diamNom = cacheQuery.value("diameterNormal").toUInt(),   diamReal = cacheQuery.value("diameterReal").toUInt(), thickness = cacheQuery.value("wallthickness").toUInt(),
                    pressureTarget = cacheQuery.value("pressureTarget").toUInt(), temperatureTarget = cacheQuery.value("temperatureTarget").toUInt();
         remoteDatabase.insertTest(testID, standard, material, specification, lenTotal, lenFree, diamNom, diamReal, thickness, testType, operatorName, endCap, enviroment, conditionalPeriod, pressureTarget, temperatureTarget, createdAt, description);
-        qDebug() << "exportingTest - Remote database is open =" << this->a_RemoteDB.isOpen();
         return nullptr;
     }();
     void* exportingData = [&cacheQuery, &remoteDatabase, testID]() -> void* {
@@ -266,7 +263,7 @@ void Manager::exportTestData(const uint& testID) {
         }
         return nullptr;
     }();
-    auto exportstatus = [&cacheQuery, &remoteQuery, testID, this]() -> bool {
+    auto exportstatus = [&cacheQuery, &remoteQuery, testID]() -> bool {
         cacheQuery.prepare("SELECT COUNT(*) FROM data d WHERE d.testID = :testID;");
         cacheQuery.bindValue(":testID", testID);
         cacheQuery.exec();
@@ -275,15 +272,9 @@ void Manager::exportTestData(const uint& testID) {
         remoteQuery.bindValue(":testID", testID);
         remoteQuery.exec();
         remoteQuery.next();
-        qDebug() << "exportstatus - Remote database is open =" << this->a_RemoteDB.isOpen();
-        // qDebug() << "Count in Cache" << cacheQuery.value(0).toUInt() << " == Count in Remote" << remoteQuery.value(0).toUInt();
         return cacheQuery.value(0).toUInt() == remoteQuery.value(0).toUInt();
     };
-    if(exportstatus()) {
-        qDebug() << "exportstatus if -Remote database is open =" << this->a_RemoteDB.isOpen();
-        this->a_CacheDB.deleteTest(testID);
-    }
-    qDebug() << "Remote database is open =" << this->a_RemoteDB.isOpen();
+    if(exportstatus()) { this->a_CacheDB.deleteTest(testID); }
 }
 
 void Manager::testTimeoutTime(const uint &timeoutTime) { this->timeoutTest = timeoutTime; qDebug() << "Update timeout Test: " << timeoutTime; }

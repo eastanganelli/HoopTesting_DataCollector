@@ -76,8 +76,8 @@ void PressureTempGraph::insert(const uint key, const double _pressure, const dou
     this->changeRanges(_pressure, _temp);
     this->graph(0)->addData(key, _pressure);
     this->graph(1)->addData(key, _temp);
-    // this->graph(0)->rescaleValueAxis(true);
-    // this->graph(1)->rescaleValueAxis(true);
+    this->graph(0)->rescaleValueAxis(true);
+    this->graph(1)->rescaleValueAxis(true);
     this->xAxis->setRange(key, key, Qt::AlignRight);
     this->replot();
 }
