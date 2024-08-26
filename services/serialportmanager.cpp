@@ -131,10 +131,7 @@ void SerialPortReader::autoMessageSender() {
 void SerialPortReader::stationErrorTest(QSharedPointer<Station> &myStation, const QString& msgErr) {
 }
 
-void SerialPortReader::onTimeout() {
-    emit this->CheckSerialPort(SerialPortReader::Status::INACTIVE);
-    qDebug() << "Timeout";
-}
+void SerialPortReader::onTimeout() { emit this->CheckSerialPort(SerialPortReader::Status::INACTIVE); }
 
 void SerialPortReader::serialToStation(QByteArray& msg) {
     auto Msgs = QString(msg).split(this->serialParsing["Separator"]);
@@ -160,7 +157,6 @@ void SerialPortReader::serialToStation(QByteArray& msg) {
                 if(pressure != "xx.xx" && temperature != "xx.xx" && ambient != "xx.xx")
                     myStation->refresh(pressure.toDouble(), temperature.toDouble(), ambient.toDouble());
                 SerialPortReader::portMessages.enqueue((QString("stop|%1|xx|xx\n").arg(QString::number(myStation->getID()))));
-                Manager::myDatabases->unlinkStationTest(myStation->getID());
                 myStation->hasStoped();
             } catch(...) {}
         } else if(this->serialParsing["ErrorPLC"].match(serialMsg).hasMatch()) {

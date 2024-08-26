@@ -40,9 +40,7 @@ void DataVisualizerWindow::doLater() {
     catch(ManagerErrors::ConnectionError& ex)    { QMessageBox::warning(nullptr, "Base de Datos", ex.what(), QMessageBox::Ok); }
     try {
         this->myActivePort->initialize();
-        if(Manager::myDatabases->isOpen()) {
-            this->myActivePort->openPort();
-        }
+        this->myActivePort->openPort();
     }
     catch(SerialError::Parameter& ex) { QMessageBox::warning(nullptr, "Puerto Serial", ex.what(), QMessageBox::Ok); }
     catch(SerialError::OpenPort& ex)  { QMessageBox::warning(nullptr, "Puerto Serial", ex.what(), QMessageBox::Ok); }
@@ -200,7 +198,10 @@ void DataVisualizerWindow::Database_Connection(const Manager::Status &v_Status) 
 void DataVisualizerWindow::on_serialConnect_triggered() {
     try {
         if(this->myActivePort->isOpen()) { this->myActivePort->closePort(); }
-        else { this->myActivePort->openPort(); }
+        else {
+            this->myActivePort->initialize();
+            this->myActivePort->openPort();
+        }
     }
     catch(SerialError::Parameter& ex) { QMessageBox::warning(nullptr, "Puerto Serial", ex.what(), QMessageBox::Ok); }
     catch(SerialError::OpenPort& ex)  { QMessageBox::warning(nullptr, "Puerto Serial", ex.what(), QMessageBox::Ok); }
